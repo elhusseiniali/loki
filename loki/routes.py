@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
-from boilerplate import app, db, bcrypt
-from boilerplate.forms import RegistrationForm, LoginForm
-from boilerplate.models import User
+from loki import app, db, bcrypt
+from loki.forms import RegistrationForm, LoginForm
+from loki.models import User
 
 from flask_login import login_user, current_user, logout_user, login_required
 
