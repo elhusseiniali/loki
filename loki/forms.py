@@ -3,7 +3,7 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from wtforms.validators import ValidationError
 
-from boilerplate.models import User
+from loki.models import User
 
 
 class RegistrationForm(FlaskForm):
