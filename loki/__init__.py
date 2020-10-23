@@ -33,6 +33,6 @@ from flask_admin.contrib.sqla import ModelView
 # set optional bootswatch theme
 app.config['FLASK_ADMIN_SWATCH'] = 'flatly'
 
-admin = Admin(app, name='Hermes Admin', template_mode='bootstrap3')
+admin = Admin(app, name='Loki Admin', template_mode='bootstrap3')
 # Add administrative views here
 admin.add_view(ModelView(User, db.session))

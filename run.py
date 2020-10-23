@@ -1,4 +1,4 @@
-from boilerplate import app
+from loki import app
 
 if __name__ == '__main__':
     app.run(debug=True)
