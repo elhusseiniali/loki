@@ -1,4 +1,5 @@
-# loki ![build](https://github.com/elhusseiniali/loki/workflows/build/badge.svg)
+![build](https://github.com/elhusseiniali/loki/workflows/build/badge.svg)
+# loki 
 ## Table of contents
 * [Introduction](#introduction)
 * [Setup](#setup)
