@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from wtforms.validators import ValidationError
@@ -41,3 +42,15 @@ class LoginForm(FlaskForm):
                              validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Log in')
+
+class ModelForm(FlaskForm):
+	name = StringField('Name for the model',
+                           validators=[DataRequired(),
+                                       Length(min=2, max=15)])
+	model = FileField('Upload a model', validators = [FileAllowed(['h5', 'pb']), FileRequired()])
+	submit = SubmitField('Submit')
+
+
+class RunReportForm(FlaskForm):
+	submit = SubmitField('Run Report')
+	

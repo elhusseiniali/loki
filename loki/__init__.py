@@ -24,7 +24,7 @@ login_manager.login_message_category = 'info'
 #   and imports in a package. The order of the imports is also important.
 #   These two imports *had* to happen after initializing db.
 from loki import routes
-from loki.models import User
+from loki.models import User, FRS
 
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
@@ -36,3 +36,5 @@ app.config['FLASK_ADMIN_SWATCH'] = 'flatly'
 admin = Admin(app, name='Loki Admin', template_mode='bootstrap3')
 # Add administrative views here
 admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(FRS, db.session))
+
