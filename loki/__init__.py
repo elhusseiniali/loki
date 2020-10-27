@@ -27,7 +27,7 @@ from loki import routes
 from loki.models import User
 
 from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
+from loki.admin_views import UserView
 
 
 # set optional bootswatch theme
@@ -35,4 +35,4 @@ app.config['FLASK_ADMIN_SWATCH'] = 'flatly'
 
 admin = Admin(app, name='Loki Admin', template_mode='bootstrap3')
 # Add administrative views here
-admin.add_view(ModelView(User, db.session))
+admin.add_view(UserView(User, db.session))
