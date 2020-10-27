@@ -1,6 +1,7 @@
-from loki import db, login_manager
+from loki import db, login_manager, bcrypt
 from flask_login import UserMixin
-from sqlalchemy_utils import EmailType
+from sqlalchemy.ext.hybrid import hybrid_property
+from flask_validator import ValidateEmail
 
 
 @login_manager.user_loader
@@ -13,15 +14,39 @@ class User(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    username = db.Column(db.String(20), unique=True, nullable=False)
-    email = db.Column(EmailType)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    email = db.Column(db.String(50), unique=True, nullable=False)
 
-    password = db.Column(db.String(60), nullable=False)
+    _password = db.Column(db.String(128), nullable=False)
 
-    def __init__(self, username, email, password):
+    def __init__(self,
+                 username, email,
+                 password):
         self.username = username
         self.email = email
+
         self.password = password
 
     def __repr__(self):
-        return (f"User('{self.username}')")
+        return (f"User('{self.username}': '{self.email}')")
+
+    @hybrid_property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, password):
+        self._password = bcrypt.generate_password_hash(password)
+
+    def verify_password(self, password):
+        return bcrypt.check_password_hash(self._password, password)
+
+    @classmethod
+    def __declare_last__(cls):
+        # Check available validators:
+        # https://flask-validator.readthedocs.io/en/latest/
+        ValidateEmail(User.email,
+                      allow_smtputf8=True,
+                      check_deliverability=True,
+                      throw_exception=True,
+                      message="The e-mail is invalid.")
