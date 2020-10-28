@@ -16,3 +16,7 @@ class UserView(ModelView):
     column_editable_list = ('username', 'email')
     column_searchable_list = ('username', 'email')
     column_type_formatters = MY_DEFAULT_FORMATTERS
+
+
+class FRSView(ModelView):
+    pass
