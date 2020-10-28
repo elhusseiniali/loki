@@ -20,3 +20,7 @@ class UserView(ModelView):
 
 class FRSView(ModelView):
     pass
+
+
+class ReportView(ModelView):
+    pass

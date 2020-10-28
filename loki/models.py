@@ -57,7 +57,7 @@ class User(db.Model, UserMixin):
 
 
 class FRS(db.Model):
-    __tablename__ = "FSR"
+    __tablename__ = "FRS"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     name = db.Column(db.String(50), unique=False, nullable=True)
@@ -69,7 +69,9 @@ class FRS(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship("User", back_populates="models")
 
-    def __init__(self, name, upload_date, user=None):
+    reports = db.relationship("Report", back_populates="model")
+
+    def __init__(self, name, upload_date, user):
         self.name = name
         self.upload_date = upload_date
         self.user = user
@@ -77,3 +79,24 @@ class FRS(db.Model):
     def __repr__(self):
         return(f"FRS('{self.name}') for {self.user},"
                f" uploaded on {self.upload_date}.")
+
+
+class Report(db.Model):
+    __tablename__ = "report"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    date = db.Column(db.DateTime,
+                     default=datetime.datetime.now)
+
+    model_id = db.Column(db.Integer, db.ForeignKey("FRS.id"))
+    model = db.relationship("FRS", back_populates="reports")
+
+    data = db.Column(db.JSON)
+
+    def __init__(self, date, model):
+        self.date = date
+        self.model = model
+
+    def __repr__(self):
+        return(f"Report for {self.model}, "
+               f"generated on {self.date}.")
