@@ -68,3 +68,12 @@ class FRS(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship("User", back_populates="models")
+
+    def __init__(self, name, upload_date, user=None):
+        self.name = name
+        self.upload_date = upload_date
+        self.user = user
+
+    def __repr__(self):
+        return(f"FRS('{self.name}') for {self.user},"
+               f" uploaded on {self.upload_date}.")
