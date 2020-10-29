@@ -100,3 +100,5 @@ class Report(db.Model):
     def __repr__(self):
         return(f"Report for {self.model}, "
                f"generated on {self.date}.")
+
+   
