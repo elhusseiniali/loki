@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, url_for, request
-from loki import app, db, bcrypt
+from loki import app, db
 from loki.forms import RegistrationForm, LoginForm
 from loki.models import User
 
