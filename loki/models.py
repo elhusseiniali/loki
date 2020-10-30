@@ -71,9 +71,9 @@ class FRS(db.Model):
 
     reports = db.relationship("Report", back_populates="model")
 
-    def __init__(self, name, upload_date, user):
+    def __init__(self, name, user):
         self.name = name
-        self.upload_date = upload_date
+        #self.upload_date = upload_date
         self.user = user
 
     def __repr__(self):
@@ -92,6 +92,7 @@ class Report(db.Model):
     model = db.relationship("FRS", back_populates="reports")
 
     data = db.Column(db.JSON)
+    
 
     def __init__(self, date, model):
         self.date = date
