@@ -2,7 +2,7 @@ import unittest
 from loki import User
 
 
-class UserModelTestCase(unittest.TestCase):
+class TestPassword(unittest.TestCase):
     def test_password_setter(self):
         u = User(username="Test", email="test@test.com", password='cat')
         self.assertTrue(u._password is not None)
