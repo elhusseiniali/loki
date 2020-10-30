@@ -9,7 +9,8 @@ from flask_login import LoginManager
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '60808326457a6384f78964761aaa161c'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-
+# This is to suppress SQLAlchemy warnings
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
