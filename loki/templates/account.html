@@ -1,44 +1,5 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-
-
-	<div class="row justify-content-center">
-		<table class="table">
-		  <thead class="thead-dark">
-			<tr>
-			  <th scope="col">Name of the Model</th>
-			  <th scope="col">Latest report</th>
-			  <th scope="col">Date</th>
-			</tr>
-		  </thead>
-		  <tbody>
-			{% for model in models.items %}
-				<tr>
-				  <td>{{model.name}}</td>
-				  <td>{{model.name}}</td>			  
-				  <td>{{model.upload_date.strftime('%H:%M / %d-%m-%Y')}}</td>
-
-				</tr>
-			{% endfor %}
-		  </tbody>
-		</table>
-		<!-- Attacks Modal Trigger-->
-	</div>
-	{% for page_num in models.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-      {% if page_num %}
-      	{% if models.page == page_num %}
-      		<a class="btn btn-info mb-4 "href="{{url_for('account', page=page_num)}}">{{page_num}}</a>
-      	{% else %}
-      		<a class="btn btn-outline-info mb-4 "href="{{url_for('account', page=page_num)}}">{{page_num}}</a>
-      	{% endif %}
-      {% else %}
-      	...
-      {% endif %}
-      
-    {% endfor %}
-    <br>
-
-
-
+    <h1>{{ current_user.username }}</h1>
 {% endblock content %}

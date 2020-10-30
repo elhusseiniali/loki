@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from loki import app, db, bcrypt
-from loki.forms import RegistrationForm, LoginForm, ReportForm, FRSForm
-from loki.models import User, Report, FRS
+from loki.forms import RegistrationForm, LoginForm
+from loki.models import User
 
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -62,8 +62,6 @@ def login():
                            title='Log in',
                            form=form)
 
-attacks=['attack1','attack2','attack3','attack4','attack5','attack6','attack7']
-
 
 @app.route("/logout",
            methods=['GET'])
@@ -71,55 +69,9 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-@app.route("/account",
-           methods=['GET', 'POST'])
+
+@app.route("/account")
 @login_required
 def account():
-	page = request.args.get('page', 1, type=int)
-	models = FRS.query.filter_by(user=current_user)\
-				.order_by(FRS.upload_date.desc())\
-				.paginate(page=page, per_page=5)
-	
-	return render_template('account.html',
-						   title='Account',
-						   models=models,
-						   attacks = attacks)
-						   
-@app.route("/report",
-		   methods=['GET', 'POST'])
-@login_required						   
-def report():
-	form = ReportForm()
-	if form.validate_on_submit():
-		print(form.data)
-		#new_report = aux(form.data) function that creates the pdf report
-		#form.model.data = id of the model
-		#save it in the database
-		flash("Report created!", 'success')
-		return redirect(url_for('account'))
-
-	return render_template('report.html',
-						   title='New Report',
-						   attacks=attacks,
-						   form=form)
-						   
-						   
-@app.route("/new_model",
-           methods=['GET', 'POST'])
-@login_required
-def new_model():
-	form = FRSForm()
-	if form.validate_on_submit():
-		#new_report = aux(form.data) function that creates the pdf report
-		frs = FRS(name=form.name.data, user=current_user)
-		db.session.add(frs)
-		db.session.commit()
-
-		flash(f'Model uploaded! You can now launch report for it !', 'success')
-		return redirect(url_for('report'))
-		
-		
-	return render_template('new_model.html',
-						   title='New Model',
-						   form = form)
-
+    return render_template('account.html',
+                           title='Account')
