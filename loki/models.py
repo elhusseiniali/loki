@@ -49,9 +49,14 @@ class User(db.Model, UserMixin):
     def __declare_last__(cls):
         # Check available validators:
         # https://flask-validator.readthedocs.io/en/latest/
+        # check_deliverability is set to False to avoid a deprecation
+        # warning with pytest; this is due to a problem
+        # with the flask-validator release available on PyPI.
+        # We already contacted the developer to update the release
+        # and hopefully we can set the check to True afterwards.
         ValidateEmail(User.email,
                       allow_smtputf8=True,
-                      check_deliverability=True,
+                      check_deliverability=False,
                       throw_exception=True,
                       message="The e-mail is invalid.")
 
@@ -100,4 +105,3 @@ class Report(db.Model):
     def __repr__(self):
         return(f"Report for {self.model}, "
                f"generated on {self.date}.")
- 
