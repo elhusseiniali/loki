@@ -9,6 +9,9 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+    github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
+
 jobs:
   build:
 
@@ -39,8 +42,6 @@ jobs:
         # warnings can be removed with: -p no:warnings
         pytest --cov=./
         coveralls
-      env:
-        github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
 
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v1.1.2
