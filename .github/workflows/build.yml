@@ -18,7 +18,7 @@ jobs:
         python-version: [3.6, 3.7, 3.8]
 
     env:
-      GITHUB-TOKEN: ${{ secrets.GITHUB-TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
     - uses: actions/checkout@v2
@@ -39,7 +39,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       env:
-        GITHUB-TOKEN: ${{ secrets.GITHUB-TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         # warnings can be removed with: -p no:warnings
         pytest --cov=./
@@ -48,4 +48,4 @@ jobs:
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v1.1.2
       with:
-        github-token: ${{ secrets.GITHUB-TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
