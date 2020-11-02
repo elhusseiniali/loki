@@ -19,6 +19,10 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
 
+    image_file = db.Column(db.String(30),
+                           nullable=False,
+                           default='default.jpg')
+
     _password = db.Column(db.String(128), nullable=False)
 
     models = db.relationship("FRS", back_populates="user")
@@ -28,7 +32,6 @@ class User(db.Model, UserMixin):
                  password):
         self.username = username
         self.email = email
-
         self.password = password
 
     def __repr__(self):
