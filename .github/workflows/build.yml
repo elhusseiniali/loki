@@ -38,6 +38,7 @@ jobs:
       run: |
         # warnings can be removed with: -p no:warnings
         pytest --cov=./
+        coveralls
 
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v1.1.2
