@@ -37,7 +37,7 @@ jobs:
     - name: Test with pytest
       run: |
         # warnings can be removed with: -p no:warnings
-        pytest --cov=./
+        pytest --cov=loki/
 
     - name: Generate Coveralls report
       env:
