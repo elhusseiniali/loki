@@ -26,7 +26,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest
+        pip install flake8 pytest pytest-cov coveralls
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
@@ -37,9 +37,10 @@ jobs:
     - name: Test with pytest
       run: |
         # warnings can be removed with: -p no:warnings
-        pytest
-      
-    - name: Coveralls GitHub Action
-      uses: coverallsapp/github-action@v1.1.2
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        pytest --cov=loki/
+
+    - name: Generate Coveralls report
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        coveralls
