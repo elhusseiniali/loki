@@ -71,10 +71,11 @@ class FRS(db.Model):
 
     reports = db.relationship("Report", back_populates="model")
 
-    def __init__(self, name, user):
+    def __init__(self, name, user, file_path):
         self.name = name
         #self.upload_date = upload_date
         self.user = user
+        self.file_path = file_path
 
     def __repr__(self):
         return(f"FRS('{self.name}') for {self.user},"

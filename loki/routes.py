@@ -1,9 +1,9 @@
 from flask import render_template, flash, redirect, url_for, request
 from loki import app, db, bcrypt
+from flask_login import login_user, current_user, logout_user, login_required
 from loki.forms import RegistrationForm, LoginForm, ReportForm, FRSForm
 from loki.models import User, Report, FRS
-
-from flask_login import login_user, current_user, logout_user, login_required
+from loki.utils import save_model
 
 
 @app.route("/")
@@ -144,10 +144,12 @@ def report():
 def new_model():
 	form = FRSForm()
 	if form.validate_on_submit():
-		#new_report = aux(form.data) function that creates the pdf report
-		frs = FRS(name=form.name.data, user=current_user)
+		model_path = save_model(form.model.data)
+		frs = FRS(name=form.name.data, user=current_user, file_path=model_path)
 		db.session.add(frs)
 		db.session.commit()
+		
+		
 
 		flash(f'Model uploaded! You can now launch report for it !', 'success')
 		return redirect(url_for('report'))
