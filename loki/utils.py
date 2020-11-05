@@ -9,3 +9,7 @@ def save_model(form_model):
 	model_path = os.path.join(current_app.root_path, 'static/models', model_fn)
 	form_model.save(model_path)
 	return model_path
+
+def remove_model(model_path):
+	if os.path.exists(model_path):
+	  os.remove(model_path)

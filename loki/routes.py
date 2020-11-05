@@ -3,7 +3,7 @@ from loki import app, db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
 from loki.forms import RegistrationForm, LoginForm, ReportForm, FRSForm
 from loki.models import User, Report, FRS
-from loki.utils import save_model
+from loki.utils import save_model, remove_model
 
 
 @app.route("/")
@@ -106,6 +106,7 @@ def delete_model(model_id):
 	model = FRS.query.get_or_404(model_id)
 	if model.user != current_user:
 		abort(403) #forbidden route
+	remove_model(model.file_path)
 	db.session.delete(model)
 	db.session.commit()
 	flash('Your model has been deleted!', 'success')
@@ -148,9 +149,6 @@ def new_model():
 		frs = FRS(name=form.name.data, user=current_user, file_path=model_path)
 		db.session.add(frs)
 		db.session.commit()
-		
-		
-
 		flash(f'Model uploaded! You can now launch report for it !', 'success')
 		return redirect(url_for('report'))
 		
