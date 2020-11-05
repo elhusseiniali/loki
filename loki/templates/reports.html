@@ -12,7 +12,7 @@
 		  <tbody>
 			{% for report in reports.items %}
 				<tr>
-				  <td><a class="article-title" href="{{url_for('report', report_id = report.id)}}">{{ report.id }}</a></td>
+				  <td><a class="article-title" href="{{url_for('report', report_id = report.id)}}">{{ report.model.name }}</a></td>
 				  <td>{{report.date.strftime('%H:%M / %d-%m-%Y')}}</td>
 
 				</tr>
