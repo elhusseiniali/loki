@@ -22,6 +22,7 @@ class User(db.Model, UserMixin):
     _password = db.Column(db.String(128), nullable=False)
 
     models = db.relationship("FRS", back_populates="user")
+    reports = db.relationship("Report", back_populates="user")
 
     def __init__(self,
                  username, email,
@@ -68,6 +69,9 @@ class FRS(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship("User", back_populates="models")
+    
+    
+    #user = db.relationship("Report", back_populates="user")
 
     reports = db.relationship("Report", back_populates="model")
 
@@ -88,16 +92,12 @@ class Report(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     date = db.Column(db.DateTime,
                      default=datetime.datetime.now)
-
+	
     model_id = db.Column(db.Integer, db.ForeignKey("FRS.id"))
     model = db.relationship("FRS", back_populates="reports")
-
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship("User", back_populates="reports")
     data = db.Column(db.JSON)
-    
-
-    def __init__(self, date, model):
-        self.date = date
-        self.model = model
 
     def __repr__(self):
         return(f"Report for {self.model}, "

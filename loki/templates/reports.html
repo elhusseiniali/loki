@@ -1,4 +1,40 @@
 {% extends 'layout.html' %}
+
 {% block content %}
-    <h1> Something! </h1>
+	<div class="row justify-content-center">
+		<table class="table">
+		  <thead class="thead-dark">
+			<tr>
+			  <th scope="col">Name of the Model</th>
+			  <th scope="col">Upload date</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			{% for report in reports.items %}
+				<tr>
+				  <td><a class="article-title" href="{{url_for('report', report_id = report.id)}}">{{ report.id }}</a></td>
+				  <td>{{report.date.strftime('%H:%M / %d-%m-%Y')}}</td>
+
+				</tr>
+			{% endfor %}
+		  </tbody>
+		</table>
+		<!-- Attacks Modal Trigger-->
+	</div>
+	{% for page_num in reports.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+      	{% if reports.page == page_num %}
+      		<a class="btn btn-info mb-4 "href="{{url_for('reports', page=page_num)}}">{{page_num}}</a>
+      	{% else %}
+      		<a class="btn btn-outline-info mb-4 "href="{{url_for('reports', page=page_num)}}">{{page_num}}</a>
+      	{% endif %}
+      {% else %}
+      	...
+      {% endif %}
+      
+    {% endfor %}
+    <br>
+
+
+
 {% endblock content %}
