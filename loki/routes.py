@@ -68,19 +68,33 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-@app.route("/account",
+@app.route("/history",
            methods=['GET', 'POST'])
 @login_required
-def account():
+def history():
 	page = request.args.get('page', 1, type=int)
 	models = FRS.query.filter_by(user=current_user)\
 				.order_by(FRS.upload_date.desc())\
 				.paginate(page=page, per_page=5)
 	
-	return render_template('account.html',
-						   title='Account',
+	return render_template('history.html',
+						   title='History',
 						   models=models,
 						   attacks = attacks)
+@app.route("/models",
+           methods=['GET', 'POST'])
+@login_required
+def models():	
+	return render_template('models.html',
+						   title='My models')
+						   
+@app.route("/reports",
+           methods=['GET', 'POST'])
+@login_required
+def reports():	
+	return render_template('reports.html',
+						   title='My models')
+						   						   
 						   
 @app.route("/report",
 		   methods=['GET', 'POST'])
@@ -93,9 +107,9 @@ def report():
 		#form.model.data = id of the model
 		#save it in the database
 		flash("Report created!", 'success')
-		return redirect(url_for('account'))
+		return redirect(url_for('history'))
 
-	return render_template('report.html',
+	return render_template('new_report.html',
 						   title='New Report',
 						   attacks=attacks,
 						   form=form)
