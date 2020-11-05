@@ -85,9 +85,32 @@ def history():
            methods=['GET', 'POST'])
 @login_required
 def models():	
+	page = request.args.get('page', 1, type=int)
+	models = FRS.query.filter_by(user=current_user)\
+				.order_by(FRS.upload_date.desc())\
+				.paginate(page=page, per_page=5)
+
 	return render_template('models.html',
+						   models=models,
 						   title='My models')
 						   
+@app.route("/model/<int:model_id>")
+@login_required
+def model(model_id):
+	model = FRS.query.get_or_404(model_id)
+	return render_template('model.html', title=model.name, model = model)	
+
+@app.route("/model/<int:model_id>/delete", methods=['POST'])
+@login_required
+def delete_model(model_id):
+	model = FRS.query.get_or_404(model_id)
+	if model.user != current_user:
+		abort(403) #forbidden route
+	db.session.delete(model)
+	db.session.commit()
+	flash('Your model has been deleted!', 'success')
+	return redirect(url_for('models'))	
+	
 @app.route("/reports",
            methods=['GET', 'POST'])
 @login_required
@@ -96,7 +119,7 @@ def reports():
 						   title='My models')
 						   						   
 						   
-@app.route("/report",
+@app.route("/report/new",
 		   methods=['GET', 'POST'])
 @login_required						   
 def report():
@@ -115,7 +138,7 @@ def report():
 						   form=form)
 						   
 						   
-@app.route("/new_model",
+@app.route("/model/new",
            methods=['GET', 'POST'])
 @login_required
 def new_model():
