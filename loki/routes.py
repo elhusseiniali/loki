@@ -105,6 +105,8 @@ def account():
                            models=models)
 
 
+@app.route("/models",
+           methods=['GET', 'POST'])
 @login_required
 def models():
     page = request.args.get('page', 1, type=int)
