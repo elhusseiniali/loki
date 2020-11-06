@@ -12,6 +12,30 @@ def load_user(user_id):
 
 
 class User(db.Model, UserMixin):
+    """[User]
+
+    Parameters
+    ----------
+    username: [string]
+        Unique username.
+
+    email: [email]
+        Unique email.
+
+    image_file: [string]
+        File path for the chosen profile picture.
+        Default image is default.jpg.
+
+    _password: [string]
+        Hashed password.
+        Extra functions are there to hash the password then store it.
+
+    Relationships
+    -------------
+    models: [Model]
+        One to many.
+        Models uploaded by the user.
+    """
     __tablename__ = "user"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -65,6 +89,32 @@ class User(db.Model, UserMixin):
 
 
 class FRS(db.Model):
+    """[Facial Recognition System]
+
+    Parameters
+    ----------
+    name: [string]
+        User-chosen name that will show in a model-selector later on.
+        **Note**: Use werkzeug.utils.secure_filename
+        https://werkzeug.palletsprojects.com/en/1.0.x/utils/#werkzeug.utils.secure_filename
+
+    upload_date: [datetime]
+        Upload date.
+
+    file_path: [string]
+        Set by the server. File path for the model on the file system.
+
+    Relationships
+    -------------
+    user: [User]
+        Many to one.
+        User that uploaded the model.
+        **Note**: Shouldn't be nullable.
+
+    reports: [Report]
+        One to one.
+        All reports generated for the model.
+    """
     __tablename__ = "FRS"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
@@ -90,6 +140,22 @@ class FRS(db.Model):
 
 
 class Report(db.Model):
+    """[Report]
+
+    Parameters
+    ----------
+    date: [datetime]
+        Date of report.
+
+    data: [JSON]
+        Actual report data.
+
+    Relationships
+    -------------
+    model: [Model]
+        One to one.
+        The model for which the report was generated.
+    """
     __tablename__ = "report"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
