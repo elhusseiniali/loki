@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from loki import app, db
 from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
-from loki.models import User
+from loki.models import User, FRS
 
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -124,6 +124,13 @@ def account():
     image_file = url_for('static',
                          filename=f"profile_pictures/"
                                   f"{current_user.image_file}")
+
+    page = request.args.get('page', 1, type=int)
+    models = FRS.query.filter_by(user=current_user)\
+                .order_by(FRS.upload_date.desc())\
+                .paginate(page=page, per_page=5)
+
     return render_template('account.html',
                            title='Account',
-                           image_file=image_file, form=form)
+                           image_file=image_file, form=form,
+                           models=models)
