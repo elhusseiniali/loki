@@ -1,8 +1,8 @@
 from flask import render_template, flash, redirect, url_for, request, abort
 from loki import app, db
 from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
-from loki.forms import FRSForm, ReportForm
-from loki.models import User, FRS, Report
+from loki.forms import FRSForm
+from loki.models import User, FRS
 from loki.utils import save_image, save_model, remove_model
 
 from flask_login import login_user, current_user, logout_user, login_required
@@ -105,46 +105,32 @@ def account():
                            models=models)
 
 
-@app.route("/models",
+@app.route("/model/upload",
            methods=['GET', 'POST'])
 @login_required
-def models():
-    page = request.args.get('page', 1, type=int)
-    models = FRS.query.filter_by(user=current_user)\
-                .order_by(FRS.upload_date.desc())\
-                .paginate(page=page, per_page=5)
-
-    return render_template('models.html',
-                           models=models,
-                           title='My models')
-
-
-@app.route("/model/new",
-           methods=['GET', 'POST'])
-@login_required
-def new_model():
+def upload_model():
     form = FRSForm()
     if form.validate_on_submit():
         model_path = save_model(form.model.data)
         frs = FRS(name=form.name.data, user=current_user, file_path=model_path)
         db.session.add(frs)
         db.session.commit()
-        flash('Model uploaded! You can now launch report for it !', 'success')
-        return redirect(url_for('new_report'))
+        flash('Model uploaded! You can now analyze it!', 'success')
+        return redirect(url_for('analyze'))
 
-    return render_template('new_model.html',
-                           title='New Model',
+    return render_template('upload_model.html',
+                           title='Upload Model',
                            form=form)
 
 
 @app.route("/model/<int:model_id>")
 @login_required
-def model(model_id):
+def get_model(model_id):
     model = FRS.query.get_or_404(model_id)
     return render_template('model.html', title=model.name, model=model)
 
 
-@app.route("/model/<int:model_id>/delete", methods=['POST'])
+@app.route("/model/delete/<int:model_id>", methods=['POST'])
 @login_required
 def delete_model(model_id):
     model = FRS.query.get_or_404(model_id)
@@ -155,57 +141,3 @@ def delete_model(model_id):
     db.session.commit()
     flash('Your model has been deleted!', 'success')
     return redirect(url_for('models'))
-
-
-@app.route("/reports",
-           methods=['GET', 'POST'])
-@login_required
-def reports():
-    page = request.args.get('page', 1, type=int)
-    reports = Report.query.filter_by(user=current_user)\
-                    .order_by(Report.date.desc())\
-                    .paginate(page=page, per_page=5)
-    return render_template('reports.html',
-                           reports=reports,
-                           title='My reports')
-
-
-@app.route("/report/new",
-           methods=['GET', 'POST'])
-@login_required
-def new_report():
-    form = ReportForm()
-    if form.validate_on_submit():
-        # new_report = aux(form.data) function that creates the pdf report
-        # form.model.data = id of the model
-        # save it in the database
-        model = FRS.query.filter_by(id=form.model.data).first()
-        report = Report(model=model, user=current_user)
-        db.session.add(report)
-        db.session.commit()
-        flash("Report created!", 'success')
-        return redirect(url_for('history'))
-
-    return render_template('new_report.html',
-                           title='New Report',
-                           form=form)
-
-
-@app.route("/report/<int:report_id>")
-@login_required
-def report(report_id):
-    report = Report.query.get_or_404(report_id)
-    return render_template('report.html', report=report)
-
-
-@app.route("/report/<int:report_id>/delete", methods=['POST'])
-@login_required
-def delete_report(report_id):
-    report = FRS.query.get_or_404(report_id)
-    if report.user != current_user:
-        abort(403)  # forbidden route
-    # remove_report(report.file_path)
-    db.session.delete(report)
-    db.session.commit()
-    flash('Your report has been deleted!', 'success')
-    return redirect(url_for('reports'))

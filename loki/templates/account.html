@@ -99,9 +99,9 @@
         {% for page_num in models.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
           {% if page_num %}
               {% if models.page == page_num %}
-                  <a class="btn btn-info mb-4 "href="{{url_for('history', page=page_num)}}">{{page_num}}</a>
+                  <a class="btn btn-info mb-4 "href="{{url_for('account', page=page_num)}}">{{page_num}}</a>
               {% else %}
-                  <a class="btn btn-outline-info mb-4 "href="{{url_for('history', page=page_num)}}">{{page_num}}</a>
+                  <a class="btn btn-outline-info mb-4 "href="{{url_for('account', page=page_num)}}">{{page_num}}</a>
               {% endif %}
           {% else %}
               ...
@@ -110,5 +110,11 @@
         {% endfor %}
         <br>
     </div>
-    {% endblock %}
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            <a class="ml-2" href="{{ url_for('account') }}">Access all reports.</a>
+        </small>
+    </div>
+    {% endblock right_content%}
+
 </div>
