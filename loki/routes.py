@@ -1,13 +1,11 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, abort
 from loki import app, db
 from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
-from loki.models import User
+from loki.forms import FRSForm
+from loki.models import User, FRS
+from loki.utils import save_image, save_model, remove_model
 
 from flask_login import login_user, current_user, logout_user, login_required
-
-import secrets
-import os
-from PIL import Image
 
 
 @app.route("/")
@@ -71,35 +69,6 @@ def logout():
     return redirect(url_for('home'))
 
 
-def save_image(form_image):
-    """Compress and save user-uploaded images to the filesystem.
-
-    Parameters
-    ----------
-    form_image : [image]
-        User-uploaded profile picture.
-
-    Returns
-    -------
-    [image_fn]
-        File name of resized image as it is saved on filesystem.
-    """
-    random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(form_image.filename)
-    image_fn = random_hex + f_ext
-    image_path = os.path.join(app.root_path,
-                              'static/profile_pictures',
-                              image_fn)
-
-    output_size = (125, 125)
-    i = Image.open(form_image)
-    i.thumbnail(output_size)
-
-    i.save(image_path)
-
-    return image_fn
-
-
 @app.route("/account",
            methods=['GET', 'POST'])
 @login_required
@@ -124,6 +93,51 @@ def account():
     image_file = url_for('static',
                          filename=f"profile_pictures/"
                                   f"{current_user.image_file}")
+
+    page = request.args.get('page', 1, type=int)
+    models = FRS.query.filter_by(user=current_user)\
+                .order_by(FRS.upload_date.desc())\
+                .paginate(page=page, per_page=5)
+
     return render_template('account.html',
                            title='Account',
-                           image_file=image_file, form=form)
+                           image_file=image_file, form=form,
+                           models=models)
+
+
+@app.route("/model/upload",
+           methods=['GET', 'POST'])
+@login_required
+def upload_model():
+    form = FRSForm()
+    if form.validate_on_submit():
+        model_path = save_model(form.model.data)
+        frs = FRS(name=form.name.data, user=current_user, file_path=model_path)
+        db.session.add(frs)
+        db.session.commit()
+        flash('Model uploaded! You can now analyze it!', 'success')
+        return redirect(url_for('analyze'))
+
+    return render_template('upload_model.html',
+                           title='Upload Model',
+                           form=form)
+
+
+@app.route("/model/<int:model_id>")
+@login_required
+def get_model(model_id):
+    model = FRS.query.get_or_404(model_id)
+    return render_template('model.html', title=model.name, model=model)
+
+
+@app.route("/model/delete/<int:model_id>", methods=['POST'])
+@login_required
+def delete_model(model_id):
+    model = FRS.query.get_or_404(model_id)
+    if model.user != current_user:
+        abort(403)  # forbidden route
+    remove_model(model.file_path)
+    db.session.delete(model)
+    db.session.commit()
+    flash('Your model has been deleted!', 'success')
+    return redirect(url_for('models'))
