@@ -1,6 +1,6 @@
 import unittest
 
-from loki import app
+from loki import app, db
 
 
 class Helper():
@@ -46,6 +46,10 @@ class FlaskTestCase(unittest.TestCase):
 
     def test_auth(self):
         tester = app.test_client(self)
+
+        db.drop_all()
+        db.create_all()
+
         valid_registration = Helper.register(tester, username="frege",
                                              email="frege@gmail.com",
                                              password="whereisrussell",
