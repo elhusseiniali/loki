@@ -25,6 +25,7 @@ class User(db.Model, UserMixin):
     _password: [string]
         Hashed password.
         Extra functions are there to hash the password then store it.
+
     Relationships
     -------------
     models: [Model]
@@ -95,6 +96,7 @@ class FRS(db.Model):
         Upload date.
     file_path: [string]
         Set by the server. File path for the model on the file system.
+
     Relationships
     -------------
     user: [User]
@@ -102,7 +104,7 @@ class FRS(db.Model):
         User that uploaded the model.
         **Note**: Shouldn't be nullable.
     reports: [Report]
-        One to one.
+        One to many.
         All reports generated for the model.
     """
     __tablename__ = "FRS"
@@ -137,10 +139,13 @@ class Report(db.Model):
         Date of report.
     data: [JSON]
         Actual report data.
+    model: [Model]
+        FRS for which the report is generated.
+
     Relationships
     -------------
     model: [Model]
-        One to one.
+        Many to one.
         The model for which the report was generated.
     """
     __tablename__ = "report"
