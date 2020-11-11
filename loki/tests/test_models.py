@@ -12,7 +12,7 @@ class TestObjectCreation(unittest.TestCase):
         assert frege
 
         resnet = FRS(name="ResNet",
-                     upload_date=datetime.now(),
+                     file_path="dummy_path",
                      user=frege)
         assert resnet
 
