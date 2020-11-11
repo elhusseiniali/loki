@@ -113,8 +113,8 @@ class FRS(db.Model):
     name = db.Column(db.String(50), unique=False, nullable=True)
     upload_date = db.Column(db.DateTime,
                             default=datetime.datetime.now)
-    # file_path should not be nullable; set to True only for testing
-    file_path = db.Column(db.String(50), unique=True, nullable=True)
+
+    file_path = db.Column(db.String(50), unique=True, nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship("User", back_populates="models")
