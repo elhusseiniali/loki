@@ -112,11 +112,12 @@ def upload_model():
     form = FRSForm()
     if form.validate_on_submit():
         model_path = save_model(form.model.data)
-        frs = FRS(name=form.name.data, user=current_user, file_path=model_path)
+        frs = FRS(name=form.name.data, file_path=model_path,
+                  user=current_user)
         db.session.add(frs)
         db.session.commit()
         flash('Model uploaded! You can now analyze it!', 'success')
-        return redirect(url_for('analyze'))
+        return redirect(url_for('account'))
 
     return render_template('upload_model.html',
                            title='Upload Model',
