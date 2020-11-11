@@ -149,13 +149,11 @@ def delete_model(model_id):
            methods=['POST', 'GET'])
 def attack_display():
     form = DisplayAttackForm()
-    print(form.data)
     if form.validate_on_submit():
-        attack = form.attacks.data
+        # attack = form.attacks.data
         image_file = url_for('static',
                              filename="profile_pictures/default.jpg")
         next_image_file = image_file
-        print(attack)
         # image_file = compress_image(form.image.data)
         # next_image_file = launch_attack(image_file=image_file, attack=attack)
         flash("The image has been successfully attacked!", 'success')

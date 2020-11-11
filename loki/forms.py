@@ -84,7 +84,7 @@ class FRSForm(FlaskForm):
 
 
 class DisplayAttackForm(FlaskForm):
-    attacks = RadioField('Attacks', coerce=bool,
+    attacks = RadioField('Attacks',
                          choices=[('attack1', 'attack1'),
                                   ('attack2', 'attack2'),
                                   ('attack3', 'attack3'),
