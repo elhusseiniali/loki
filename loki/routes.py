@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, abort
 from loki import app, db
-from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm, \
-                       DisplayAttackForm
+from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from loki.forms import DisplayAttackForm
 from loki.forms import FRSForm
 from loki.models import User, FRS
 from loki.utils import save_image, save_model, remove_model
@@ -145,9 +145,9 @@ def delete_model(model_id):
     return redirect(url_for('models'))
 
 
-@app.route("/display/attack",
+@app.route("/attacks/visualize",
            methods=['POST', 'GET'])
-def attack_display():
+def visualize_attack():
     form = DisplayAttackForm()
     if form.validate_on_submit():
         # attack = form.attacks.data
@@ -157,8 +157,8 @@ def attack_display():
         # image_file = compress_image(form.image.data)
         # next_image_file = launch_attack(image_file=image_file, attack=attack)
         flash("The image has been successfully attacked!", 'success')
-        return render_template('attack_display.html', form=form,
+        return render_template('visualize_attack.html', form=form,
                                image_file=image_file,
                                next_image_file=next_image_file)
 
-    return render_template('attack_display.html', form=form)
+    return render_template('visualize_attack.html', form=form)
