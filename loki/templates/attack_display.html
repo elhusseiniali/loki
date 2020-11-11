@@ -55,35 +55,28 @@
                 <div class="col md-4">
                     {% block left_content %}
                     <h1>List of attacks</h1>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-                        <label class="form-check-label" for="exampleRadios1">
-                          First Attack
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-                        <label class="form-check-label" for="exampleRadios2">
-                          Second Attack
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-                        <label class="form-check-label" for="exampleRadios2">
-                          Third Attack
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-                        <label class="form-check-label" for="exampleRadios2">
-                          Fourth Attack
-                        </label>
-                    </div>
+                    {% for subfield in form.attacks %}
+                        <tr>
+                            <td>{{ subfield }}</td>
+                            <td>{{ subfield.label }}</td>
+                        </tr>
+                        <br>
+                    {% endfor %}
                     {% endblock left_content %}
                 </div>
                 <div class="col md-4">
                     {% block middle_content %}
-                    Display the image
+                    <div class="form-group">
+                        {{ form.image.label() }}
+                        {{ form.image() }}
+                        {% if form.image.errors %}
+                        {% for error in form.image.errors %}
+                            <span class="text-danger"> {{ error }} </span></br>
+                        {% endfor %}
+                        {% endif %}
+                        Display Image
+                    </div>
+                    
                     {% endblock middle_content %}
                 </div>
                 <div class="col md-4">

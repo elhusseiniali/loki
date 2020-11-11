@@ -1,6 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, abort
 from loki import app, db
-from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm, \
+                       DisplayAttackForm
 from loki.forms import FRSForm
 from loki.models import User, FRS
 from loki.utils import save_image, save_model, remove_model
@@ -146,4 +147,5 @@ def delete_model(model_id):
 
 @app.route("/display/attack")
 def attack_display():
-    return render_template('attack_display.html')
+    form = DisplayAttackForm()
+    return render_template('attack_display.html', form=form)
