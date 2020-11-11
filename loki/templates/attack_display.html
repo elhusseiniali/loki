@@ -49,43 +49,71 @@
 
             </nav>
         </header>
-
-        <main role="main" class="container">
-            <div class="row">
-                <div class="col md-4">
-                    {% block left_content %}
-                    <h1>List of attacks</h1>
-                    {% for subfield in form.attacks %}
-                        <tr>
-                            <td>{{ subfield }}</td>
-                            <td>{{ subfield.label }}</td>
-                        </tr>
-                        <br>
-                    {% endfor %}
-                    {% endblock left_content %}
-                </div>
-                <div class="col md-4">
-                    {% block middle_content %}
-                    <div class="form-group">
-                        {{ form.image.label() }}
-                        {{ form.image() }}
-                        {% if form.image.errors %}
-                        {% for error in form.image.errors %}
-                            <span class="text-danger"> {{ error }} </span></br>
-                        {% endfor %}
-                        {% endif %}
-                        Display Image
+        <form class="" action="" method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <main role="main" class="container">
+                <div class="row">
+                    <div class="col md-12">
+                        {% with messages = get_flashed_messages(with_categories=True) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ category }}">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
                     </div>
-                    
-                    {% endblock middle_content %}
                 </div>
-                <div class="col md-4">
-                    {% block right_content %}
-                    Display the image after the attack
-                    {% endblock right_content%}
+                <div class="row">
+                    <div class="col md-4">
+                        {% block left_content %}
+                        <h1>List of attacks</h1>
+                        {% if form.attacks.errors %}
+                            {{ form.attacks.label(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.attacks.errors %}
+                                    <span>
+                                        {{ error }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% for subfield in form.attacks %}
+                            <tr>
+                                <td>{{ subfield }}</td>
+                                <td>{{ subfield.label }}</td>
+                            </tr>
+                            <br>
+                        {% endfor %}
+                        <div class="form-group">
+                            {{ form.submit(class="btn btn-dark") }}
+                        </div>
+                        {% endblock left_content %}
+                    </div>
+                    <div class="col md-4">
+                        {% block middle_content %}
+                        <div class="form-group">
+                            {{ form.image.label() }}
+                            {{ form.image() }}
+                            {% if form.image.errors %}
+                            {% for error in form.image.errors %}
+                                <span class="text-danger"> {{ error }} </span></br>
+                            {% endfor %}
+                            {% endif %}
+                            Display Image
+                        </div>
+                        
+                        {% endblock middle_content %}
+                    </div>
+                    <div class="col md-4">
+                        {% block right_content %}
+                        Display the image after the attack
+                        {% endblock right_content%}
+                    </div>
                 </div>
-            </div>
-        </main>
+            </main>
+        </form>
 
         <!-- Bootstrap -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->

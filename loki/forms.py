@@ -84,14 +84,13 @@ class FRSForm(FlaskForm):
 
 
 class DisplayAttackForm(FlaskForm):
-    attacks = RadioField('Attacks',
+    attacks = RadioField('Attacks', coerce=bool,
                          choices=[('attack1', 'attack1'),
                                   ('attack2', 'attack2'),
                                   ('attack3', 'attack3'),
                                   ('attack4', 'attack4'),
                                   ('attack5', 'attack5'),
-                                  ('attack6', 'attack6')],
-                         validators=[DataRequired()])
+                                  ('attack6', 'attack6')])
     image = FileField('Upload the image to attack',
                       validators=[FileAllowed(['jpg', 'jpeg', 'png']),
                                   FileRequired()])
