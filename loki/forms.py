@@ -77,6 +77,6 @@ class FRSForm(FlaskForm):
                        validators=[DataRequired(),
                                    Length(min=2, max=15)])
     model = FileField('Upload a model',
-                      validators=[FileAllowed(['h5', 'pb', '.pickle']),
+                      validators=[FileAllowed(['h5', 'pb', 'pickle']),
                                   FileRequired()])
     submit = SubmitField('Submit')
