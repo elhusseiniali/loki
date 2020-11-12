@@ -70,16 +70,12 @@ class User(db.Model, UserMixin):
 
     @classmethod
     def __declare_last__(cls):
-        # Check available validators:
-        # https://flask-validator.readthedocs.io/en/latest/
-        # check_deliverability is set to False to avoid a deprecation
-        # warning with pytest; this is due to a problem
-        # with the flask-validator release available on PyPI.
-        # We already contacted the developer to update the release
-        # and hopefully we can set the check to True afterwards.
+        # check_deliverability can be set to True
+        # after the developer updated the release on PyPI.
+        # https://github.com/xeBuz/Flask-Validator/issues/79
         ValidateEmail(User.email,
                       allow_smtputf8=True,
-                      check_deliverability=False,
+                      check_deliverability=True,
                       throw_exception=True,
                       message="The e-mail is invalid.")
 
