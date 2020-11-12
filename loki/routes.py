@@ -105,7 +105,7 @@ def account():
                            models=models)
 
 
-@app.route("/model/upload",
+@app.route("/models/upload",
            methods=['GET', 'POST'])
 @login_required
 def upload_model():
@@ -124,14 +124,14 @@ def upload_model():
                            form=form)
 
 
-@app.route("/model/<int:model_id>")
+@app.route("/models/<int:model_id>")
 @login_required
 def get_model(model_id):
     model = FRS.query.get_or_404(model_id)
     return render_template('model.html', title=model.name, model=model)
 
 
-@app.route("/model/delete/<int:model_id>", methods=['POST'])
+@app.route("/models/delete/<int:model_id>", methods=['POST'])
 @login_required
 def delete_model(model_id):
     model = FRS.query.get_or_404(model_id)
