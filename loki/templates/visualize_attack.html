@@ -113,6 +113,7 @@
                     </div>
                     <div class="col md-4">
                         {% block right_content %}
+                        
                         <div class="image-preview" id="nextimagePreview">
                             <img src="" alt="Next Image Preview" class="image-preview__image">
                             <span class="image-preview__default-text">NextImage Preview</span>
@@ -156,5 +157,20 @@
                 }
             });
         </script>
+        {% block javascript %}
+        <script>
+        // load the objects like you would with a normal jinja template i.e. {{ object }}, but add | tojson
+        // pass it into the parse function
+            image_file = JSON.parse({{ image_file | tojson }})
+            next_image_file = JSON.parse({{ next_image_file | tojson }})
+            function modify() { 
+
+            //update image in preview
+            const previewImage = previewContainer.querySelector(".image-preview__image");
+            previewImage.setAttribute('src', image_file['image_file']);
+            } 
+
+        </script>
+        {% endblock %}
     </body>
 </html>

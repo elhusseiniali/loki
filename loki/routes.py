@@ -1,3 +1,4 @@
+import json
 from flask import render_template, flash, redirect, url_for, request, abort
 from loki import app, db
 from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
@@ -149,18 +150,24 @@ def delete_model(model_id):
            methods=['POST', 'GET'])
 def visualize_attack():
     form = DisplayAttackForm()
+    image_file = json.dumps([])
+    next_image_file = image_file
     if form.validate_on_submit():
-        # attack = form.attacks.data
         image_file = save_temp(form.image.data)
-        image_file = url_for('static',
-                             filename=f"profile_pictures/"
-                                      f"{image_file}")
-        next_image_file = image_file
-        # image_file = compress_image(form.image.data)
+        image_file = {'image_file':
+                      url_for('static',
+                              filename=f"tmp/"
+                                       f"{image_file}")}
+        next_image_file = {'next_image_file':
+                           url_for('static',
+                                   filename=f"tmp/"
+                                            f"{image_file}")}
         # next_image_file = launch_attack(image_file=image_file, attack=attack)
         flash("The image has been successfully attacked!", 'success')
         return render_template('visualize_attack.html', form=form,
                                image_file=image_file,
                                next_image_file=next_image_file)
 
-    return render_template('visualize_attack.html', form=form)
+    return render_template('visualize_attack.html', form=form,
+                           image_file=image_file,
+                           next_image_file=next_image_file)
