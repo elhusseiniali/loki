@@ -92,6 +92,7 @@ class DisplayAttackForm(FlaskForm):
                                   ('attack5', 'attack5'),
                                   ('attack6', 'attack6')])
     image = FileField('Upload the image to attack',
+                      id='image',
                       validators=[FileAllowed(['jpg', 'jpeg', 'png']),
                                   FileRequired()])
     submit = SubmitField('Launch the attack !')
