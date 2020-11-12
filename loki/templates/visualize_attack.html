@@ -96,11 +96,13 @@
                         {% block middle_content %}
                         <div class="image-preview" id="imagePreview">
                             <img src="" alt="Image Preview" class="image-preview__image">
-                            <span class="image-preview__default-text">Image Preview</span>
+                            <span class="image-preview__default-text">
+                            <label class="image_button">
+                                {{ form.image(type="file") }}
+                            </label>
+                            </span>
                         </div>
                         <div class="form-group">
-                            {{ form.image.label() }}
-                            {{ form.image() }}
                             {% if form.image.errors %}
                             {% for error in form.image.errors %}
                                 <span class="text-danger"> {{ error }} </span></br>
