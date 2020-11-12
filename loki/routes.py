@@ -4,7 +4,7 @@ from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from loki.forms import DisplayAttackForm
 from loki.forms import FRSForm
 from loki.models import User, FRS
-from loki.utils import save_image, save_model, remove_model
+from loki.utils import save_image, save_model, remove_model, save_temp
 
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -151,8 +151,10 @@ def visualize_attack():
     form = DisplayAttackForm()
     if form.validate_on_submit():
         # attack = form.attacks.data
+        image_file = save_temp(form.image.data)
         image_file = url_for('static',
-                             filename="profile_pictures/default.jpg")
+                             filename=f"profile_pictures/"
+                                      f"{image_file}")
         next_image_file = image_file
         # image_file = compress_image(form.image.data)
         # next_image_file = launch_attack(image_file=image_file, attack=attack)

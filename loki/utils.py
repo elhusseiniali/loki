@@ -45,3 +45,17 @@ def save_image(form_image):
     i.save(image_path)
 
     return image_fn
+
+
+def save_temp(form_image):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_image.filename)
+    image_fn = random_hex + f_ext
+    image_path = os.path.join(current_app.root_path,
+                              'static/tmp',
+                              image_fn)
+
+    i = Image.open(form_image)
+    i.save(image_path)
+
+    return image_fn

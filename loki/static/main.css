@@ -46,7 +46,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .image-preview {
   width: 400px;
-  min-height: 400px;
+  height: 400px;
   border: 2px solid #000000;
   margin-top: 15px;
   
@@ -60,7 +60,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .image-preview__image {
   display: none;
-  width: 100%;
+  width: 400px;
+  height: 400px;
 }
 
 .image_button{
