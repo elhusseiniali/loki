@@ -2,7 +2,7 @@ import json
 from flask import render_template, flash, redirect, url_for, request, abort
 from loki import app, db
 from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
-from loki.forms import DisplayAttackForm
+from loki.forms import VisualizeAttackForm
 from loki.forms import FRSForm
 from loki.models import User, FRS
 from loki.utils import save_image, save_model, remove_model, save_temp
@@ -79,7 +79,7 @@ def account():
 
     if form.validate_on_submit():
         if form.image.data:
-            image_file = save_image(form.image.data)
+            image_file = save_image(form.image.data, path="profile_pictures")
             current_user.image_file = image_file
 
         current_user.username = form.username.data
@@ -149,25 +149,14 @@ def delete_model(model_id):
 @app.route("/attacks/visualize",
            methods=['POST', 'GET'])
 def visualize_attack():
-    form = DisplayAttackForm()
-    image_file = json.dumps([])
-    next_image_file = image_file
-    if form.validate_on_submit():
-        image_file = save_temp(form.image.data)
-        image_file = {'image_file':
-                      url_for('static',
-                              filename=f"tmp/"
-                                       f"{image_file}")}
-        next_image_file = {'next_image_file':
-                           url_for('static',
-                                   filename=f"tmp/"
-                                            f"{image_file}")}
-        # next_image_file = launch_attack(image_file=image_file, attack=attack)
-        flash("The image has been successfully attacked!", 'success')
-        return render_template('visualize_attack.html', form=form,
-                               image_file=image_file,
-                               next_image_file=next_image_file)
+    form = VisualizeAttackForm()
 
-    return render_template('visualize_attack.html', form=form,
-                           image_file=image_file,
-                           next_image_file=next_image_file)
+    if form.validate_on_submit():
+        if form.image.data:
+            image_file = save_image(form.image.data, path="tmp",
+                                    output_size=(400, 400))
+            flash("Base image successfully uploaded.", 'success')
+
+        return render_template('visualize_attack.html', form=form,
+                               image_file=image_file)
+    return render_template('visualize_attack.html', form=form)
