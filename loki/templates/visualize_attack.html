@@ -1,75 +1,14 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-    <head>
-        <!-- Bootstrap -->
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-        <!-- End Boostrap -->
+{% extends 'layout.html' %}
 
 
-        {% if title %}
-            <title>loki - {{ title }}</title>
-        {% else %}
-            <title>loki</title>
-        {% endif %}
-    </head>
-    <body>
-        <header class = "site-header md-4">
-            <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand mr-4" href="#">loki</a>
-
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                  <li class="nav-item active">
-                    <a class="nav-link" href="{{ url_for('home') }}">Home <span class="sr-only">(current)</span></a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('about') }}">About</a>
-                  </li>
-                </ul>
-
-            </div>
-            <div class="navbar-nav">
-            {% if current_user.is_authenticated %}
-                <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
-                <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
-            {% else %}
-                <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
-                <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
-            {% endif %}
-            </div>
-
-            </nav>
-        </header>
-        <form class="" action="" method="POST" enctype="multipart/form-data">
-            {{ form.hidden_tag() }}
-            <main role="main" class="container">
-                <div class="row">
-                    <div class="col md-12">
-                        {% with messages = get_flashed_messages(with_categories=True) %}
-                            {% if messages %}
-                                {% for category, message in messages %}
-                                    <div class="alert alert-{{ category }}">
-                                        {{ message }}
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-                        {% endwith %}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col md-4">
-                        {% block left_content %}
-                        <h1>List of attacks</h1>
+{% block content %}
+<div class="row">
+    <form class="" action="" method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <main role="main" class="container">
+            <div class="row">
+                <div class="col md-4">
+                    <h1>List of attacks</h1>
                         {% if form.attacks.errors %}
                             {{ form.attacks.label(class="form-control form-control-lg is-invalid") }}
                             <div class="invalid-feedback">
@@ -90,87 +29,73 @@
                         <div class="form-group">
                             {{ form.submit(class="btn btn-dark") }}
                         </div>
-                        {% endblock left_content %}
-                    </div>
-                    <div class="col md-4">
-                        {% block middle_content %}
-                        <div class="image-preview" id="imagePreview">
-                            <img src="" alt="Image Preview" class="image-preview__image">
-                            <span class="image-preview__default-text">
+                </div>
+                <div class="col md-4">
+                    <div class="image-preview" id="imagePreview">
+                        <label class="image_button">
+                            {% if form.image.data %}
+                            {% set image_filename %}/tmp/{{ image_file }}{% endset %}
+                            <img src="{{ url_for('static', filename=image_filename) }}">
+                            {% else %}
+                            {{ form.image(type="file") }}
+                            {% endif %}
+                        </label>
+                        {% if form.image.data %}
+                        {% set image_filename %}/tmp/{{ image_file }}{% endset %}
+                        <img src="{{ url_for('static', filename=image_filename) }}" class="image-preview__image">
+                        {% else %}
+                        <img src="" class="image-preview__image">
+                        <span class="image-preview__default-text">
                             <label class="image_button">
                                 {{ form.image(type="file") }}
                             </label>
-                            </span>
-                        </div>
-                        <div class="form-group">
-                            {% if form.image.errors %}
-                            {% for error in form.image.errors %}
-                                <span class="text-danger"> {{ error }} </span></br>
-                            {% endfor %}
-                            {% endif %} 
-                        </div>
-                        {% endblock middle_content %}
+                        </span>
+                        {% endif %}
                     </div>
-                    <div class="col md-4">
-                        {% block right_content %}
-                        
-                        <div class="image-preview" id="nextimagePreview">
-                            <img src="" alt="Next Image Preview" class="image-preview__image">
-                            <span class="image-preview__default-text">NextImage Preview</span>
-                        </div>                        
-                        {% endblock right_content%}
+                    <div class="form-group">
+                        {% if form.image.errors %}
+                        {% for error in form.image.errors %}
+                            <span class="text-danger"> {{ error }} </span></br>
+                        {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
-            </main>
-        </form>
+                <div class="col md-4">
+                    <div class="image-preview" id="nextimagePreview">
+                        <img src="" alt="Next Image Preview" class="image-preview__image">
+                        <span class="image-preview__default-text">NextImage Preview</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </form>
 
-        <!-- Bootstrap -->
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        <!-- End Bootstrap -->
+</div>
+<script>
+    const inpFile = document.getElementById("image");
+    const previewContainer = document.getElementById("imagePreview");
+    const previewImage = previewContainer.querySelector(".image-preview__image");
+    const previewDefaultText = previewContainer.querySelector(".image-preview__default-text");
 
-        <script>
-            const inpFile = document.getElementById("image");
-            const previewContainer = document.getElementById("imagePreview");
-            const previewImage = previewContainer.querySelector(".image-preview__image");
-            const previewDefaultText = previewContainer.querySelector(".image-preview__default-text");
+    inpFile.addEventListener("change", function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
 
-            inpFile.addEventListener("change", function() {
-                const file = this.files[0];
-                if (file) {
-                    const reader = new FileReader();
+            previewDefaultText.style.display = "none";
+            previewImage.style.display = "block";
 
-                    previewDefaultText.style.display = "none";
-                    previewImage.style.display = "block";
-
-                    reader.addEventListener("load", function() {
-                        previewImage.setAttribute('src', this.result);
-                    });
-                    
-                    reader.readAsDataURL(file);
-                } else {
-                    previewDefaultText.style.display = null;
-                    previewImage.style.display = null;
-                    previewImage.setAttribute("src", "");
-                }
+            reader.addEventListener("load", function() {
+                previewImage.setAttribute('src', this.result);
             });
-        </script>
-        {% block javascript %}
-        <script>
-        // load the objects like you would with a normal jinja template i.e. {{ object }}, but add | tojson
-        // pass it into the parse function
-            image_file = JSON.parse({{ image_file | tojson }})
-            next_image_file = JSON.parse({{ next_image_file | tojson }})
-            function modify() { 
 
-            //update image in preview
-            const previewImage = previewContainer.querySelector(".image-preview__image");
-            previewImage.setAttribute('src', image_file['image_file']);
-            } 
+            reader.readAsDataURL(file);
+        } else {
+            previewDefaultText.style.display = null;
+            previewImage.style.display = "block";
+            previewImage.setAttribute('src', this.result);
+        }
+    });
+</script>
 
-        </script>
-        {% endblock %}
-    </body>
-</html>
+{% endblock content %}
