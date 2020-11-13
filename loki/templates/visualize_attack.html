@@ -54,8 +54,13 @@
                 </div>
                 <div class="col md-4">
                     <div class="image-preview" id="nextimagePreview">
+                        {% if form.image.data %}
+                        {% set image_filename %}/tmp/{{ image_file }}{% endset %}
+                        <img src="{{ url_for('static', filename=image_filename) }}" class="image-preview__image2">
+                        {% else %}
                         <img src="" alt="Next Image Preview" class="image-preview__image">
                         <span class="image-preview__default-text">NextImage Preview</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
