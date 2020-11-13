@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
-from wtforms import StringField, PasswordField, SubmitField, \
-                                 BooleanField, RadioField
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms import BooleanField, RadioField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from wtforms.validators import ValidationError
 
@@ -83,7 +83,7 @@ class FRSForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
-class DisplayAttackForm(FlaskForm):
+class VisualizeAttackForm(FlaskForm):
     attacks = RadioField('Attacks',
                          choices=[('attack1', 'attack1'),
                                   ('attack2', 'attack2'),
@@ -95,4 +95,4 @@ class DisplayAttackForm(FlaskForm):
                       id='image',
                       validators=[FileAllowed(['jpg', 'jpeg', 'png']),
                                   FileRequired()])
-    submit = SubmitField('Launch the attack !')
+    submit = SubmitField('Visualize attack')
