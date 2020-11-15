@@ -32,7 +32,7 @@
                 </div>
                 <div class="col md-4">
                     <div class="image-preview" id="imagePreview">
-                        {% if form.image.data %}
+                        {% if form.image.data and not(form.attacks.errors) %}
                         {% set image_filename %}/tmp/{{ image_file }}{% endset %}
                         <img src="{{ url_for('static', filename=image_filename) }}" class="image-preview__image2">
                         {% else %}
@@ -54,7 +54,7 @@
                 </div>
                 <div class="col md-4">
                     <div class="image-preview" id="nextimagePreview">
-                        {% if form.image.data %}
+                        {% if form.image.data and not(form.attacks.errors)%}
                         {% set image_filename %}/tmp/{{ image_file }}{% endset %}
                         <img src="{{ url_for('static', filename=image_filename) }}" class="image-preview__image2">
                         {% else %}
