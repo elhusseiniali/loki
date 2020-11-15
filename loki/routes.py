@@ -150,7 +150,6 @@ def delete_model(model_id):
            methods=['POST', 'GET'])
 def visualize_attack():
     form = VisualizeAttackForm()
-
     if form.validate_on_submit():
         if form.image.data:
             image_file = save_image(form.image.data, path="tmp",
