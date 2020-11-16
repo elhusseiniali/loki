@@ -19,20 +19,38 @@
                                 {% endfor %}
                             </div>
                         {% endif %}
-                        {% for subfield in form.attacks %}
-                            <tr>
-                                <td>{{ subfield }}</td>
-                                <td>{{ subfield.label }}</td>
-                            </tr>
-                            <br>
-                        {% endfor %}
-                        <div class="form-group">
-                            {{ form.submit(class="btn btn-dark") }}
-                        </div>
+                        {% if form.validate_on_submit() %}
+                            {% for subfield in form.attacks %}
+                                {% if subfield.label.text == form.attacks.data %}
+                                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                                    <label class="form-check-label" for="exampleRadios1">{{ subfield.label }}</label>
+                                {% else %}
+                                <tr>
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" disabled>
+                                    <label class="form-check-label" for="inlineRadio3">{{ subfield.label }}</label>
+                                </tr>
+                                {% endif %}
+                                <br>
+                            {% endfor %}
+                        {% else %}
+                            {% for subfield in form.attacks %}
+                                <tr>{{ subfield }} {{ subfield.label }}</tr>
+                                <br>
+                            {% endfor %}
+                        {% endif %}
+                        {% if form.validate_on_submit() %}
+                            <a href="{{ url_for('visualize_attack') }}"> 
+                                <button type="button" class="btn btn-dark">Launch a new attack !</button>
+                            </a>
+                        {% else %}
+                            <div class="form-group">
+                                {{ form.submit(class="btn btn-dark") }}
+                            </div>
+                        {% endif %}
                 </div>
                 <div class="col md-4">
                     <div class="image-preview" id="imagePreview">
-                        {% if form.image.data %}
+                        {% if form.image.data and not(form.attacks.errors) %}
                         {% set image_filename %}/tmp/{{ image_file }}{% endset %}
                         <img src="{{ url_for('static', filename=image_filename) }}" class="image-preview__image2">
                         {% else %}
