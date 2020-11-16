@@ -72,9 +72,9 @@
                 </div>
                 <div class="col md-4">
                     <div class="image-preview" id="nextimagePreview">
-                        {% if form.image.data and not(form.attacks.errors)%}
-                        {% set image_filename %}/tmp/{{ image_file }}{% endset %}
-                        <img src="{{ url_for('static', filename=image_filename) }}" class="image-preview__image2">
+                        {% if form.image.data %}
+                        {% set result_filename %}/tmp/{{ image_file }}{% endset %}
+                        <img src="{{ url_for('static', filename=result_filename) }}" class="image-preview__image2">
                         {% else %}
                         <img src="" alt="Next Image Preview" class="image-preview__image">
                         <span class="image-preview__default-text">NextImage Preview</span>
