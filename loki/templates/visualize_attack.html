@@ -8,6 +8,14 @@
         <main role="main" class="container">
             <div class="row">
                 <div class="col md-4">
+                    <div class="form-group">
+                        <h1>{{form.model.label}}</h1>
+                        <select class="form-control" id="model_selector" name="model">
+                            {% for choice in form.model.choices %}
+                                <option value="{{ choice[0] }}">{{ choice[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     <h1>List of attacks</h1>
                         {% if form.attacks.errors %}
                             {{ form.attacks.label(class="form-control form-control-lg is-invalid") }}
