@@ -152,11 +152,12 @@ def delete_model(model_id):
 def visualize_attack():
     form = VisualizeAttackForm()
     if form.validate_on_submit():
+        index = len(form.model.choices)-int(form.model.data)
         if form.image.data:
             image_file = save_image(form.image.data, path="tmp",
                                     output_size=(400, 400))
             flash("Base image successfully uploaded.", 'success')
 
         return render_template('visualize_attack.html', form=form,
-                               image_file=image_file)
+                               image_file=image_file, index=index)
     return render_template('visualize_attack.html', form=form)
