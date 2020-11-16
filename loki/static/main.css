@@ -44,7 +44,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 2.5rem;
 }
 
-.image-preview {
+.image-box {
   width: 400px;
   height: 400px;
   border: 2px solid #000000;
@@ -58,13 +58,13 @@ h1, h2, h3, h4, h5, h6 {
   color: #cccccc;
 }
 
-.image-preview__image {
+.image-box-content {
   display: none;
   width: 400px;
   height: 400px;
 }
 
-.image-preview__image2 {
+.image-box-content2 {
   display: block;
   width: 400px;
   height: 400px;

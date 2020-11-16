@@ -49,13 +49,13 @@
                         {% endif %}
                 </div>
                 <div class="col md-4">
-                    <div class="image-preview" id="imagePreview">
+                    <div class="image-box" id="imageBox">
                         {% if form.image.data and not(form.attacks.errors) %}
                         {% set image_filename %}/tmp/{{ image_file }}{% endset %}
-                        <img src="{{ url_for('static', filename=image_filename) }}" class="image-preview__image2">
+                        <img src="{{ url_for('static', filename=image_filename) }}" class="image-box-content2">
                         {% else %}
-                        <img src="" class="image-preview__image">
-                        <span class="image-preview__default-text">
+                        <img src="" class="image-box-content">
+                        <span class="image-box__default-text">
                             <label class="image_button">
                                 {{ form.image(type="file") }}
                             </label>
@@ -71,13 +71,13 @@
                     </div>
                 </div>
                 <div class="col md-4">
-                    <div class="image-preview" id="nextimagePreview">
-                        {% if form.image.data %}
+                    <div class="image-box" id="nextimageBox">
+                        {% if form.image.data and not(form.attacks.errors)%}
                         {% set result_filename %}/tmp/{{ image_file }}{% endset %}
-                        <img src="{{ url_for('static', filename=result_filename) }}" class="image-preview__image2">
+                        <img src="{{ url_for('static', filename=result_filename) }}" class="image-box-content2">
                         {% else %}
-                        <img src="" alt="Next Image Preview" class="image-preview__image">
-                        <span class="image-preview__default-text">NextImage Preview</span>
+                        <img src="" alt="Next Image Preview" class="image-box-content">
+                        <span class="image-box__default-text">NextImage Preview</span>
                         {% endif %}
                     </div>
                 </div>
@@ -88,9 +88,9 @@
 </div>
 <script>
     const inpFile = document.getElementById("image");
-    const previewContainer = document.getElementById("imagePreview");
-    const previewImage = previewContainer.querySelector(".image-preview__image");
-    const previewDefaultText = previewContainer.querySelector(".image-preview__default-text");
+    const previewContainer = document.getElementById("imageBox");
+    const previewImage = previewContainer.querySelector(".image-box-content");
+    const previewDefaultText = previewContainer.querySelector(".image-box__default-text");
 
     inpFile.addEventListener("change", function() {
         const file = this.files[0];
