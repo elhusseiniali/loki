@@ -148,6 +148,7 @@ def delete_model(model_id):
 
 @app.route("/attacks/visualize",
            methods=['POST', 'GET'])
+@login_required
 def visualize_attack():
     form = VisualizeAttackForm()
     if form.validate_on_submit():
