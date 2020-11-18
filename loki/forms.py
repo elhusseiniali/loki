@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, SelectField
+from wtforms import BooleanField, RadioField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from wtforms.validators import ValidationError
 
@@ -77,6 +78,31 @@ class FRSForm(FlaskForm):
                        validators=[DataRequired(),
                                    Length(min=2, max=15)])
     model = FileField('Upload a model',
-                      validators=[FileAllowed(['h5', 'pb', 'pickle']),
+                      validators=[FileAllowed(['h5', 'pb', '.pickle']),
                                   FileRequired()])
     submit = SubmitField('Submit')
+
+
+class ModelSelectField(SelectField):
+    def __init__(self, *args, **kwargs):
+        super(ModelSelectField, self).__init__(*args, **kwargs)
+        models = FRS.query.filter_by(user=current_user). \
+            order_by(FRS.upload_date.desc())
+        self.choices = [(models.count()+1, 'None')] + \
+            [(model.id, model.name) for model in models]
+
+
+class VisualizeAttackForm(FlaskForm):
+    model = ModelSelectField(label='Select your model !')
+    attacks = RadioField('Attacks',
+                         choices=[('attack1', 'attack1'),
+                                  ('attack2', 'attack2'),
+                                  ('attack3', 'attack3'),
+                                  ('attack4', 'attack4'),
+                                  ('attack5', 'attack5'),
+                                  ('attack6', 'attack6')])
+    image = FileField('Upload the image to attack',
+                      id='image',
+                      validators=[FileAllowed(['jpg', 'jpeg', 'png']),
+                                  FileRequired()])
+    submit = SubmitField('Visualize attack')
