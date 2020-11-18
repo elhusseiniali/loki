@@ -43,3 +43,48 @@ h1, h2, h3, h4, h5, h6 {
 .account-heading {
   font-size: 2.5rem;
 }
+
+.image-box {
+  width: 400px;
+  height: 404px;
+  border: 2px solid #000000;
+  margin-top: 15px;
+
+  /* Default text */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #cccccc;
+}
+
+.image-box-content {
+  display: none;
+  width: 400px;
+  height: 400px;
+}
+
+.image-box-content2 {
+  display: block;
+  width: 400px;
+  height: 400px;
+}
+
+.image_button{
+  display:block;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: url(https://www.flaticon.com/svg/static/icons/svg/87/87390.svg) no-repeat center center;
+  background-size: cover;
+}
+
+.image_button input{
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  cursor: pointer;
+}
