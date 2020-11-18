@@ -1,125 +1,126 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <div class="content-section">
-        <div class="media">
-            <img class="rounded-circle account-img" src ="{{ image_file }}">
-            <div class="media-body">
-                <h2 class="account-heading">
-                    {{ current_user.username }}
-                </h2>
-                <p class="text-secondary">
-                    {{ current_user.email}}
-                </p>
-            </div>
-        </div>
-        <form method="POST" action="" enctype="multipart/form-data">
-                {{ form.hidden_tag() }}
-                <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">
-                        Account info.
-                    </legend>
-                    <div class="form-group">
-                        {{ form.username.label(class="form-control-label") }}
-
-                        {% if form.username.errors %}
-                            {{ form.username.label(class="form-control form-control-lg is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.username.errors %}
-                                    <span>
-                                        {{ error }}
-                                    </span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.username(class="form-control form-control-lg") }}
-                        {% endif %}
-                    </div>
-                    <div class="form-group">
-                        {{ form.email.label(class="form-control-label") }}
-                        {% if form.email.errors %}
-                            {{ form.email.label(class="form-control form-control-lg is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.email.errors %}
-                                    <span>
-                                        {{ error }}
-                                    </span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.email(class="form-control form-control-lg") }}
-                        {% endif %}
-                    </div>
-                    <div class="form-group">
-                        {{ form.image.label() }}
-                        {{ form.image(class="form-control-file") }}
-
-                        {% if form.image.errors %}
-                        {% for error in form.image.errors %}
-                            <span class="text-danger"> {{ error }} </span></br>
-                        {% endfor %}
-                        {% endif %}
-                    </div>
-                </fieldset>
-                <div class="form-group">
-                    {{ form.submit(class="btn btn-outline-info") }}
+<div class="row">
+    <div class="col md-4">
+        <div class="content-section">
+            <div class="media">
+                <img class="rounded-circle account-img" src ="{{ image_file }}">
+                <div class="media-body">
+                    <h2 class="account-heading">
+                        {{ current_user.username }}
+                    </h2>
+                    <p class="text-secondary">
+                        {{ current_user.email}}
+                    </p>
                 </div>
-            </form>
-    </div>
-{% endblock content %}
+            </div>
+            <form method="POST" action="" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">
+                            Account info.
+                        </legend>
+                        <div class="form-group">
+                            {{ form.username.label(class="form-control-label") }}
 
-<div class="col md-4">
-    {% block right_content %}
-    <legend class="border-bottom mb-4">
-        Model history
-    </legend>
-    <div class="content-section">
-        <div class="row justify-content-center">
-            <table class="table">
-              <thead class="thead-dark">
-                <tr>
-                  <th scope="col">Name of the Model</th>
-                  <th scope="col">Latest report</th>
-                  <th scope="col">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for model in models.items %}
-                    <tr>
-                      <td>{{model.name}}</td>
-                      <td>{{model.name}}</td>
-                      <td>{{model.upload_date.strftime('%H:%M / %d-%m-%Y')}}</td>
+                            {% if form.username.errors %}
+                                {{ form.username.label(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.username.errors %}
+                                        <span>
+                                            {{ error }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.username(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.email.label(class="form-control-label") }}
+                            {% if form.email.errors %}
+                                {{ form.email.label(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.email.errors %}
+                                        <span>
+                                            {{ error }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.email(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.image.label() }}
+                            {{ form.image(class="form-control-file") }}
 
-                    </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-            <!-- Attacks Modal Trigger-->
+                            {% if form.image.errors %}
+                            {% for error in form.image.errors %}
+                                <span class="text-danger"> {{ error }} </span></br>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </fieldset>
+                    <div class="form-group">
+                        {{ form.submit(class="btn btn-outline-info") }}
+                    </div>
+                </form>
         </div>
-        {% for page_num in models.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-          {% if page_num %}
-              {% if models.page == page_num %}
-                  <a class="btn btn-info mb-4 "href="{{url_for('account', page=page_num)}}">{{page_num}}</a>
-              {% else %}
-                  <a class="btn btn-outline-info mb-4 "href="{{url_for('account', page=page_num)}}">{{page_num}}</a>
-              {% endif %}
-          {% else %}
-              ...
-          {% endif %}
+    </div>
 
-        {% endfor %}
-        <br>
-    </div>
-    <div class="border-top pt-3">
-        <small class="text-muted">
-            <a class="ml-2" href="{{ url_for('upload_model') }}">Add a new model.</a>
-        </small>
-    </div>
-    <div>
-        <small class="text-muted">
-            <a class="ml-2" href="{{ url_for('account') }}">Access all reports.</a>
-        </small>
-    </div>
-    {% endblock right_content%}
+    <div class="col md-4">
+        <legend class="border-bottom mb-4">
+            Model history
+        </legend>
+        <div class="content-section">
+            <div class="row justify-content-center">
+                <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                    <th scope="col">Name of the Model</th>
+                    <th scope="col">Latest report</th>
+                    <th scope="col">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for model in models.items %}
+                        <tr>
+                        <td>{{model.name}}</td>
+                        <td>{{model.name}}</td>
+                        <td>{{model.upload_date.strftime('%H:%M / %d-%m-%Y')}}</td>
 
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+                <!-- Attacks Modal Trigger-->
+            </div>
+            {% for page_num in models.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                {% if models.page == page_num %}
+                    <a class="btn btn-info mb-4 "href="{{url_for('account', page=page_num)}}">{{page_num}}</a>
+                {% else %}
+                    <a class="btn btn-outline-info mb-4 "href="{{url_for('account', page=page_num)}}">{{page_num}}</a>
+                {% endif %}
+            {% else %}
+                ...
+            {% endif %}
+
+            {% endfor %}
+            <br>
+        </div>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                <a class="ml-2" href="{{ url_for('upload_model') }}">Add a new model.</a>
+            </small>
+        </div>
+        <div>
+            <small class="text-muted">
+                <a class="ml-2" href="{{ url_for('account') }}">Access all reports.</a>
+            </small>
+        </div>
+        {% endblock content %}
+    </div>
 </div>

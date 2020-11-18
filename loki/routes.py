@@ -1,9 +1,11 @@
+import json
 from flask import render_template, flash, redirect, url_for, request, abort
 from loki import app, db
 from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from loki.forms import VisualizeAttackForm
 from loki.forms import FRSForm
 from loki.models import User, FRS
-from loki.utils import save_image, save_model, remove_model
+from loki.utils import save_image, save_model, remove_model, save_temp
 
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -77,7 +79,7 @@ def account():
 
     if form.validate_on_submit():
         if form.image.data:
-            image_file = save_image(form.image.data)
+            image_file = save_image(form.image.data, path="profile_pictures")
             current_user.image_file = image_file
 
         current_user.username = form.username.data
@@ -142,3 +144,20 @@ def delete_model(model_id):
     db.session.commit()
     flash('Your model has been deleted!', 'success')
     return redirect(url_for('models'))
+
+
+@app.route("/attacks/visualize",
+           methods=['POST', 'GET'])
+@login_required
+def visualize_attack():
+    form = VisualizeAttackForm()
+    if form.validate_on_submit():
+        index = len(form.model.choices)-int(form.model.data)
+        if form.image.data:
+            image_file = save_image(form.image.data, path="tmp",
+                                    output_size=(400, 400))
+            flash("Base image successfully uploaded.", 'success')
+
+        return render_template('visualize_attack.html', form=form,
+                               image_file=image_file, index=index)
+    return render_template('visualize_attack.html', form=form)
