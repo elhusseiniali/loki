@@ -105,7 +105,7 @@ class InceptionResNet():
             Name of the person whose face the model thinks the
             image belongs to.
         """
-        img = Image.open(path)
+        img = Image.open("loki/" + path)
 
         # crop and pre-whiten image tensor
         img_cropped = self.mtcnn(img).to(self.device)
