@@ -1,9 +1,13 @@
 import json
 from flask import render_template, flash, redirect, url_for, request, abort
 from loki import app, db
+
 from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from loki.forms import VisualizeAttackForm
-from loki.forms import FRSForm
+from loki.forms import FRSForm, PredictForm
+
+from loki.classifiers import InceptionResNet as IR
+
 from loki.models import User, FRS
 from loki.utils import save_image, save_model, remove_model, save_temp
 
@@ -152,7 +156,7 @@ def delete_model(model_id):
 def visualize_attack():
     form = VisualizeAttackForm()
     if form.validate_on_submit():
-        index = len(form.model.choices)-int(form.model.data)
+        index = len(form.model.choices) - int(form.model.data)
         if form.image.data:
             image_file = save_image(form.image.data, path="tmp",
                                     output_size=(400, 400))
@@ -161,3 +165,28 @@ def visualize_attack():
         return render_template('visualize_attack.html', form=form,
                                image_file=image_file, index=index)
     return render_template('visualize_attack.html', form=form)
+
+
+@app.route("/models/predict",
+           methods=['POST', 'GET'])
+@login_required
+def predict():
+    form = PredictForm()
+
+    if form.validate_on_submit():
+        if form.image.data:
+            image_file = save_image(form.image.data, path="data")
+            path = url_for('static',
+                           filename=f"data/"
+                                    f"{image_file}")
+            classifier = IR()
+            label = classifier.predict(path)
+
+            flash("Done!", 'success')
+
+            return render_template('predict.html',
+                                   title='Classify an image.',
+                                   image_file=path, form=form,
+                                   label=label)
+    return render_template('predict.html',
+                           title='Classify an image.', form=form)
