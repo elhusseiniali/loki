@@ -88,7 +88,7 @@ class ModelSelectField(SelectField):
         super(ModelSelectField, self).__init__(*args, **kwargs)
         models = FRS.query.filter_by(user=current_user). \
             order_by(FRS.upload_date.desc())
-        self.choices = [(models.count()+1, 'None')] + \
+        self.choices = [(models.count() + 1, 'None')] + \
             [(model.id, model.name) for model in models]
 
 
@@ -106,3 +106,9 @@ class VisualizeAttackForm(FlaskForm):
                       validators=[FileAllowed(['jpg', 'jpeg', 'png']),
                                   FileRequired()])
     submit = SubmitField('Visualize attack')
+
+
+class PredictForm(FlaskForm):
+    image = FileField('Upload image',
+                      validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
+    submit = SubmitField('Classify image')
