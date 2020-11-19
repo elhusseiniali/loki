@@ -204,7 +204,7 @@ def predict():
 
     if form.validate_on_submit():
         index = int(form.model.data) - 1
-        
+
         image_file = save_image(form.image.data, path="tmp")
         path = url_for('static',
                        filename=f"tmp/"
