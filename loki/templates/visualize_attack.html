@@ -24,14 +24,8 @@
                     </div>
                     <h1>List of attacks</h1>
                         {% if form.attacks.errors %}
-                            {{ form.attacks.label(class="form-control form-control-lg is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.attacks.errors %}
-                                    <span>
-                                        {{ error }}
-                                    </span>
-                                {% endfor %}
-                            </div>
+                            <span class="text-danger"> You must select an attack ! </span>
+                            <br>                                
                         {% endif %}
                         {% if form.validate_on_submit() %}
                             {% for subfield in form.attacks %}
