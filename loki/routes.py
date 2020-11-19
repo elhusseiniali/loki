@@ -203,9 +203,9 @@ def predict():
     form = PredictForm()
 
     if form.validate_on_submit():
-        image_file = save_image(form.image.data, path="data")
+        image_file = save_image(form.image.data, path="tmp")
         path = url_for('static',
-                       filename=f"data/"
+                       filename=f"tmp/"
                                 f"{image_file}")
         classifier = IR()
         label = classifier.predict(path)
