@@ -4,7 +4,11 @@ from loki import app, db
 
 
 class Helper():
+    """Class with useful functions for testing.
+    """
     def register(app, username, email, password, confirm_password):
+        """Register a new user.
+        """
         return app.post(
             '/register',
             data=dict(username=username,
@@ -14,6 +18,8 @@ class Helper():
         )
 
     def login(app, email, password):
+        """Attempt to log a user in.
+        """
         return app.post(
             '/login',
             data=dict(email=email, password=password),
@@ -21,6 +27,8 @@ class Helper():
         )
 
     def logout(app):
+        """Attempt to log out.
+        """
         return app.get(
             '/logout',
             follow_redirects=True
@@ -29,6 +37,8 @@ class Helper():
 
 class FlaskTestCase(unittest.TestCase):
     def test_pages_load(self):
+        """Test that pages load correctly.
+        """
         tester = app.test_client(self)
 
         home = tester.get('/', content_type='html/text')
@@ -45,6 +55,8 @@ class FlaskTestCase(unittest.TestCase):
         self.assertEqual(account.status_code, 302)
 
     def test_auth(self):
+        # This test always works, even when it shouldn't!!!
+        # See issue #18
         tester = app.test_client(self)
 
         db.drop_all()
