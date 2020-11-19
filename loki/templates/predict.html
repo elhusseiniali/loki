@@ -9,9 +9,7 @@
                 <div class="row">
                     <div class="col md-4">
                         <fieldset class="form-group">
-                            <legend class="border bottom mb-4">
-                                Upload an image to classify.
-                            </legend>
+                            <h1>{{form.image.label}}</h1>
                             <div class="col md-4">
                                 <div class="image-box" id="imageBox">
                                     {% if form.image.data %}
@@ -36,7 +34,7 @@
                             </div>
                         </fieldset>
                         <div class="form-group">
-                            {{ form.submit(class="btn btn-outline-info") }}
+                            {{ form.submit(class="btn btn-dark") }}
                         </div>
                     </div>
                     <div class="col md-4">
