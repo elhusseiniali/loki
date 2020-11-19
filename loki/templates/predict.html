@@ -13,7 +13,7 @@
                             <div class="col md-4">
                                 <div class="image-box" id="imageBox">
                                     {% if form.validate_on_submit() %}
-                                    {% set image_filename %}/data/{{ image_file }}{% endset %}
+                                    {% set image_filename %}tmp/{{ image_file }}{% endset %}
                                     <img src="{{ url_for('static', filename=image_filename) }}" class="image-box-content2">
                                     {% else %}
                                     <img src="" class="image-box-content">
