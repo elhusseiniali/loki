@@ -10,6 +10,17 @@
                     <div class="col md-4">
                         <fieldset class="form-group">
                             <h1>{{form.image.label}}</h1>
+                            {% if form.validate_on_submit() %}
+                            <select class="form-control" id="model_selector" name="model">
+                                <option value="">{{form.model.choices[index][1]}}</option>
+                            </select>
+                            {% else %}
+                            <select class="form-control" id="model_selector" name="model">
+                                {% for choice in form.model.choices %}
+                                    <option value="{{ choice[0] }}">{{ choice[1] }}</option>
+                                {% endfor %}
+                            </select>
+                            {% endif %}
                             <div class="col md-4">
                                 <div class="image-box" id="imageBox">
                                     {% if form.validate_on_submit() %}
