@@ -6,10 +6,15 @@
         <form class="" action="" method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <main role="main" class="container">
+                <h1>
+                    Classify an image.
+                </h1>
                 <div class="row">
                     <div class="col md-4">
                         <fieldset class="form-group">
-                            <h1>{{form.image.label}}</h1>
+                            <legend class="border-bottom mb-4">
+                                {{ form.model.label }}
+                            </legend>
                             {% if form.validate_on_submit() %}
                             <select class="form-control" id="model_selector" name="model">
                                 <option value="">{{form.model.choices[index][1]}}</option>
@@ -21,6 +26,10 @@
                                 {% endfor %}
                             </select>
                             {% endif %}
+                        </br>
+                            <legend class="border-bottom mb-4">
+                                {{ form.image.label }}
+                            </legend>
                             <div class="col md-4">
                                 <div class="image-box" id="imageBox">
                                     {% if form.validate_on_submit() %}
@@ -56,15 +65,16 @@
                     </div>
                     <div class="col md-4">
                         <div class="row">
-                            <h1>
-                                This is: {{ label }}
-                            </h1>
+                            <legend class="border-bottom mb-4">
+                                Predicted identity
+                            </legend>
+                            <h3> {{ label }} </h3>
                         </div>
                     </br>
                         <div class="row">
-                            <h2>
+                            <legend class="border-bottom mb-4">
                                 About the model.
-                            </h2>
+                            </legend>
                             <p>
                                 This section is supposed to have some information about
                                 the model (e.g. who the authors are, link to the original paper, some
