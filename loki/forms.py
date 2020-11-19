@@ -84,6 +84,12 @@ class FRSForm(FlaskForm):
 
 
 class ModelSelectField(SelectField):
+    """Set options in the model selector to all user-uploaded models.
+
+    TODO
+    ----
+    -   Add all pre-trained models (currently only InceptionResnetV1).
+    """
     def __init__(self, *args, **kwargs):
         super(ModelSelectField, self).__init__(*args, **kwargs)
         models = FRS.query.filter_by(user=current_user). \
@@ -93,7 +99,7 @@ class ModelSelectField(SelectField):
 
 
 class VisualizeAttackForm(FlaskForm):
-    model = ModelSelectField(label='Select your model !')
+    model = ModelSelectField(label='Select your model!')
     attacks = RadioField('Attacks',
                          choices=[('attack1', 'attack1'),
                                   ('attack2', 'attack2'),
