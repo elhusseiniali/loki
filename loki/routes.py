@@ -186,7 +186,7 @@ def predict():
 
             return render_template('predict.html',
                                    title='Classify an image.',
-                                   image_file=path, form=form,
+                                   image_file=image_file, form=form,
                                    label=label)
     return render_template('predict.html',
                            title='Classify an image.', form=form)
