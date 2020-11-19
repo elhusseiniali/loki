@@ -173,6 +173,7 @@ def predict():
     form = PredictForm()
 
     if form.validate_on_submit():
+        index = int(form.model.data)-1
         image_file = save_image(form.image.data, path="data")
         path = url_for('static',
                        filename=f"data/"
@@ -185,6 +186,6 @@ def predict():
         return render_template('predict.html',
                                title='Classify an image.',
                                image_file=image_file, form=form,
-                               label=label)
+                               label=label, index=index)
     return render_template('predict.html',
                            title='Classify an image.', form=form)
