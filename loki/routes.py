@@ -9,7 +9,9 @@ from loki.forms import FRSForm, PredictForm
 from loki.classifiers import InceptionResNet as IR
 
 from loki.models import User, FRS
-from loki.utils import save_image, save_model, remove_model, save_temp
+
+from loki.attacks import gray
+from loki.utils import save_image, save_model, remove_model
 
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -115,6 +117,8 @@ def account():
            methods=['GET', 'POST'])
 @login_required
 def upload_model():
+    """Upload a model. This automatically populates the User-Model relationship.
+    """
     form = FRSForm()
     if form.validate_on_submit():
         model_path = save_model(form.model.data)
@@ -154,15 +158,41 @@ def delete_model(model_id):
            methods=['POST', 'GET'])
 @login_required
 def visualize_attack():
+    """Run selected attack on uploaded image.
+
+    TODO
+    ----
+    - For now, we don't have any logic that goes over what specific
+    attack was selected. This can be easily fixed, but because we ran
+    out of time, we didn't implement it.
+
+    - The way the path is passed to the attack method is also messy:
+    this can be done more elegantly using url_for to avoid problems
+    that would happen on deployment (I think Docker is weird with this
+    sort of stuff), and anyway it's bad practice to hardcode a path like
+    this. I'll add it as an issue after the commit.
+
+    - The second render_template should be a simple
+    redirect(url_for('visualize_attack')).
+    This solves the issue of the form bugging when a refresh is done (because
+    of how Flask is with the request object).
+    However, because there are less than 3 hours left for the deadline,
+    I won't touch it.
+    I'll fix it after.
+    """
     form = VisualizeAttackForm()
     if form.validate_on_submit():
         index = len(form.model.choices) - int(form.model.data)
         image_file = save_image(form.image.data, path="tmp",
                                 output_size=(400, 400))
+
+        result_file = gray(f"./loki/static/tmp/"
+                           f"{image_file}")
         flash("Base image successfully uploaded.", 'success')
 
         return render_template('visualize_attack.html', form=form,
-                               image_file=image_file, index=index)
+                               image_file=image_file, result_file=result_file,
+                               index=index)
     return render_template('visualize_attack.html', form=form)
 
 
