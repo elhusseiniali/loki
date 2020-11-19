@@ -2,98 +2,101 @@
 
 
 {% block content %}
-<div class="row">
-    <form class="" action="" method="POST" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
-        <main role="main" class="container">
-            <div class="row">
-                <div class="col md-4">
-                    <div class="form-group">
-                        <h1>{{form.model.label}}</h1>
-                        {% if form.validate_on_submit() %}
-                        <select class="form-control" id="model_selector" name="model">
-                            <option value="">{{form.model.choices[index][1]}}</option>
-                        </select>
-                        {% else %}
-                        <select class="form-control" id="model_selector" name="model">
-                            {% for choice in form.model.choices %}
-                                <option value="{{ choice[0] }}">{{ choice[1] }}</option>
-                            {% endfor %}
-                        </select>
-                        {% endif %}
-                    </div>
-                    <h1>List of attacks</h1>
-                        {% if form.attacks.errors %}
-                            <span class="text-danger"> You must select an attack ! </span>
-                            <br>                                
-                        {% endif %}
-                        {% if form.validate_on_submit() %}
-                            {% for subfield in form.attacks %}
-                                {% if subfield.label.text == form.attacks.data %}
-                                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-                                    <label class="form-check-label" for="exampleRadios1">{{ subfield.label }}</label>
-                                {% else %}
-                                <tr>
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" disabled>
-                                    <label class="form-check-label" for="inlineRadio3">{{ subfield.label }}</label>
-                                </tr>
-                                {% endif %}
+<div class="content-section">
+    <div class="row">
+        <form class="" action="" method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <main role="main" class="container">
+                <div class="row">
+                    <div class="col md-4">
+                        <div class="form-group">
+                            <h1>{{form.model.label}}</h1>
+                            {% if form.validate_on_submit() %}
+                            <select class="form-control" id="model_selector" name="model">
+                                <option value="">{{form.model.choices[index][1]}}</option>
+                            </select>
+                            {% else %}
+                            <select class="form-control" id="model_selector" name="model">
+                                {% for choice in form.model.choices %}
+                                    <option value="{{ choice[0] }}">{{ choice[1] }}</option>
+                                {% endfor %}
+                            </select>
+                            {% endif %}
+                        </div>
+                        <h1>List of attacks</h1>
+                            {% if form.attacks.errors %}
+                                <span class="text-danger"> You must select an attack ! </span>
                                 <br>
+                            {% endif %}
+                            {% if form.validate_on_submit() %}
+                                {% for subfield in form.attacks %}
+                                    {% if subfield.label.text == form.attacks.data %}
+                                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                                        <label class="form-check-label" for="exampleRadios1">{{ subfield.label }}</label>
+                                    {% else %}
+                                    <tr>
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" disabled>
+                                        <label class="form-check-label" for="inlineRadio3">{{ subfield.label }}</label>
+                                    </tr>
+                                    {% endif %}
+                                    <br>
+                                {% endfor %}
+                            {% else %}
+                                {% for subfield in form.attacks %}
+                                    <tr>{{ subfield }} {{ subfield.label }}</tr>
+                                    <br>
+                                {% endfor %}
+                            {% endif %}
+                            {% if form.validate_on_submit() %}
+                                <a href="{{ url_for('visualize_attack') }}">
+                                    <button type="button" class="btn btn-dark">Launch a new attack !</button>
+                                </a>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.submit(class="btn btn-dark") }}
+                                </div>
+                            {% endif %}
+                    </div>
+                    <div class="col md-4">
+                        <div class="image-box" id="imageBox">
+                            {% if form.validate_on_submit() %}
+                            {% set image_filename %}tmp/{{ image_file }}{% endset %}
+                            <img src="{{ url_for('static', filename=image_filename) }}" class="image-box-content2">
+                            {% else %}
+                            <img src="" class="image-box-content">
+                            <span class="image-box__default-text">
+                                <label class="image_button">
+                                    {{ form.image(type="file") }}
+                                </label>
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            {% if form.image.errors %}
+                            {% for error in form.image.errors %}
+                                <span class="text-danger"> {{ error }} </span></br>
                             {% endfor %}
-                        {% else %}
-                            {% for subfield in form.attacks %}
-                                <tr>{{ subfield }} {{ subfield.label }}</tr>
-                                <br>
-                            {% endfor %}
-                        {% endif %}
-                        {% if form.validate_on_submit() %}
-                            <a href="{{ url_for('visualize_attack') }}"> 
-                                <button type="button" class="btn btn-dark">Launch a new attack !</button>
-                            </a>
-                        {% else %}
-                            <div class="form-group">
-                                {{ form.submit(class="btn btn-dark") }}
-                            </div>
-                        {% endif %}
-                </div>
-                <div class="col md-4">
-                    <div class="image-box" id="imageBox">
-                        {% if form.validate_on_submit() %}
-                        {% set image_filename %}/tmp/{{ image_file }}{% endset %}
-                        <img src="{{ url_for('static', filename=image_filename) }}" class="image-box-content2">
-                        {% else %}
-                        <img src="" class="image-box-content">
-                        <span class="image-box__default-text">
-                            <label class="image_button">
-                                {{ form.image(type="file") }}
-                            </label>
-                        </span>
-                        {% endif %}
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {% if form.image.errors %}
-                        {% for error in form.image.errors %}
-                            <span class="text-danger"> {{ error }} </span></br>
-                        {% endfor %}
-                        {% endif %}
+                    <div class="col md-4">
+                        <div class="image-box" id="nextimageBox">
+                            {% if form.image.data and not(form.attacks.errors)%}
+                            {% set result_filename %}tmp/{{ result_file }}{% endset %}
+                            <img src="{{ url_for('static', filename=result_filename) }}" class="image-box-content2">
+                            {% else %}
+                            <img src="" alt="Next Image Preview" class="image-box-content">
+                            <span class="image-box__default-text">NextImage Preview</span>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-                <div class="col md-4">
-                    <div class="image-box" id="nextimageBox">
-                        {% if form.image.data and not(form.attacks.errors)%}
-                        {% set result_filename %}/tmp/{{ image_file }}{% endset %}
-                        <img src="{{ url_for('static', filename=result_filename) }}" class="image-box-content2">
-                        {% else %}
-                        <img src="" alt="Next Image Preview" class="image-box-content">
-                        <span class="image-box__default-text">NextImage Preview</span>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </main>
-    </form>
+            </main>
+        </form>
 
+    </div>
 </div>
+
 <script>
     const inpFile = document.getElementById("image");
     const previewContainer = document.getElementById("imageBox");

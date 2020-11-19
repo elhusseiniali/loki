@@ -24,7 +24,7 @@
                             <div class="col md-4">
                                 <div class="image-box" id="imageBox">
                                     {% if form.validate_on_submit() %}
-                                    {% set image_filename %}/data/{{ image_file }}{% endset %}
+                                    {% set image_filename %}tmp/{{ image_file }}{% endset %}
                                     <img src="{{ url_for('static', filename=image_filename) }}" class="image-box-content2">
                                     {% else %}
                                     <img src="" class="image-box-content">
@@ -45,8 +45,8 @@
                             </div>
                         </fieldset>
                         {% if form.validate_on_submit() %}
-                            <a href="{{ url_for('predict') }}"> 
-                                <button type="button" class="btn btn-dark">Classify a new Image !</button>
+                            <a href="{{ url_for('predict') }}">
+                                <button type="button" class="btn btn-dark">Classify a new image</button>
                             </a>
                         {% else %}
                             <div class="form-group">
@@ -55,14 +55,26 @@
                         {% endif %}
                     </div>
                     <div class="col md-4">
-                        {% if label %}
-                        <h2>
-                            This is:
-                        </h2>
-                        {% endif %}
-                        <h4>
-                            {{ label }}
-                        </h4>
+                        <div class="row">
+                            <h1>
+                                This is: {{ label }}
+                            </h1>
+                        </div>
+                    </br>
+                        <div class="row">
+                            <h2>
+                                About the model.
+                            </h2>
+                            <p>
+                                This section is supposed to have some information about
+                                the model (e.g. who the authors are, link to the original paper, some
+                                useful precision metrics, etc...).
+                                They'll be packaged in some JSON for the pre-trained models we provide,
+                                and for user-uploaded models, they'll either have user-uploaded information
+                                (in which case we have to modify the database schema a bit), or the column
+                                would just disappear.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </main>

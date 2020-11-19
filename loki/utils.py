@@ -5,6 +5,19 @@ from PIL import Image
 
 
 def save_model(form_model):
+    """Save model file under /static/models.
+
+    Parameters
+    ----------
+    form_model : [file]
+
+    Returns
+    -------
+    [str]
+        A random hex is generated as the new file name to prevent
+        any errors that would arise on the filesystem when filename uniqueness
+        is violated.
+    """
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(form_model.filename)
     model_fn = random_hex + f_ext
@@ -14,6 +27,12 @@ def save_model(form_model):
 
 
 def remove_model(model_path):
+    """Remove file at model_path.
+
+    Parameters
+    ----------
+    model_path : [str]
+    """
     if os.path.exists(model_path):
         os.remove(model_path)
 
@@ -37,6 +56,7 @@ def save_image(source_image, path, output_size=(125, 125)):
     """
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(source_image.filename)
+
     image_fn = random_hex + f_ext
     image_path = os.path.join(current_app.root_path,
                               'static/' + path,
@@ -66,17 +86,3 @@ def compress_image(image, output_size=(125, 125)):
     i = Image.open(image)
     i.thumbnail(output_size)
     return i
-
-
-def save_temp(form_image):
-    random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(form_image.filename)
-    image_fn = random_hex + f_ext
-    image_path = os.path.join(current_app.root_path,
-                              'static/tmp',
-                              image_fn)
-
-    i = Image.open(form_image)
-    i.save(image_path)
-
-    return image_fn
