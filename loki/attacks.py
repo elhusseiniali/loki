@@ -9,6 +9,10 @@ function that changes the input image to a grayscale version of it.
 
 The same design will hold for attacks: we just have to change the
 function in routes.py and we would be done.
+
+For an actual attack, look at the attack branch: there's a .ipynb file
+that can be viewed on GitHub (so you don't need to download Jupyter) where
+you can see some results.
 """
 
 
