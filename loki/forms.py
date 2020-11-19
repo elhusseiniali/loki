@@ -99,7 +99,7 @@ class ModelSelectField(SelectField):
 
 
 class VisualizeAttackForm(FlaskForm):
-    model = ModelSelectField(label='Select your model!')
+    model = ModelSelectField(label='Select a model.')
     attacks = RadioField('Attacks',
                          choices=[('attack1', 'attack1'),
                                   ('attack2', 'attack2'),
@@ -107,7 +107,7 @@ class VisualizeAttackForm(FlaskForm):
                                   ('attack4', 'attack4'),
                                   ('attack5', 'attack5'),
                                   ('attack6', 'attack6')])
-    image = FileField('Upload the image to attack',
+    image = FileField('Upload an image.',
                       id='image',
                       validators=[FileAllowed(['jpg', 'jpeg', 'png']),
                                   FileRequired()])
@@ -115,11 +115,11 @@ class VisualizeAttackForm(FlaskForm):
 
 
 class PredictForm(FlaskForm):
-    model = SelectField(label='Select your model !',
+    model = SelectField(label='Select a model.',
                         choices=[('1', 'Inception'),
                                  ('2', 'ResNet'),
                                  ('3', 'Model3')])
-    image = FileField('Pick a model and an image !',
+    image = FileField('Upload an image.',
                       validators=[FileAllowed(['jpg', 'jpeg', 'png']),
                                   FileRequired()])
     submit = SubmitField('Classify image')
