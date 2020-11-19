@@ -33,9 +33,15 @@
                                 </div>
                             </div>
                         </fieldset>
-                        <div class="form-group">
-                            {{ form.submit(class="btn btn-dark") }}
-                        </div>
+                        {% if form.validate_on_submit() %}
+                            <a href="{{ url_for('predict') }}"> 
+                                <button type="button" class="btn btn-dark">Classify a new Image !</button>
+                            </a>
+                        {% else %}
+                            <div class="form-group">
+                                {{ form.submit(class="btn btn-dark") }}
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="col md-4">
                         {% if label %}

@@ -110,5 +110,6 @@ class VisualizeAttackForm(FlaskForm):
 
 class PredictForm(FlaskForm):
     image = FileField('Upload the image to classify',
-                      validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
+                      validators=[FileAllowed(['jpg', 'jpeg', 'png']),
+                                  FileRequired()])
     submit = SubmitField('Classify image')
