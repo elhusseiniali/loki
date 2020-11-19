@@ -8,6 +8,18 @@ import datetime
 
 @login_manager.user_loader
 def load_user(user_id):
+    """Get the current logged-in User object.
+
+    Parameters
+    ----------
+    user_id : [int]
+        User ID.
+
+    Returns
+    -------
+    [User]
+        A User object (see loki.models).
+    """
     return User.query.get(int(user_id))
 
 
