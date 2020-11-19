@@ -157,10 +157,9 @@ def visualize_attack():
     form = VisualizeAttackForm()
     if form.validate_on_submit():
         index = len(form.model.choices) - int(form.model.data)
-        if form.image.data:
-            image_file = save_image(form.image.data, path="tmp",
-                                    output_size=(400, 400))
-            flash("Base image successfully uploaded.", 'success')
+        image_file = save_image(form.image.data, path="tmp",
+                                output_size=(400, 400))
+        flash("Base image successfully uploaded.", 'success')
 
         return render_template('visualize_attack.html', form=form,
                                image_file=image_file, index=index)
@@ -174,19 +173,18 @@ def predict():
     form = PredictForm()
 
     if form.validate_on_submit():
-        if form.image.data:
-            image_file = save_image(form.image.data, path="data")
-            path = url_for('static',
-                           filename=f"data/"
-                                    f"{image_file}")
-            classifier = IR()
-            label = classifier.predict(path)
+        image_file = save_image(form.image.data, path="data")
+        path = url_for('static',
+                       filename=f"data/"
+                                f"{image_file}")
+        classifier = IR()
+        label = classifier.predict(path)
 
-            flash("Done!", 'success')
+        flash("Done!", 'success')
 
-            return render_template('predict.html',
-                                   title='Classify an image.',
-                                   image_file=image_file, form=form,
-                                   label=label)
+        return render_template('predict.html',
+                               title='Classify an image.',
+                               image_file=image_file, form=form,
+                               label=label)
     return render_template('predict.html',
                            title='Classify an image.', form=form)
