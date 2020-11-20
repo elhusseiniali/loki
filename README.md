@@ -5,6 +5,7 @@
 ##  Table of contents
 *  [Introduction](#introduction)
 *  [Setup](#setup)
+*  [Phase One](#phase-one)
 
 ##  Introduction
 Loki is a flask app built to provide a friendly UI to use [Foolbox](https://foolbox.readthedocs.io/en/stable/) with some facial recognition systems.
@@ -21,3 +22,8 @@ You can run the app using `python run.py`. The terminal will show you what addre
 
 
 Our admin panel so far has no privilege checking whatsoever (we know, we'll fix it later), which means that you can access it by going to the `/admin` path (e.g. localhost:5000/admin).
+
+
+## Phase One
+(This is specifically for the course instructors)
+We provided some data to test out the classifier (two images, found under  `loki/static/data`). Remember to use  `python reset.py` the first time, to get things working (as described in [Setup](#setup)).
