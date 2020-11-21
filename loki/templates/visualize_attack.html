@@ -76,6 +76,10 @@
                             </span>
                             {% endif %}
                         </div>
+                        <br>
+                        {% if form.classify.data == True and not(form.errors)%}
+                        <h3><B> After attack: </B> Carotte</h3>
+                        {% endif %}
                         <div class="form-group">
                             {% if form.image.errors %}
                             {% for error in form.image.errors %}
@@ -86,7 +90,7 @@
                     </div>
                     <div class="col md-4">
                         <div class="image-box" id="nextimageBox">
-                            {% if form.image.data and not(form.attacks.errors)%}
+                            {% if form.image.data and not(form.errors)%}
                             {% set result_filename %}tmp/{{ result_file }}{% endset %}
                             <img src="{{ url_for('static', filename=result_filename) }}" class="image-box-content2">
                             {% else %}
@@ -94,6 +98,10 @@
                             <span class="image-box__default-text">NextImage Preview</span>
                             {% endif %}
                         </div>
+                        <br>
+                        {% if form.classify.data == True and not(form.errors)%}
+                        <h3><B> After attack: </B> Pomme</h3>
+                        {% endif %}
                     </div>
                 </div>
             </main>
