@@ -31,15 +31,16 @@
                             {% if form.validate_on_submit() %}
                                 {% for subfield in form.attacks %}
                                     {% if subfield.label.text == form.attacks.data %}
+                                    <div class="form-check">
                                         <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
                                         <label class="form-check-label" for="exampleRadios1">{{ subfield.label }}</label>
+                                    </div>
                                     {% else %}
-                                    <tr>
+                                    <div class="form-check disabled">
                                         <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" disabled>
                                         <label class="form-check-label" for="inlineRadio3">{{ subfield.label }}</label>
-                                    </tr>
+                                    </div>
                                     {% endif %}
-                                    <br>
                                 {% endfor %}
                             {% else %}
                                 {% for subfield in form.attacks %}
@@ -54,6 +55,10 @@
                             {% else %}
                                 <div class="form-group">
                                     {{ form.submit(class="btn btn-dark") }}
+                                </div>
+                                <div class="form-check">
+                                    {{ form.classify(class="form-check-input") }}
+                                    {{ form.classify.label(class="form-check-input-label") }}
                                 </div>
                             {% endif %}
                     </div>
