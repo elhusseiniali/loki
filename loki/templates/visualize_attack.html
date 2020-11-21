@@ -89,14 +89,15 @@
                         </div>
                     </div>
                     <div class="col md-4">
-                        <div class="image-box" id="nextimageBox">
+                        <div class="image-box2" id="nextimageBox">
                             {% if form.image.data and not(form.errors)%}
                             {% set result_filename %}tmp/{{ result_file }}{% endset %}
                             <img src="{{ url_for('static', filename=result_filename) }}" class="image-box-content2">
                             {% else %}
                             <img src="" alt="Next Image Preview" class="image-box-content">
-                            <span class="image-box__default-text">NextImage Preview</span>
+                            <span class="image-box__default-text"></span>
                             {% endif %}
+                            </div>
                         </div>
                         <br>
                         {% if form.classify.data == True and not(form.errors)%}
