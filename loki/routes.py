@@ -8,7 +8,7 @@ from loki.forms import FRSForm, PredictForm
 
 from loki.classifiers import InceptionResNet as IR
 
-from loki.models import User, FRS
+from loki.models import User, FRS, Report
 
 from loki.attacks import gray
 from loki.utils import save_image, save_model, remove_model
@@ -138,7 +138,9 @@ def upload_model():
 @login_required
 def get_model(model_id):
     model = FRS.query.get_or_404(model_id)
-    return render_template('model.html', title=model.name, model=model)
+    reports = Report.query.filter_by(model=model)
+    return render_template('model.html', title=model.name,
+                           model=model, reports=reports)
 
 
 @app.route("/models/delete/<int:model_id>", methods=['POST'])

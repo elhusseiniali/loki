@@ -11,7 +11,12 @@
 		Display of the model/More information about the model
 		</div>
 	  </div>
-	 </article>
+	  {% for report in reports.items %}
+				<tr>
+				  <td>{{report.date.strftime('%H:%M / %d-%m-%Y')}}</td>
+				</tr>
+      {% endfor %}
+	</article>
 	<!-- Modal -->
 	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
