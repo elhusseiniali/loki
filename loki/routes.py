@@ -151,7 +151,7 @@ def delete_model(model_id):
     db.session.delete(model)
     db.session.commit()
     flash('Your model has been deleted!', 'success')
-    return redirect(url_for('models'))
+    return redirect(url_for('account'))
 
 
 @app.route("/attacks/visualize",
