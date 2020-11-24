@@ -1,5 +1,5 @@
 import unittest
-from loki.models import User, FRS, Report
+from loki.models import User, Classifier, Report
 
 from datetime import datetime
 
@@ -11,7 +11,7 @@ class TestObjectCreation(unittest.TestCase):
                      password="weakpassword123")
         assert frege
 
-        resnet = FRS(name="ResNet",
+        resnet = Classifier(name="ResNet",
                      file_path="dummy_path",
                      user=frege)
         assert resnet
