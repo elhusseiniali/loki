@@ -104,8 +104,8 @@ def account():
 
     page = request.args.get('page', 1, type=int)
     models = Classifier.query.filter_by(user=current_user)\
-                .order_by(Classifier.upload_date.desc())\
-                .paginate(page=page, per_page=5)
+                             .order_by(Classifier.upload_date.desc())\
+                             .paginate(page=page, per_page=5)
 
     return render_template('account.html',
                            title='Account',
@@ -122,9 +122,9 @@ def upload_model():
     form = ClassifierForm()
     if form.validate_on_submit():
         model_path = save_model(form.model.data)
-        Classifier = Classifier(name=form.name.data, file_path=model_path,
-                  user=current_user)
-        db.session.add(Classifier)
+        classifier = Classifier(name=form.name.data, file_path=model_path,
+                                user=current_user)
+        db.session.add(classifier)
         db.session.commit()
         flash('Model uploaded! You can now analyze it!', 'success')
         return redirect(url_for('account'))
