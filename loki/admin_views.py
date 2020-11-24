@@ -18,7 +18,7 @@ class UserView(ModelView):
     column_type_formatters = MY_DEFAULT_FORMATTERS
 
 
-class FRSView(ModelView):
+class ClassifierView(ModelView):
     pass
 
 

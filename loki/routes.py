@@ -4,11 +4,11 @@ from loki import app, db
 
 from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from loki.forms import VisualizeAttackForm
-from loki.forms import FRSForm, PredictForm
+from loki.forms import ClassifierForm, PredictForm
 
 from loki.classifiers import InceptionResNet as IR
 
-from loki.models import User, FRS
+from loki.models import User, Classifier
 
 from loki.attacks import gray
 from loki.utils import save_image, save_model, remove_model
@@ -103,8 +103,8 @@ def account():
                                   f"{current_user.image_file}")
 
     page = request.args.get('page', 1, type=int)
-    models = FRS.query.filter_by(user=current_user)\
-                .order_by(FRS.upload_date.desc())\
+    models = Classifier.query.filter_by(user=current_user)\
+                .order_by(Classifier.upload_date.desc())\
                 .paginate(page=page, per_page=5)
 
     return render_template('account.html',
@@ -119,12 +119,12 @@ def account():
 def upload_model():
     """Upload a model. This automatically populates the User-Model relationship.
     """
-    form = FRSForm()
+    form = ClassifierForm()
     if form.validate_on_submit():
         model_path = save_model(form.model.data)
-        frs = FRS(name=form.name.data, file_path=model_path,
+        Classifier = Classifier(name=form.name.data, file_path=model_path,
                   user=current_user)
-        db.session.add(frs)
+        db.session.add(Classifier)
         db.session.commit()
         flash('Model uploaded! You can now analyze it!', 'success')
         return redirect(url_for('account'))
@@ -137,14 +137,14 @@ def upload_model():
 @app.route("/models/<int:model_id>")
 @login_required
 def get_model(model_id):
-    model = FRS.query.get_or_404(model_id)
+    model = Classifier.query.get_or_404(model_id)
     return render_template('model.html', title=model.name, model=model)
 
 
 @app.route("/models/delete/<int:model_id>", methods=['POST'])
 @login_required
 def delete_model(model_id):
-    model = FRS.query.get_or_404(model_id)
+    model = Classifier.query.get_or_404(model_id)
     if model.user != current_user:
         abort(403)  # forbidden route
     remove_model(model.file_path)

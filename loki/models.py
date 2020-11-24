@@ -57,7 +57,7 @@ class User(db.Model, UserMixin):
 
     _password = db.Column(db.String(128), nullable=False)
 
-    models = db.relationship("FRS", back_populates="user")
+    models = db.relationship("Classifier", back_populates="user")
 
     def __init__(self,
                  username, email,
@@ -92,8 +92,8 @@ class User(db.Model, UserMixin):
                       message="The e-mail is invalid.")
 
 
-class FRS(db.Model):
-    """[Facial Recognition System]
+class Classifier(db.Model):
+    """[Classifier]
     Parameters
     ----------
     name: [string]
@@ -115,7 +115,7 @@ class FRS(db.Model):
         One to many.
         All reports generated for the model.
     """
-    __tablename__ = "FRS"
+    __tablename__ = "classifier"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     name = db.Column(db.String(50), unique=False, nullable=True)
@@ -137,7 +137,7 @@ class FRS(db.Model):
         self.user = user
 
     def __repr__(self):
-        return(f"FRS('{self.name}') for {self.user},"
+        return(f"Classifier('{self.name}') for {self.user},"
                f" uploaded on {self.upload_date}.")
 
 
@@ -150,7 +150,7 @@ class Report(db.Model):
     data: [JSON]
         Actual report data.
     model: [Model]
-        FRS for which the report is generated.
+        Classifier for which the report is generated.
 
     Relationships
     -------------
@@ -164,8 +164,8 @@ class Report(db.Model):
     date = db.Column(db.DateTime,
                      default=datetime.datetime.now)
 
-    model_id = db.Column(db.Integer, db.ForeignKey("FRS.id"))
-    model = db.relationship("FRS", back_populates="reports")
+    model_id = db.Column(db.Integer, db.ForeignKey("classifier.id"))
+    model = db.relationship("Classifier", back_populates="reports")
 
     data = db.Column(db.JSON)
 

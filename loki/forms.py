@@ -8,7 +8,7 @@ from wtforms.validators import ValidationError
 
 from flask_login import current_user
 
-from loki.models import User, FRS
+from loki.models import User, Classifier
 
 
 class RegistrationForm(FlaskForm):
@@ -73,7 +73,7 @@ class UpdateAccountForm(FlaskForm):
                 raise ValidationError('Account with email already exists!')
 
 
-class FRSForm(FlaskForm):
+class ClassifierForm(FlaskForm):
     name = StringField('Name for the model',
                        validators=[DataRequired(),
                                    Length(min=2, max=15)])
@@ -92,8 +92,8 @@ class ModelSelectField(SelectField):
     """
     def __init__(self, *args, **kwargs):
         super(ModelSelectField, self).__init__(*args, **kwargs)
-        models = FRS.query.filter_by(user=current_user). \
-            order_by(FRS.upload_date.desc())
+        models = Classifier.query.filter_by(user=current_user). \
+            order_by(Classifier.upload_date.desc())
         self.choices = [(models.count() + 1, 'None')] + \
             [(model.id, model.name) for model in models]
 
