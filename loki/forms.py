@@ -11,13 +11,43 @@ from flask_login import current_user
 from loki.models import User, Classifier
 
 
+class EmailField(StringField):
+    email = StringField('Email',
+                        validators=[DataRequired(),
+                                    Email()])
+
+
+class ClassifierField(SelectField):
+    """Set options in the model selector to all classifiers.
+    """
+    def __init__(self, *args, **kwargs):
+        super(ClassifierField, self).__init__(*args, **kwargs)
+        user_models = Classifier.query.filter_by(user=current_user). \
+            order_by(Classifier.upload_date.desc())
+
+        if not user_models:
+            user_choices = [(user_models.count() + 1, 'None')]
+        else:
+            user_choices = [(model.id, model.name) for model in user_models]
+
+        pretrained_choices = [("Inception v3", "Inception v3"),
+                              ("ResNet18", "ResNet18")]
+
+        self.choices = user_choices + pretrained_choices
+
+
+class AttackField(RadioField):
+    def __init__(self, *args, **kwargs):
+        super(AttackField, self).__init__(*args, **kwargs)
+        self.choices = [('carlini', 'L2CarliniWagner'),
+                        ('deepfool', 'LinDeepFool')]
+
+
 class RegistrationForm(FlaskForm):
     username = StringField('Username',
                            validators=[DataRequired(),
                                        Length(min=2, max=15)])
-    email = StringField('Email',
-                        validators=[DataRequired(),
-                                    Email()])
+    email = EmailField()
     password = PasswordField('Password',
                              validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password',
@@ -39,9 +69,7 @@ class RegistrationForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    email = StringField('Email',
-                        validators=[DataRequired(),
-                                    Email()])
+    email = EmailField()
     password = PasswordField('Password',
                              validators=[DataRequired()])
     remember = BooleanField('Remember Me')
@@ -52,9 +80,7 @@ class UpdateAccountForm(FlaskForm):
     username = StringField('Username',
                            validators=[DataRequired(),
                                        Length(min=2, max=15)])
-    email = StringField('Email',
-                        validators=[DataRequired(),
-                                    Email()])
+    email = EmailField()
     image = FileField('Update Profile Picture',
                       validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
 
@@ -73,7 +99,7 @@ class UpdateAccountForm(FlaskForm):
                 raise ValidationError('Account with email already exists!')
 
 
-class ClassifierForm(FlaskForm):
+class UploadClassifierForm(FlaskForm):
     name = StringField('Name for the model',
                        validators=[DataRequired(),
                                    Length(min=2, max=15)])
@@ -83,43 +109,19 @@ class ClassifierForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
-class ModelSelectField(SelectField):
-    """Set options in the model selector to all user-uploaded models.
-
-    TODO
-    ----
-    -   Add all pre-trained models (currently only InceptionResnetV1).
-    """
-    def __init__(self, *args, **kwargs):
-        super(ModelSelectField, self).__init__(*args, **kwargs)
-        models = Classifier.query.filter_by(user=current_user). \
-            order_by(Classifier.upload_date.desc())
-        self.choices = [(models.count() + 1, 'None')] + \
-            [(model.id, model.name) for model in models]
-
-
 class VisualizeAttackForm(FlaskForm):
-    model = ModelSelectField(label='Select a model.')
-    attacks = RadioField('Attacks',
-                         choices=[('attack1', 'attack1'),
-                                  ('attack2', 'attack2'),
-                                  ('attack3', 'attack3'),
-                                  ('attack4', 'attack4'),
-                                  ('attack5', 'attack5'),
-                                  ('attack6', 'attack6')])
-    image = FileField('Upload an image.',
+    model = ClassifierField(label="Select a model")
+    attacks = AttackField(label="Select attack(s)")
+    image = FileField('Upload an image',
                       id='image',
                       validators=[FileAllowed(['jpg', 'jpeg', 'png']),
                                   FileRequired()])
-    classify = BooleanField('Add Classifications')
+    classify = BooleanField('Classify image')
     submit = SubmitField('Visualize attack')
 
 
 class PredictForm(FlaskForm):
-    model = SelectField(label='Select a model.',
-                        choices=[('1', 'Inception'),
-                                 ('2', 'ResNet'),
-                                 ('3', 'Model3')])
+    model = ClassifierField()
     image = FileField('Upload an image.',
                       validators=[FileAllowed(['jpg', 'jpeg', 'png']),
                                   FileRequired()])
