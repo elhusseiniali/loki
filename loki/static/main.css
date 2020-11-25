@@ -57,6 +57,26 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: bold;
   color: #cccccc;
 }
+.image-box2 {
+  width: 400px;
+  height: 404px;
+  border: 2px solid #000000;
+  margin-top: 15px;
+
+  /* Default text */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #cccccc;
+  background: repeating-linear-gradient(
+  -55deg,
+  #222,
+  #222 10px,
+  #333 10px,
+  #333 20px
+);
+}
 
 .image-box-content {
   display: none;

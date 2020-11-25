@@ -87,7 +87,7 @@
                 <tbody>
                     {% for model in models.items %}
                         <tr>
-                        <td>{{model.name}}</td>
+                        <td><a class="article-title" href="{{url_for('get_model', model_id = model.id)}}">{{ model.name }}</a></td>
                         <td>{{model.name}}</td>
                         <td>{{model.upload_date.strftime('%H:%M / %d-%m-%Y')}}</td>
 

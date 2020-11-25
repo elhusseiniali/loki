@@ -31,15 +31,16 @@
                             {% if form.validate_on_submit() %}
                                 {% for subfield in form.attacks %}
                                     {% if subfield.label.text == form.attacks.data %}
+                                    <div class="form-check">
                                         <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
                                         <label class="form-check-label" for="exampleRadios1">{{ subfield.label }}</label>
+                                    </div>
                                     {% else %}
-                                    <tr>
+                                    <div class="form-check disabled">
                                         <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" disabled>
                                         <label class="form-check-label" for="inlineRadio3">{{ subfield.label }}</label>
-                                    </tr>
+                                    </div>
                                     {% endif %}
-                                    <br>
                                 {% endfor %}
                             {% else %}
                                 {% for subfield in form.attacks %}
@@ -54,6 +55,10 @@
                             {% else %}
                                 <div class="form-group">
                                     {{ form.submit(class="btn btn-dark") }}
+                                </div>
+                                <div class="form-check">
+                                    {{ form.classify(class="form-check-input") }}
+                                    {{ form.classify.label(class="form-check-input-label") }}
                                 </div>
                             {% endif %}
                     </div>
@@ -71,6 +76,10 @@
                             </span>
                             {% endif %}
                         </div>
+                        <br>
+                        {% if form.classify.data == True and not(form.errors)%}
+                        <h3><B> Before attack: </B> Carotte</h3>
+                        {% endif %}
                         <div class="form-group">
                             {% if form.image.errors %}
                             {% for error in form.image.errors %}
@@ -80,15 +89,19 @@
                         </div>
                     </div>
                     <div class="col md-4">
-                        <div class="image-box" id="nextimageBox">
-                            {% if form.image.data and not(form.attacks.errors)%}
+                        <div class="image-box2" id="nextimageBox">
+                            {% if form.image.data and not(form.errors)%}
                             {% set result_filename %}tmp/{{ result_file }}{% endset %}
                             <img src="{{ url_for('static', filename=result_filename) }}" class="image-box-content2">
                             {% else %}
                             <img src="" alt="Next Image Preview" class="image-box-content">
-                            <span class="image-box__default-text">NextImage Preview</span>
+                            <span class="image-box__default-text"></span>
                             {% endif %}
                         </div>
+                        <br>
+                        {% if form.classify.data == True and not(form.errors)%}
+                        <h3><B> After attack: </B> Pomme</h3>
+                        {% endif %}
                     </div>
                 </div>
             </main>

@@ -8,7 +8,7 @@ from loki.forms import ClassifierForm, PredictForm
 
 from loki.classifiers import InceptionResNet as IR
 
-from loki.models import User, Classifier
+from loki.models import User, Classifier, Report
 
 from loki.attacks import gray
 from loki.utils import save_image, save_model, remove_model
@@ -138,7 +138,9 @@ def upload_model():
 @login_required
 def get_model(model_id):
     model = Classifier.query.get_or_404(model_id)
-    return render_template('model.html', title=model.name, model=model)
+    reports = Report.query.filter_by(model=model)
+    return render_template('model.html', title=model.name,
+                           model=model, reports=reports)
 
 
 @app.route("/models/delete/<int:model_id>", methods=['POST'])
@@ -151,7 +153,7 @@ def delete_model(model_id):
     db.session.delete(model)
     db.session.commit()
     flash('Your model has been deleted!', 'success')
-    return redirect(url_for('models'))
+    return redirect(url_for('account'))
 
 
 @app.route("/attacks/visualize",

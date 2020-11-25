@@ -111,6 +111,7 @@ class VisualizeAttackForm(FlaskForm):
                       id='image',
                       validators=[FileAllowed(['jpg', 'jpeg', 'png']),
                                   FileRequired()])
+    classify = BooleanField('Add Classifications')
     submit = SubmitField('Visualize attack')
 
 
