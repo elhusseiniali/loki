@@ -4,7 +4,7 @@ from loki import app, db
 
 from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from loki.forms import VisualizeAttackForm
-from loki.forms import ClassifierForm, PredictForm
+from loki.forms import UploadClassifierForm, PredictForm
 
 from loki.classifiers import InceptionResNet as IR
 
@@ -119,7 +119,7 @@ def account():
 def upload_model():
     """Upload a model. This automatically populates the User-Model relationship.
     """
-    form = ClassifierForm()
+    form = UploadClassifierForm()
     if form.validate_on_submit():
         model_path = save_model(form.model.data)
         classifier = Classifier(name=form.name.data, file_path=model_path,
@@ -173,14 +173,6 @@ def visualize_attack():
     that would happen on deployment (I think Docker is weird with this
     sort of stuff), and anyway it's bad practice to hardcode a path like
     this. I'll add it as an issue after the commit.
-
-    - The second render_template should be a simple
-    redirect(url_for('visualize_attack')).
-    This solves the issue of the form bugging when a refresh is done (because
-    of how Flask is with the request object).
-    However, because there are less than 3 hours left for the deadline,
-    I won't touch it.
-    I'll fix it after.
     """
     form = VisualizeAttackForm()
     if form.validate_on_submit():
@@ -190,7 +182,7 @@ def visualize_attack():
 
         result_file = gray(f"./loki/static/tmp/"
                            f"{image_file}")
-        flash("Base image successfully uploaded.", 'success')
+        flash("Attack successully run!", 'success')
 
         return render_template('visualize_attack.html', form=form,
                                image_file=image_file, result_file=result_file,
