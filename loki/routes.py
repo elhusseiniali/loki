@@ -158,11 +158,11 @@ def delete_model(model_id):
 
 
 @app.route('/models/download/<int:model_id>', methods=['GET', 'POST'])
- def download(model_id):
-     model = Classifier.query.get_or_404(model_id)
-     filepath = model.file_path
-     return send_file(filepath, as_attachment=True,
-                      attachment_filename=f'{model.name}.h5')
+def download_model(model_id):
+    model = Classifier.query.get_or_404(model_id)
+    filepath = model.file_path
+    return send_file(filepath, as_attachment=True,
+                     attachment_filename=f'{model.name}.h5')
 
 
 @app.route("/attacks/visualize",
