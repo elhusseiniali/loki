@@ -45,6 +45,7 @@
               Loki
           </a>
         </div>
+
         <div class="sidebar-wrapper">
           <div class="user">
               <div class="info">
@@ -52,7 +53,7 @@
               </div>
           </div>
           <ul class="nav">
-            <li class="active">
+            <li>
               <a href="{{ url_for('home') }}">
                 <i class="nc-icon nc-world-2"></i>
                 <p>Home</p>
@@ -66,13 +67,13 @@
                 </a>
               </li>
               <li>
-                <a data-toggle="collapse" href="#pagesExamples">
+                <a data-toggle="collapse" href="#collapseOne">
                   <i class="nc-icon nc-camera-compact"></i>
                   <p>Visualization
                       <b class="caret"></b>
                   </p>
                 </a>
-                <div class="collapse" id="pagesExamples">
+                <div class="collapse" id="collapseOne">
                     <ul class="nav">
                         <li>
                             <a href="{{ url_for('visualize_attack') }}">
@@ -143,9 +144,10 @@
               {% with messages = get_flashed_messages(with_categories=True) %}
                   {% if messages %}
                       {% for category, message in messages %}
-                          <div class="alert alert-{{ category }}">
-                              {{ message }}
-                          </div>
+                        <div class="alert alert-info alert-with-icon" data-notify="container">
+                          <span data-notify="icon" class="nc-icon nc-bell-55"></span>
+                          <span data-notify="message">{{ message }}</span>
+                        </div>
                       {% endfor %}
                   {% endif %}
               {% endwith %}
@@ -179,7 +181,7 @@
 
   <!-- Bootstrap -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <!--  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <!-- End Bootstrap -->
