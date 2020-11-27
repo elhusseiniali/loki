@@ -6,6 +6,17 @@
         {% else %}
             <title>loki</title>
     {% endif %}
+    <!-- Previous template boostrap -->
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <!-- End Boostrap -->
+
+    <!-- New template boostrap -->
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
@@ -17,8 +28,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
 
     <!-- Material Kit CSS -->
-    <link href="static/assets/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="static/assets/css/paper-dashboard.css?v=2.0.0" rel="stylesheet" />
+    <link href="../static/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../static/assets/css/paper-dashboard.css?v=2.0.0" rel="stylesheet" />
+    <!-- End Boostrap -->
 
   </head>
   <body>
@@ -100,43 +112,75 @@
       </div>
 
       <div class="main-panel">
-        <div class="content">       
-          Hello 
-        </div>
-        <footer class="footer" >
+        
+        <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute">
           <div class="container-fluid">
-            <nav>
-              <ul>
-                <li>
-                    <a href="{{ url_for('about') }}">
-                       About Us
-                    </a>
-                </li>
+            <div class="navbar-wrapper">
+              <div class="navbar-toggle">
+                <button type="button" class="navbar-toggler">
+                  <span class="navbar-toggler-bar bar1"></span>
+                  <span class="navbar-toggler-bar bar2"></span>
+                  <span class="navbar-toggler-bar bar3"></span>
+                </button>
+              </div>
+              <a class="navbar-brand" href="#">Dashboard</a>
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-bar navbar-kebab"></span>
+              <span class="navbar-toggler-bar navbar-kebab"></span>
+              <span class="navbar-toggler-bar navbar-kebab"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navigation">
+              <ul class="navbar-nav">
+                {% block nav_item %}
+                {% endblock nav_item %}
               </ul>
-            </nav>
-            <div class="copyright">
-              &copy; <script>document.write(new Date().getFullYear())</script> Coded by <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a>.
             </div>
           </div>
-        </footer>
+        </nav>
+        
+        <div class="content">
+              {% with messages = get_flashed_messages(with_categories=True) %}
+                  {% if messages %}
+                      {% for category, message in messages %}
+                          <div class="alert alert-{{ category }}">
+                              {{ message }}
+                          </div>
+                      {% endfor %}
+                  {% endif %}
+              {% endwith %}
+
+
+              {% block content %}
+              {% endblock content %}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </body>
   <!--   Core JS Files   -->
-  <script src="static/assets/js/core/jquery.min.js" type="text/javascript"></script>
-  <script src="static/assets/js/core/popper.min.js" type="text/javascript"></script>
-  <script src="static/assets/js/core/bootstrap.min.js" type="text/javascript"></script>
-  <script src="static/assets/js/plugins/perfect-scrollbar.jquery.min.js" type="text/javascript"></script>
+  <script src="../static/assets/js/core/jquery.min.js" type="text/javascript"></script>
+  <script src="../static/assets/js/core/popper.min.js" type="text/javascript"></script>
+  <script src="../static/assets/js/core/bootstrap.min.js" type="text/javascript"></script>
+  <script src="../static/assets/js/plugins/perfect-scrollbar.jquery.min.js" type="text/javascript"></script>
 
   <!--  Google Maps Plugin    -->
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
 
   <!-- Chart JS -->
-  <script src="static/assets/js/plugins/chartjs.min.js"></script>
+  <script src="../static/assets/js/plugins/chartjs.min.js"></script>
 
   <!--  Notifications Plugin    -->
-  <script src="static/assets/js/plugins/bootstrap-notify.js"></script>
+  <script src="../static/assets/js/plugins/bootstrap-notify.js"></script>
 
   <!-- Control Center for Paper Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="static/assets/js/paper-dashboard.js?v=2.0.0" type="text/javascript"></script>
+  <script src="../static/assets/js/paper-dashboard.js?v=2.0.0" type="text/javascript"></script>
+
+  <!-- Bootstrap -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <!-- End Bootstrap -->
 </html>
