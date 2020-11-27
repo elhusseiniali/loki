@@ -24,18 +24,17 @@
                         {{ form.name(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
-                <div class="form-group">
-					{{ form.model(class="form-control-file")}}
-					{% if form.model.errors %}
-						{% for error in form.model.errors %}
-							<span class="text-danger">{{ error }} </span></br>
-						{% endfor %}
-					{% endif %}
-				</div>
             </fieldset>
+            {{ form.model()}}
+            {% if form.model.errors %}
+                {% for error in form.model.errors %}
+                    <span class="text-danger">{{ error }} </span></br>
+                {% endfor %}
+            {% endif %}
             <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+                {{ form.submit(class="btn btn-outline-dark") }}
             </div>
         </form>
     </div>
+
 {% endblock content %}
