@@ -201,18 +201,18 @@ def visualize_attack():
         att = linf.run(classifier.prep_tensor(img,
                                               normalize=False),
                        labels=label)
-        classifier.save_image(att, scale=3.25,
-                              filename="./loki/static/tmp/ATTACK_IMAGE.jpg")
+        result_path = PyTorchAttack.save_image(images=att,
+                                               base_dir="./loki/static/tmp/",
+                                               scale=3.5)
         # img_att = Image.open("ATTACK_IMAGE.jpg")
 
         image_file = save_image(form.image.data, path="tmp",
                                 output_size=(400, 400))
 
-        result_file = "ATTACK_IMAGE.jpg"
         flash("Attack successully run!", 'success')
 
         return render_template('visualize_attack.html', form=form,
-                               image_file=image_file, result_file=result_file,
+                               image_file=image_file, result_file=result_path,
                                index=index)
     return render_template('visualize_attack.html', form=form)
 
