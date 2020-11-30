@@ -1,118 +1,204 @@
-from facenet_pytorch import MTCNN, InceptionResnetV1
 import torch
+from torchvision import transforms
 
-import pandas as pd
+from typing import Tuple, Any, Optional
+import numpy as np
+import eagerpy as ep
 
-from PIL import Image
+import matplotlib.pyplot as plt
+
+import json
 
 
-class InceptionResNet():
-    """ A variant of FaceNet, a facial recognition system.
-    https://deeplearning4j.org/api/latest/org/deeplearning4j/zoo/model/InceptionResNetV1.html
+class ImageNetClassifier():
+    """A class to provide common setup for all torchivision models that
+    are pre-trained on the ImageNet[1] dataset.
+
+    [1]: http://image-net.org
     """
-    def __init__(self, pretrain='vggface2'):
-        """Setup PyTorch to do all the work.
+    def __init__(self, model):
+        """Basic setup tasks for the model.
 
-        - MTCNN: used to detect faces from input images, and to prepare the
-        image for classification.
-        https://arxiv.org/abs/1604.02878
-        - device: if available, use an NVIDIA GPU (PyTorch has optimizations
-        for CUDA).
-        - resnet: the actual model doing the classification.
-        - names: human names (instead of class indices) for VGGFace2.
-        This implementation is temporary. A better implementation would have
-        a Data class (with Data.data and Data.labels holding images and labels,
-        respectively), and then this class would be used in our classifier.
+        1.  device: if CUDA drivers are available, attach classifier to
+        GPU. Otherwise, use CPU.
+        2.  model.eval(): use model (check parameters below) in classifier
+        mode.
+        3.  transform: used to transform images to the form that the model
+        needs.
+        4.  normalize: normalize images as part of pre-processing expected by
+        the model.
+        5.  labels: human-readable labels (as opposed to class indices) for
+        the classes (e.g. 'dog' instead of some integer).
 
         Parameters
         ----------
-        pretrain : str, optional
-            Dataset that the model was pre-trained on, by default 'vggface2'.
-            https://www.robots.ox.ac.uk/~vgg/data/vgg_face2/
-
-            For now, this is implemented with a default value because it's the
-            only option we tried. We might have to revisit the design for other
-            variants. Note that, in facenet_pytorch, there is another option
-            (specifically, the casia-webface dataset).
+        model: [type]
+            [description]
         """
         self.device = torch.device('cuda:0' if torch.cuda.is_available()
                                    else 'cpu')
+        self.model = model.to(self.device)
+        self.model.eval()
 
-        self.mtcnn = MTCNN(
-            image_size=160, margin=0, min_face_size=20,
-            thresholds=[0.6, 0.7, 0.7], factor=0.709, post_process=True,
-            device=self.device
+        self.transform = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor()
+        ])
+
+        self.normalize = transforms.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225])
+        self.labels = self.generate_labels()
+
+    def generate_labels(self):
+        """Get labels from imagenet_class_index.json.
+
+        Returns
+        -------
+        idx2label: [list of str]
+            idx2label[class_id] gives the actual label as a string.
+        """
+        class_idx = json.load(open("./loki/static/models/imagenet/"
+                                   "imagenet_class_index.json"))
+        idx2label = [class_idx[str(k)][1] for k in range(len(class_idx))]
+
+        return idx2label
+
+    def prep_label(self, index):
+        return torch.as_tensor(index).to(self.device).unsqueeze(0)
+
+    def prep_tensor(self, img, normalize=True):
+        """Prepare an image to be given to the model.
+
+        Parameters
+        ----------
+        img: [PIL image or np.ndarray]
+            Any image.
+        normalize: bool, optional
+            Choice to normalize an image or not, by default True.
+            For prediction, images need to be normalized. When prepping
+            for an attack, they shouldn't be (because Foolbox does it
+            on its own).
+
+        Returns
+        -------
+        [PyTorch.Tensor]
+            PyTorch tensor representing the input image, attached to whatever
+            device the model is attached to (i.e. GPU or CPU).
+        """
+        if normalize:
+            img_t = self.normalize(self.transform(img))
+        else:
+            img_t = self.transform(img)
+        batch_t = torch.unsqueeze(img_t, 0).to(self.device)
+
+        return batch_t
+
+    def predict(self, img, n=5):
+        """Get classification from model.
+
+        Parameters
+        ----------
+        img: [PIL Image or nd.array]
+            Any image.
+        n: int, optional
+            number of classes, by default 5.
+
+        Returns
+        -------
+        [list of tuple]
+            A tuple in this list has the form:
+                (tensor(class_id, device), label, percentage), where:
+                - class_id is the id for the predicted ImageNet class,
+                device is CPU or GPU;
+                - label is the human-readable label of the
+                class from class_id;
+                - percentage is the model's confidence level that the image
+                belongs to this class.
+        """
+        out = self.model(self.prep_tensor(img))
+
+        _, index = torch.sort(out, descending=True)
+        percentage = torch.nn.functional.softmax(out, dim=1)[0] * 100
+
+        return [(i, self.labels[i],
+                percentage[i].item()) for i in index[0][:n]]
+
+    def save_image(
+        self,
+        images: Any,
+        *,
+        n: Optional[int] = None,
+        data_format: Optional[str] = None,
+        bounds: Tuple[float, float] = (0, 1),
+        ncols: Optional[int] = None,
+        nrows: Optional[int] = None,
+        figsize: Optional[Tuple[float, float]] = None,
+        scale: float = 1,
+        filename: str = "result.jpg",
+        **kwargs: Any,
+    ) -> None:
+        """This function saves the passed image as filename, and displays
+        it in a matplotlib.plt figure.
+        Adapted from Foolbox.plot.images[1].
+
+        [1]: https://github.com/bethgelab/foolbox/
+        """
+        x: ep.Tensor = ep.astensor(images)
+        if x.ndim != 4:
+            raise ValueError(
+                "expected images to have four dimensions: "
+                "(N, C, H, W) or (N, H, W, C)"
+            )
+        if n is not None:
+            x = x[:n]
+        if data_format is None:
+            channels_first = x.shape[1] == 1 or x.shape[1] == 3
+            channels_last = x.shape[-1] == 1 or x.shape[-1] == 3
+            if channels_first == channels_last:
+                raise ValueError("data_format ambigous, "
+                                 "please specify it explicitly")
+        else:
+            channels_first = data_format == "channels_first"
+            channels_last = data_format == "channels_last"
+            if not channels_first and not channels_last:
+                raise ValueError(
+                    "expected data_format to be 'channels_first' or"
+                    " 'channels_last'"
+                )
+        assert channels_first != channels_last
+        x = x.numpy()
+        if channels_first:
+            x = np.transpose(x, axes=(0, 2, 3, 1))
+        min_, max_ = bounds
+        x = (x - min_) / (max_ - min_)
+
+        if nrows is None and ncols is None:
+            nrows = 1
+        if ncols is None:
+            assert nrows is not None
+            ncols = (len(x) + nrows - 1) // nrows
+        elif nrows is None:
+            nrows = (len(x) + ncols - 1) // ncols
+        if figsize is None:
+            figsize = (ncols * scale, nrows * scale)
+        fig, axes = plt.subplots(
+            ncols=ncols,
+            nrows=nrows,
+            figsize=figsize,
+            squeeze=False,
+            constrained_layout=True,
+            **kwargs,
         )
-        self.resnet = InceptionResnetV1(pretrained=pretrain).eval()\
-                                                            .to(self.device)
-        self.resnet.classify = True
 
-        self.names = self.vggface2_labels()
-
-    def vggface2_labels(self):
-        """Extract all the names from identity_meta.csv, provided
-        by the authors of VGGFace2.
-
-        Returns
-        -------
-        [Pandas DataFrame], dict-like.
-            A dict-like structure that has two columns/keys: Class_ID and Name.
-        """
-        id_meta = pd.read_csv("loki/static/models/vggface2/identity_meta.csv",
-                              sep="\n")
-        id_meta = id_meta[
-            'Class_ID, Name, Sample_Num, Flag, Gender'].str\
-                                                       .split(',', expand=True)
-
-        id_meta.columns = [
-            'Class_ID', 'Name', 'Sample_Num', 'Flag', 'Gender', 'None']
-        id_meta.drop(columns=['None'], inplace=True)
-
-        vgg_names = id_meta.drop(columns=[
-            'Sample_Num', 'Flag', 'Gender']).set_index('Class_ID')
-
-        return vgg_names
-
-    def get_label(self, index, key="Name"):
-        """Get the human name from class ID.
-
-        Parameters
-        ----------
-        index : [int]
-            Class ID (usually, training sets are oragnized as folders of
-            different IDs, one folder per class, or human, in our case)
-        key : str, optional
-            Key inside the struct that holds the names, by default "Name".
-
-        Returns
-        -------
-        [type]
-            [description]
-        """
-        return eval(self.names[key][index])
-
-    def predict(self, path):
-        """Run the classifier.
-
-        Parameters
-        ----------
-        path : [str]
-            Input image path.
-
-        Returns
-        -------
-        [str]
-            Name of the person whose face the model thinks the
-            image belongs to.
-        """
-        img = Image.open("loki/" + path)
-
-        # crop and pre-whiten image tensor
-        img_cropped = self.mtcnn(img).to(self.device)
-
-        img_probs = self.resnet(img_cropped.unsqueeze(0))
-
-        result = img_probs[0].argmax()
-        index = result.item() + 1
-
-        return self.get_label(index=index)
+        for row in range(nrows):
+            for col in range(ncols):
+                ax = axes[row][col]
+                ax.set_xticks([])
+                ax.set_yticks([])
+                ax.axis("off")
+                i = row * ncols + col
+                if i < len(x):
+                    ax.imshow(x[i])
+        plt.savefig(filename)
