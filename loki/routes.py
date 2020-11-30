@@ -6,14 +6,20 @@ from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from loki.forms import VisualizeAttackForm
 from loki.forms import UploadClassifierForm, PredictForm
 
-from loki.classifiers import InceptionResNet as IR
+from loki.classifiers import ImageNetClassifier
+import torchvision.models as models
+
+from loki.attacks import PyTorchAttack
+import foolbox as fb
 
 from loki.models import User, Classifier, Report
 
-from loki.attacks import gray
+# from loki.attacks import gray
 from loki.utils import save_image, save_model, remove_model
 
 from flask_login import login_user, current_user, logout_user, login_required
+
+from PIL import Image
 
 
 @app.route("/")
@@ -177,11 +183,32 @@ def visualize_attack():
     form = VisualizeAttackForm()
     if form.validate_on_submit():
         index = len(form.model.choices) - int(form.model.data)
+        if form.model.data == 1:
+            classifier = ImageNetClassifier(model=models.
+                                            alexnet(pretrained=True))
+        elif form.model.data == 2:
+            classifier = ImageNetClassifier(model=models.
+                                            inception_v3(pretrained=True))
+        else:
+            classifier = ImageNetClassifier(model=models.
+                                            alexnet(pretrained=True))
+
+        img = Image.open(form.image.data)
+        label_index = classifier.predict(img, n=1)[0][0].item()
+        label = classifier.prep_label(label_index)
+
+        linf = PyTorchAttack(classifier.model, fb.attacks.LinfDeepFoolAttack())
+        att = linf.run(classifier.prep_tensor(img,
+                                              normalize=False),
+                       labels=label)
+        classifier.save_image(att, scale=3.25,
+                              filename="./loki/static/tmp/ATTACK_IMAGE.jpg")
+        # img_att = Image.open("ATTACK_IMAGE.jpg")
+
         image_file = save_image(form.image.data, path="tmp",
                                 output_size=(400, 400))
 
-        result_file = gray(f"./loki/static/tmp/"
-                           f"{image_file}")
+        result_file = "ATTACK_IMAGE.jpg"
         flash("Attack successully run!", 'success')
 
         return render_template('visualize_attack.html', form=form,
@@ -203,8 +230,17 @@ def predict():
         path = url_for('static',
                        filename=f"tmp/"
                                 f"{image_file}")
-        classifier = IR()
-        label = classifier.predict(path)
+        if form.model.data == 1:
+            classifier = ImageNetClassifier(model=models.
+                                            alexnet(pretrained=True))
+        elif form.model.data == 2:
+            classifier = ImageNetClassifier(model=models.
+                                            inception_v3(pretrained=True))
+        else:
+            classifier = ImageNetClassifier(model=models.
+                                            alexnet(pretrained=True))
+        img = Image.open(f"./loki/{path}")
+        label = classifier.predict(img)
 
         flash("Done!", 'success')
 
