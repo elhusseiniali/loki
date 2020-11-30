@@ -42,8 +42,9 @@ def save_image(source_image, path, output_size=(125, 125)):
 
     Parameters
     ----------
-    source_image : [image]
+    source_image : [WTForm.image]
         User-uploaded image.
+        Must have .filename method if duck-typing.
     path: [string]
         Base dir to save image.
     output_size : tuple, optional
