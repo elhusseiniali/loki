@@ -43,7 +43,7 @@ pyparsing==2.4.7
 pytest==6.1.1
 pytest-cov==2.10.1
 python-dateutil==2.8.1
-pytz==2020.4
+pytz==2020.1
 r2c-py-ast==0.1.0b1
 requests==2.25.0
 schwifty==2020.9.0
