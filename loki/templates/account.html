@@ -53,16 +53,18 @@
                             {% endif %}
                         </div>
                     </fieldset>
-                    {{ form.image.label() }}
+                    <tr>
+                        {{ form.image.label() }} <br>
+                        {{ form.image() }}
+                    </tr>
                     <br>
-                    {{ form.image() }}
                     {% if form.image.errors %}
                     {% for error in form.image.errors %}
-                        <span class="text-danger"> {{ error }} </span></br>
+                        <span class="text-danger"> {{ error }} </span>
                     {% endfor %}
                     {% endif %}
                     <div class="form-group">
-                        {{ form.submit(class="btn btn-outline-info") }}
+                        {{ form.submit(class="btn btn-dark") }}
                     </div>
                 </form>
         </div>
