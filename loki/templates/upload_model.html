@@ -1,4 +1,4 @@
-{% extends 'template.html' %}
+{% extends 'layout.html' %}
 
 {% block content %}
     <div class="content-section">
@@ -24,17 +24,25 @@
                         {{ form.name(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
+                <div class="form-group">
+					{{ form.model(class="form-control-file")}}
+					{% if form.model.errors %}
+						{% for error in form.model.errors %}
+							<span class="text-danger">{{ error }} </span></br>
+						{% endfor %}
+					{% endif %}
+				</div>
             </fieldset>
-            {{ form.model()}}
-            {% if form.model.errors %}
-                {% for error in form.model.errors %}
-                    <span class="text-danger">{{ error }} </span></br>
-                {% endfor %}
-            {% endif %}
             <div class="form-group">
-                {{ form.submit(class="btn btn-outline-dark") }}
+                {{ form.submit(class="btn btn-outline-info") }}
             </div>
         </form>
     </div>
 
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Don't have an account?
+            <a class="ml-2" href="{{ url_for('register') }}">Sign up now</a>
+        </small>
+    </div>
 {% endblock content %}
