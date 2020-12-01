@@ -30,8 +30,8 @@ class ClassifierField(SelectField):
         else:
             user_choices = [(model.id, model.name) for model in user_models]
 
-        pretrained_choices = [("Inception v3", "Inception v3"),
-                              ("ResNet18", "ResNet18")]
+        pretrained_choices = [("1", "Inception v3"),
+                              ("2", "AlexNet")]
 
         self.choices = user_choices + pretrained_choices
 
