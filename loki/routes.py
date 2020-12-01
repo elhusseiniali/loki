@@ -1,6 +1,5 @@
 import json
 from flask import render_template, flash, redirect, url_for, request, abort
-from flask import send_file
 from loki import app, db
 
 from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
@@ -26,7 +25,7 @@ from PIL import Image
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('template.html', title='Home')
+    return render_template('home.html', title='Home')
 
 
 @app.route("/about")
@@ -161,14 +160,6 @@ def delete_model(model_id):
     db.session.commit()
     flash('Your model has been deleted!', 'success')
     return redirect(url_for('account'))
-
-
-@app.route('/models/download/<int:model_id>', methods=['GET', 'POST'])
-def download_model(model_id):
-    model = Classifier.query.get_or_404(model_id)
-    filepath = model.file_path
-    return send_file(filepath, as_attachment=True,
-                     attachment_filename=f'{model.name}.h5')
 
 
 @app.route("/attacks/visualize",

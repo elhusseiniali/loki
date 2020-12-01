@@ -1,4 +1,4 @@
-{% extends "template.html" %}
+{% extends "layout.html" %}
 {% block content %}
 	<article class="media content-section">
 	  <div class="media-body">
@@ -6,10 +6,7 @@
 		  <h2 class="article-title">{{ model.name }}</h2>
 		  <p class="article-content">{{model.upload_date.strftime('%H:%M / %d-%m-%Y') }}</p>
 		    <div>
-			  <a href="{{ url_for('download_model', model_id=model.id) }}">
-				<button type="button" class="btn btn-dark">Download</button>
-			  </a>
-			  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"> Delete </button>
+		      <button type="button" class="btn btn-danger btn-sm mt-1 mb-1" data-toggle="modal" data-target="#deleteModal"> Delete </button>
 		    </div>
 		Display of the model/More information about the model
 		</div>

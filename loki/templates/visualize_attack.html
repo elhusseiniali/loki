@@ -1,4 +1,4 @@
-{% extends 'template.html' %}
+{% extends 'layout.html' %}
 
 
 {% block content %}
@@ -30,17 +30,18 @@
                             {% endif %}
                             {% if form.validate_on_submit() %}
                                 {% for subfield in form.attacks %}
-                                    <tr>
-                                    {% if subfield.data == form.attacks.data %}
-                                        {{ subfield }}
+                                    {% if subfield.label.text == form.attacks.data %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                                        <label class="form-check-label" for="exampleRadios1">{{ subfield.label }}</label>
+                                    </div>
                                     {% else %}
-                                        {{subfield(disabled = True)}}
+                                    <div class="form-check disabled">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" disabled>
+                                        <label class="form-check-label" for="inlineRadio3">{{ subfield.label }}</label>
+                                    </div>
                                     {% endif %}
-                                    {{ subfield.label }}
-                                    </tr>
-                                    <br>
                                 {% endfor %}
-
                             {% else %}
                                 {% for subfield in form.attacks %}
                                     <tr>{{ subfield }} {{ subfield.label }}</tr>
@@ -49,16 +50,18 @@
                             {% endif %}
                             {% if form.validate_on_submit() %}
                                 <a href="{{ url_for('visualize_attack') }}">
-                                    <button type="button" class="btn btn-dark">Classify a new image</button>
+                                    <button type="button" class="btn btn-dark">{{ form.submit.label }}</button>
                                 </a>
                             {% else %}
-                                <h4>
+                            <div class="form-check">
+                                {{ form.classify(class="form-check-input") }}
+                                <h3>
                                     {{ form.classify.label(class="form-check-input-label") }}
-                                    {{ form.classify() }}
-                                </h4>
-                                <div class="form-group">
-                                    {{ form.submit(class="btn btn-dark") }}
-                                </div>
+                                </h3>
+                            </div>
+                            <div class="form-group">
+                                {{ form.submit(class="btn btn-dark") }}
+                            </div>
                             {% endif %}
                     </div>
                     <div class="col md-4">
@@ -105,6 +108,7 @@
                 </div>
             </main>
         </form>
+
     </div>
 </div>
 
