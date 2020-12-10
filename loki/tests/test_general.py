@@ -55,35 +55,46 @@ class FlaskTestCase(BaseTestCase):
         self.assert_context("title", "Register")
 
     def test_account(self):
-        response = self.client.get('/account', content_type='html/text', follow_redirects=True)
+        response = self.client.get(
+            '/account', content_type='html/text', follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assert_template_used('login.html')
         self.assert_context("title", "Log in")
         self.assertIn(b'Please log in to access this page.', response.data)
 
     def test_logout(self):
-        response = self.client.get('/logout', content_type='html/text', follow_redirects=True)
+        response = self.client.get(
+            '/logout', content_type='html/text', follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assert_template_used('login.html')
         self.assert_context("title", "Log in")
         self.assertIn(b'Please log in to access this page.', response.data)
 
     def test_model_upload(self):
-        response = self.client.get('/models/upload', content_type='html/text', follow_redirects=True)
+        response = self.client.get(
+            '/models/upload', content_type='html/text', follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assert_template_used('login.html')
         self.assert_context("title", "Log in")
         self.assertIn(b'Please log in to access this page.', response.data)
 
     def test_model_predict(self):
-        response = self.client.get('/models/predict', content_type='html/text', follow_redirects=True)
+        response = self.client.get(
+            '/models/predict', content_type='html/text', follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assert_template_used('login.html')
         self.assert_context("title", "Log in")
         self.assertIn(b'Please log in to access this page.', response.data)
-    
+
     def test_attacks_visualize(self):
-        response = self.client.get('/attacks/visualize', content_type='html/text', follow_redirects=True)
+        response = self.client.get(
+            '/attacks/visualize', content_type='html/text',
+            follow_redirects=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assert_template_used('login.html')
         self.assert_context("title", "Log in")
@@ -116,7 +127,7 @@ class LoginAndOutTests(BaseTestCase):
             self.assertIn(b'Invalid email address.', response.data)
             self.assertFalse(current_user.is_active)
             self.assertFalse(current_user.is_authenticated)
-    
+
     # Ensure login behaves correctly with empty password
     def test_incorrect_login_password_empty(self):
         with self.client:
@@ -138,7 +149,7 @@ class LoginAndOutTests(BaseTestCase):
                 follow_redirects=True
             )
             self.assertEqual(response.status_code, 200)
-            self.assertIn(b'You are logged in!' , response.data)
+            self.assertIn(b'You are logged in!', response.data)
             self.assertTrue(current_user.is_active)
             self.assertTrue(current_user.is_authenticated)
 
@@ -177,29 +188,38 @@ class RegisterTests(BaseTestCase):
         with self.client:
             response = self.client.post(
                 '/register',
-                data=dict(username="", email="test@gmail.com", password="test", confirm_password="test")
+                data=dict(
+                    username="", email="test@gmail.com", password="test",
+                    confirm_password="test"
+                )
             )
             self.assertIn(b'This field is required.', response.data)
             self.assertFalse(current_user.is_active)
             self.assertFalse(current_user.is_authenticated)
-        
+
     # Ensure login behaves correctly with empty email
     def test_incorrect_register_email_empty(self):
         with self.client:
             response = self.client.post(
                 '/register',
-                data=dict(username="test", email="", password="test", confirm_password="test")
+                data=dict(
+                    username="test", email="", password="test",
+                    confirm_password="test"
+                )
             )
             self.assertIn(b'This field is required.', response.data)
             self.assertFalse(current_user.is_active)
             self.assertFalse(current_user.is_authenticated)
-    
+
     # Ensure login behaves correctly with empty password
     def test_incorrect_register_password_empty(self):
         with self.client:
             response = self.client.post(
                 '/register',
-                data=dict(username="test", email="test@gmail.com", password="", confirm_password="test")
+                data=dict(
+                    username="test", email="test@gmail.com", password="",
+                    confirm_password="test"
+                )
             )
             self.assertIn(b'This field is required.', response.data)
             self.assertFalse(current_user.is_active)
@@ -210,7 +230,10 @@ class RegisterTests(BaseTestCase):
         with self.client:
             response = self.client.post(
                 '/register',
-                data=dict(username="test", email="test@gmail.com", password="test", confirm_password="")
+                data=dict(
+                    username="test", email="test@gmail.com", password="test",
+                    confirm_password=""
+                )
             )
             self.assertIn(b'This field is required.', response.data)
             self.assertFalse(current_user.is_active)
@@ -221,18 +244,27 @@ class RegisterTests(BaseTestCase):
         with self.client:
             response = self.client.post(
                 '/register',
-                data=dict(username="t", email="test@gmail.com", password="test", confirm_password="test")
+                data=dict(
+                    username="t", email="test@gmail.com", password="test",
+                    confirm_password="test"
+                )
             )
-            self.assertIn(b'Field must be between 2 and 15 characters long.', response.data)
+            self.assertIn(
+                b'Field must be between 2 and 15 characters long.',
+                response.data
+            )
             self.assertFalse(current_user.is_active)
             self.assertFalse(current_user.is_authenticated)
 
-    # Ensure login behaves correctly with confirm password not equal to password
+    # Ensure login behaves correctly with confirm password different
     def test_invalid_register_confirm(self):
         with self.client:
             response = self.client.post(
                 '/register',
-                data=dict(username="test", email="test@gmail.com", password="test", confirm_password="test2")
+                data=dict(
+                    username="test", email="test@gmail.com", password="test",
+                    confirm_password="test2"
+                )
             )
             self.assertIn(b'Field must be equal to password.', response.data)
             self.assertFalse(current_user.is_active)
@@ -243,18 +275,24 @@ class RegisterTests(BaseTestCase):
         with self.client:
             response = self.client.post(
                 '/register',
-                data=dict(username="admin", email="test@gmail.com", password="test", confirm_password="test")
+                data=dict(
+                    username="admin", email="test@gmail.com", password="test",
+                    confirm_password="test"
+                )
             )
             self.assertIn(b'Username already exists!', response.data)
             self.assertFalse(current_user.is_active)
             self.assertFalse(current_user.is_authenticated)
-    
+
     # Ensure login behaves correctly with email already existing
     def test_invalid_register_email_old(self):
         with self.client:
             response = self.client.post(
                 '/register',
-                data=dict(username="test", email="ad@min.com", password="test", confirm_password="test")
+                data=dict(
+                    username="test", email="ad@min.com", password="test",
+                    confirm_password="test"
+                )
             )
             self.assertIn(b'Account with email already exists!', response.data)
             self.assertFalse(current_user.is_active)
@@ -265,13 +303,19 @@ class RegisterTests(BaseTestCase):
         with self.client:
             response = self.client.post(
                 '/register',
-                data=dict(username="test", email="test@gmail.com", password="test", confirm_password="test"),
+                data=dict(
+                    username="test", email="test@gmail.com", password="test",
+                    confirm_password="test"
+                ),
                 follow_redirects=True
             )
             self.assertEqual(response.status_code, 200)
-            self.assertIn(b'Account created! You can now log in.' , response.data)
+            self.assertIn(
+                b'Account created! You can now log in.', response.data
+            )
             self.assertFalse(current_user.is_active)
             self.assertFalse(current_user.is_authenticated)
-            
+
+
 if __name__ == '__main__':
     unittest.main()

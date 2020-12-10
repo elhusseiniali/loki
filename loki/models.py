@@ -9,7 +9,7 @@ import datetime
 @login_manager.user_loader
 def load_user(user_id):
     """Get the current logged-in User object.
-    
+
     Parameters
     ----------
     user_id : [int]

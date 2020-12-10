@@ -1,6 +1,6 @@
 import os
 import secrets
-from flask import current_app, request
+from flask import current_app
 from PIL import Image
 
 
