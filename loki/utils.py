@@ -2,6 +2,7 @@ import os
 import secrets
 from flask import current_app, request
 from PIL import Image
+import PIL
 
 
 def save_model(form_model):
@@ -58,6 +59,11 @@ def save_image(source_image, path, output_size=(125, 125)):
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(source_image.filename)
 
+    if not f_ext:
+        # This is in case a PIL image or
+        # some buffer data was passed.
+        f_ext = ".jpg"
+
     image_fn = random_hex + f_ext
     image_path = os.path.join(current_app.root_path,
                               'static/' + path,
@@ -84,6 +90,10 @@ def compress_image(image, output_size=(125, 125)):
     [i]
         Compressed image.
     """
-    i = Image.open(image)
+    if isinstance(image, PIL.ImageFile.ImageFile):
+        i = image
+    else:
+        i = Image.open(image)
+
     i.thumbnail(output_size)
     return i
