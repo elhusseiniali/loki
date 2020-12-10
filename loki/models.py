@@ -9,7 +9,7 @@ import datetime
 @login_manager.user_loader
 def load_user(user_id):
     """Get the current logged-in User object.
-
+    
     Parameters
     ----------
     user_id : [int]
@@ -37,7 +37,6 @@ class User(db.Model, UserMixin):
     _password: [string]
         Hashed password.
         Extra functions are there to hash the password then store it.
-
     Relationships
     -------------
     models: [Model]
@@ -104,7 +103,6 @@ class Classifier(db.Model):
         Upload date.
     file_path: [string]
         Set by the server. File path for the model on the file system.
-
     Relationships
     -------------
     user: [User]
@@ -151,7 +149,6 @@ class Report(db.Model):
         Actual report data.
     model: [Model]
         Classifier for which the report is generated.
-
     Relationships
     -------------
     model: [Model]

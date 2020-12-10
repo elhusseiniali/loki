@@ -11,12 +11,6 @@ from flask_login import current_user
 from loki.models import User, Classifier
 
 
-class EmailField(StringField):
-    email = StringField('Email',
-                        validators=[DataRequired(),
-                                    Email()])
-
-
 class ClassifierField(SelectField):
     """Set options in the model selector to all classifiers.
     """
@@ -47,7 +41,9 @@ class RegistrationForm(FlaskForm):
     username = StringField('Username',
                            validators=[DataRequired(),
                                        Length(min=2, max=15)])
-    email = EmailField()
+    email = StringField('Email',
+                        validators=[DataRequired(),
+                                    Email()])
     password = PasswordField('Password',
                              validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password',
@@ -69,7 +65,9 @@ class RegistrationForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    email = EmailField()
+    email = StringField('Email',
+                        validators=[DataRequired(),
+                                    Email()])
     password = PasswordField('Password',
                              validators=[DataRequired()])
     remember = BooleanField('Remember Me')
@@ -80,7 +78,9 @@ class UpdateAccountForm(FlaskForm):
     username = StringField('Username',
                            validators=[DataRequired(),
                                        Length(min=2, max=15)])
-    email = EmailField()
+    email = StringField('Email',
+                        validators=[DataRequired(),
+                                    Email()])
     image = FileField('Update Profile Picture',
                       validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
 

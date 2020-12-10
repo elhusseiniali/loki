@@ -24,7 +24,7 @@ def home():
 
 @app.route("/about")
 def about():
-    return render_template('about.html')
+    return render_template('about.html', title='About')
 
 
 @app.route("/register",
@@ -35,9 +35,9 @@ def register():
 
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data,
-                    email=form.email.data,
-                    password=form.password.data)
+        user = User(username=request.form.get("username"),
+                    email=request.form.get("email"),
+                    password=request.form.get("password"))
         db.session.add(user)
         db.session.commit()
 
@@ -60,6 +60,7 @@ def login():
         if user and user.verify_password(form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
+            flash("You are logged in!", 'success')
             return redirect(next_page) if next_page \
                 else redirect(url_for('home'))
         else:
@@ -72,8 +73,10 @@ def login():
 
 @app.route("/logout",
            methods=['GET'])
+@login_required
 def logout():
     logout_user()
+    flash("You are logged out!", 'success')
     return redirect(url_for('home'))
 
 
