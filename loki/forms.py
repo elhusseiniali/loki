@@ -25,13 +25,16 @@ class ClassifierField(SelectField):
         user_models = Classifier.query.filter_by(user=current_user). \
             order_by(Classifier.upload_date.desc())
 
-        if not user_models:
-            user_choices = [(user_models.count() + 1, 'None')]
-        else:
-            user_choices = [(model.id, model.name) for model in user_models]
+        pretrained_choices = [("0", "AlexNet"),
+                              ("1", "Inception v3")]
 
-        pretrained_choices = [("1", "Inception v3"),
-                              ("2", "AlexNet")]
+        offset = len(pretrained_choices)
+
+        if not user_models:
+            user_choices = [(user_models.count() + offset, 'None')]
+        else:
+            user_choices = [(model.id + offset - 1,
+                             model.name) for model in user_models]
 
         self.choices = user_choices + pretrained_choices
 
@@ -39,8 +42,8 @@ class ClassifierField(SelectField):
 class AttackField(RadioField):
     def __init__(self, *args, **kwargs):
         super(AttackField, self).__init__(*args, **kwargs)
-        self.choices = [('carlini', 'L2CarliniWagner'),
-                        ('deepfool', 'LinDeepFool')]
+        self.choices = [('0', 'L2CarliniWagner'),
+                        ('1', 'LinDeepFool')]
 
 
 class RegistrationForm(FlaskForm):
