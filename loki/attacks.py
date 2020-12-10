@@ -5,7 +5,9 @@ import numpy as np
 import eagerpy as ep
 
 import matplotlib.pyplot as plt
-import secrets
+
+from PIL import Image
+import io
 
 
 class PyTorchAttack():
@@ -67,7 +69,7 @@ class PyTorchAttack():
         return advs
 
     @staticmethod
-    def save_image(
+    def get_image(
         images: Any,
         *,
         n: Optional[int] = None,
@@ -77,11 +79,9 @@ class PyTorchAttack():
         nrows: Optional[int] = None,
         figsize: Optional[Tuple[float, float]] = None,
         scale: float = 1,
-        base_dir: str = " ",
         **kwargs: Any,
     ) -> None:
-        """This function saves the passed image as filename, and displays
-        it in a matplotlib.plt figure.
+        """This function returns a PIL image of the passed Tensor.
         Adapted from Foolbox.plot.images[1].
 
         [1]: https://github.com/bethgelab/foolbox/
@@ -143,9 +143,9 @@ class PyTorchAttack():
                 if i < len(x):
                     ax.imshow(x[i])
 
-        random_hex = secrets.token_hex(8)
-        file_name = random_hex + ".jpg"
-        path = base_dir + file_name
-        plt.savefig(path)
+        buf = io.BytesIO()
+        plt.savefig(buf, format='jpg')
+        buf.seek(0)
 
-        return file_name
+        img = Image.open(buf)
+        return img
