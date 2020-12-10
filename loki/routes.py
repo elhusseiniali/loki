@@ -183,10 +183,10 @@ def visualize_attack():
     form = VisualizeAttackForm()
     if form.validate_on_submit():
         index = len(form.model.choices) - int(form.model.data)
-        if form.model.data == 1:
+        if form.model.data == 0:
             classifier = ImageNetClassifier(model=models.
                                             alexnet(pretrained=True))
-        elif form.model.data == 2:
+        elif form.model.data == 1:
             classifier = ImageNetClassifier(model=models.
                                             inception_v3(pretrained=True))
         else:
@@ -197,22 +197,31 @@ def visualize_attack():
         label_index = classifier.predict(img, n=1)[0][0].item()
         label = classifier.prep_label(label_index)
 
-        linf = PyTorchAttack(classifier.model, fb.attacks.LinfDeepFoolAttack())
-        att = linf.run(classifier.prep_tensor(img,
-                                              normalize=False),
-                       labels=label)
-        result_path = PyTorchAttack.save_image(images=att,
-                                               base_dir="./loki/static/tmp/",
+        if form.attacks.data == 0:
+            attack = PyTorchAttack(classifier.model,
+                                   fb.attacks.LinfDeepFoolAttack())
+        elif form.attacks.data == 1:
+            attack = PyTorchAttack(classifier.model,
+                                   fb.attacks.L2CarliniWagnerAttack())
+        else:
+            attack = PyTorchAttack(classifier.model,
+                                   fb.attacks.LinfDeepFoolAttack())
+
+        adv = attack.run(classifier.prep_tensor(img,
+                                                normalize=False),
+                         labels=label)
+        result_image = PyTorchAttack.get_image(images=adv,
                                                scale=3.5)
         # img_att = Image.open("ATTACK_IMAGE.jpg")
 
         image_file = save_image(form.image.data, path="tmp",
                                 output_size=(400, 400))
-
+        result_file = save_image(result_image, path="tmp",
+                                 output_size=(400, 400))
         flash("Attack successully run!", 'success')
 
         return render_template('visualize_attack.html', form=form,
-                               image_file=image_file, result_file=result_path,
+                               image_file=image_file, result_file=result_file,
                                index=index)
     return render_template('visualize_attack.html', form=form)
 
