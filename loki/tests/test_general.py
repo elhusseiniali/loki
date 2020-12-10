@@ -169,5 +169,109 @@ class LoginAndOutTests(BaseTestCase):
             self.assertFalse(current_user.is_authenticated)
 
 
+class RegisterTests(BaseTestCase):
+    """A test case for actions on the login and logout route"""
+
+    # Ensure login behaves correctly with empty username
+    def test_incorrect_register_username_empty(self):
+        with self.client:
+            response = self.client.post(
+                '/register',
+                data=dict(username="", email="test@gmail.com", password="test", confirm_password="test")
+            )
+            self.assertIn(b'This field is required.', response.data)
+            self.assertFalse(current_user.is_active)
+            self.assertFalse(current_user.is_authenticated)
+        
+    # Ensure login behaves correctly with empty email
+    def test_incorrect_register_email_empty(self):
+        with self.client:
+            response = self.client.post(
+                '/register',
+                data=dict(username="test", email="", password="test", confirm_password="test")
+            )
+            self.assertIn(b'This field is required.', response.data)
+            self.assertFalse(current_user.is_active)
+            self.assertFalse(current_user.is_authenticated)
+    
+    # Ensure login behaves correctly with empty password
+    def test_incorrect_register_password_empty(self):
+        with self.client:
+            response = self.client.post(
+                '/register',
+                data=dict(username="test", email="test@gmail.com", password="", confirm_password="test")
+            )
+            self.assertIn(b'This field is required.', response.data)
+            self.assertFalse(current_user.is_active)
+            self.assertFalse(current_user.is_authenticated)
+
+    # Ensure login behaves correctly with empty confirm password
+    def test_incorrect_register_confirm_empty(self):
+        with self.client:
+            response = self.client.post(
+                '/register',
+                data=dict(username="test", email="test@gmail.com", password="test", confirm_password="")
+            )
+            self.assertIn(b'This field is required.', response.data)
+            self.assertFalse(current_user.is_active)
+            self.assertFalse(current_user.is_authenticated)
+
+    # Ensure login behaves correctly with too short username
+    def test_invalid_register_username(self):
+        with self.client:
+            response = self.client.post(
+                '/register',
+                data=dict(username="t", email="test@gmail.com", password="test", confirm_password="test")
+            )
+            self.assertIn(b'Field must be between 2 and 15 characters long.', response.data)
+            self.assertFalse(current_user.is_active)
+            self.assertFalse(current_user.is_authenticated)
+
+    # Ensure login behaves correctly with confirm password not equal to password
+    def test_invalid_register_confirm(self):
+        with self.client:
+            response = self.client.post(
+                '/register',
+                data=dict(username="test", email="test@gmail.com", password="test", confirm_password="test2")
+            )
+            self.assertIn(b'Field must be equal to password.', response.data)
+            self.assertFalse(current_user.is_active)
+            self.assertFalse(current_user.is_authenticated)
+
+    # Ensure login behaves correctly with username already existing
+    def test_invalid_register_username_old(self):
+        with self.client:
+            response = self.client.post(
+                '/register',
+                data=dict(username="admin", email="test@gmail.com", password="test", confirm_password="test")
+            )
+            self.assertIn(b'Username already exists!', response.data)
+            self.assertFalse(current_user.is_active)
+            self.assertFalse(current_user.is_authenticated)
+    
+    # Ensure login behaves correctly with email already existing
+    def test_invalid_register_email_old(self):
+        with self.client:
+            response = self.client.post(
+                '/register',
+                data=dict(username="test", email="ad@min.com", password="test", confirm_password="test")
+            )
+            self.assertIn(b'Account with email already exists!', response.data)
+            self.assertFalse(current_user.is_active)
+            self.assertFalse(current_user.is_authenticated)
+
+    # Ensure register behaves correctly with correct credentials
+    def test_correct_login(self):
+        with self.client:
+            response = self.client.post(
+                '/register',
+                data=dict(username="test", email="test@gmail.com", password="test", confirm_password="test"),
+                follow_redirects=True
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(b'Account created! You can now log in.' , response.data)
+            self.assertFalse(current_user.is_active)
+            self.assertFalse(current_user.is_authenticated)
+            
 if __name__ == '__main__':
     unittest.main()
