@@ -12,7 +12,7 @@
                     {{ form.name.label(class="form-control-label") }}
 
                     {% if form.name.errors %}
-                        {{ form.name.label(class="form-control form-control-lg is-invalid") }}
+                        {{ form.name(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.name.errors %}
                                 <span>

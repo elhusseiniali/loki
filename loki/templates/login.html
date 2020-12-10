@@ -12,7 +12,7 @@
                     {{ form.email.label(class="form-control-label") }}
 
                     {% if form.email.errors %}
-                        {{ form.email.label(class="form-control form-control-lg is-invalid") }}
+                        {{ form.email(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.email.errors %}
                                 <span>
@@ -28,7 +28,7 @@
                     {{ form.password.label(class="form-control-label") }}
 
                     {% if form.password.errors %}
-                        {{ form.password.label(class="form-control form-control-lg is-invalid") }}
+                        {{ form.password(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.password.errors %}
                                 <span>
