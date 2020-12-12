@@ -6,11 +6,9 @@ from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from loki.forms import VisualizeAttackForm
 from loki.forms import UploadClassifierForm, PredictForm
 
-from loki.classifiers import ImageNetClassifier
-import torchvision.models as models
-
+from loki.classifiers import pretrained_classifiers
 from loki.attacks import PyTorchAttack
-import foolbox as fb
+from loki.attacks import attacks as set_attacks
 
 from loki.models import User, Classifier, Report
 
@@ -183,29 +181,14 @@ def visualize_attack():
     form = VisualizeAttackForm()
     if form.validate_on_submit():
         index = len(form.model.choices) - int(form.model.data)
-        if form.model.data == 0:
-            classifier = ImageNetClassifier(model=models.
-                                            alexnet(pretrained=True))
-        elif form.model.data == 1:
-            classifier = ImageNetClassifier(model=models.
-                                            inception_v3(pretrained=True))
-        else:
-            classifier = ImageNetClassifier(model=models.
-                                            alexnet(pretrained=True))
+        classifier = pretrained_classifiers[int(form.model.data)][1]
 
         img = Image.open(form.image.data)
         label_index = classifier.predict(img, n=1)[0][0].item()
         label = classifier.prep_label(label_index)
 
-        if form.attacks.data == 0:
-            attack = PyTorchAttack(classifier.model,
-                                   fb.attacks.LinfDeepFoolAttack())
-        elif form.attacks.data == 1:
-            attack = PyTorchAttack(classifier.model,
-                                   fb.attacks.L2CarliniWagnerAttack())
-        else:
-            attack = PyTorchAttack(classifier.model,
-                                   fb.attacks.LinfDeepFoolAttack())
+        attack = PyTorchAttack(classifier.model,
+                               set_attacks[int(form.attacks.data)][1])
 
         adv = attack.run(classifier.prep_tensor(img,
                                                 normalize=False),
@@ -239,15 +222,8 @@ def predict():
         path = url_for('static',
                        filename=f"tmp/"
                                 f"{image_file}")
-        if form.model.data == 1:
-            classifier = ImageNetClassifier(model=models.
-                                            alexnet(pretrained=True))
-        elif form.model.data == 2:
-            classifier = ImageNetClassifier(model=models.
-                                            inception_v3(pretrained=True))
-        else:
-            classifier = ImageNetClassifier(model=models.
-                                            alexnet(pretrained=True))
+        classifier = pretrained_classifiers[int(form.model.data)][1]
+
         img = Image.open(f"./loki/{path}")
         label = classifier.predict(img)
 
