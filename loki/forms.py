@@ -10,6 +10,9 @@ from flask_login import current_user
 
 from loki.models import User, Classifier
 
+from loki.classifiers import pretrained_classifiers
+from loki.attacks import attacks as set_attacks
+
 
 class EmailField(StringField):
     email = StringField('Email',
@@ -25,8 +28,8 @@ class ClassifierField(SelectField):
         user_models = Classifier.query.filter_by(user=current_user). \
             order_by(Classifier.upload_date.desc())
 
-        pretrained_choices = [("0", "AlexNet"),
-                              ("1", "Inception v3")]
+        pretrained_choices = [(i, item[0])
+                              for i, item in enumerate(pretrained_classifiers)]
 
         offset = len(pretrained_choices)
 
@@ -42,8 +45,8 @@ class ClassifierField(SelectField):
 class AttackField(RadioField):
     def __init__(self, *args, **kwargs):
         super(AttackField, self).__init__(*args, **kwargs)
-        self.choices = [('0', 'L2CarliniWagner'),
-                        ('1', 'LinDeepFool')]
+        self.choices = [(i, item[0])
+                        for i, item in enumerate(set_attacks)]
 
 
 class RegistrationForm(FlaskForm):
