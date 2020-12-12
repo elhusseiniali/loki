@@ -43,6 +43,8 @@ class ClassifierField(SelectField):
 
 
 class AttackField(RadioField):
+    """A field for attacks to be used in any WTForm.
+    """
     def __init__(self, *args, **kwargs):
         super(AttackField, self).__init__(*args, **kwargs)
         self.choices = [(i, item[0])
