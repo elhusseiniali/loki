@@ -126,5 +126,13 @@ pretrained_classifiers = [
     ("AlexNet", ImageNetClassifier(model=models.
                                    alexnet(pretrained=True))),
     ("Inception v3", ImageNetClassifier(model=models.
-                                        inception_v3(pretrained=True)))
+                                        inception_v3(pretrained=True))),
+    ("GoogleNet", ImageNetClassifier(model=models.
+                                     googlenet(pretrained=True))),
+    ("VGG16", ImageNetClassifier(model=models.
+                                 vgg16(pretrained=True))),
+    ("Wide ResNet 50-2", ImageNetClassifier(model=models.
+                                            wide_resnet50_2(pretrained=True))),
+    ("ResNet18", ImageNetClassifier(model=models.
+                                    resnet18(pretrained=True)))
 ]
