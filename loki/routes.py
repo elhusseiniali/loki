@@ -7,14 +7,18 @@ from loki.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from loki.forms import VisualizeAttackForm
 from loki.forms import UploadClassifierForm, PredictForm
 
-from loki.classifiers import InceptionResNet as IR
+from loki.classifiers import pretrained_classifiers
+from loki.attacks import PyTorchAttack
+from loki.attacks import attacks as set_attacks
 
 from loki.models import User, Classifier, Report
 
-from loki.attacks import gray
+# from loki.attacks import gray
 from loki.utils import save_image, save_model, remove_model
 
 from flask_login import login_user, current_user, logout_user, login_required
+
+from PIL import Image
 
 
 @app.route("/")
@@ -186,11 +190,26 @@ def visualize_attack():
     form = VisualizeAttackForm()
     if form.validate_on_submit():
         index = len(form.model.choices) - int(form.model.data)
+        classifier = pretrained_classifiers[int(form.model.data)][1]
+
+        img = Image.open(form.image.data)
+        label_index = classifier.predict(img, n=1)[0][0].item()
+        label = classifier.prep_label(label_index)
+
+        attack = PyTorchAttack(classifier.model,
+                               set_attacks[int(form.attacks.data)][1])
+
+        adv = attack.run(classifier.prep_tensor(img,
+                                                normalize=False),
+                         labels=label)
+        result_image = PyTorchAttack.get_image(images=adv,
+                                               scale=3.5)
+        # img_att = Image.open("ATTACK_IMAGE.jpg")
+
         image_file = save_image(form.image.data, path="tmp",
                                 output_size=(400, 400))
-
-        result_file = gray(f"./loki/static/tmp/"
-                           f"{image_file}")
+        result_file = save_image(result_image, path="tmp",
+                                 output_size=(400, 400))
         flash("Attack successully run!", 'success')
 
         return render_template('visualize_attack.html', form=form,
@@ -212,8 +231,10 @@ def predict():
         path = url_for('static',
                        filename=f"tmp/"
                                 f"{image_file}")
-        classifier = IR()
-        label = classifier.predict(path)
+        classifier = pretrained_classifiers[int(form.model.data)][1]
+
+        img = Image.open(f"./loki/{path}")
+        label = classifier.predict(img)
 
         flash("Done!", 'success')
 

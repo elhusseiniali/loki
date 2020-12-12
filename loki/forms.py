@@ -10,6 +10,9 @@ from flask_login import current_user
 
 from loki.models import User, Classifier
 
+from loki.classifiers import pretrained_classifiers
+from loki.attacks import attacks as set_attacks
+
 
 class EmailField(StringField):
     email = StringField('Email',
@@ -25,22 +28,27 @@ class ClassifierField(SelectField):
         user_models = Classifier.query.filter_by(user=current_user). \
             order_by(Classifier.upload_date.desc())
 
-        if not user_models:
-            user_choices = [(user_models.count() + 1, 'None')]
-        else:
-            user_choices = [(model.id, model.name) for model in user_models]
+        pretrained_choices = [(i, item[0])
+                              for i, item in enumerate(pretrained_classifiers)]
 
-        pretrained_choices = [("Inception v3", "Inception v3"),
-                              ("ResNet18", "ResNet18")]
+        offset = len(pretrained_choices)
+
+        if not user_models:
+            user_choices = [(user_models.count() + offset, 'None')]
+        else:
+            user_choices = [(model.id + offset - 1,
+                             model.name) for model in user_models]
 
         self.choices = user_choices + pretrained_choices
 
 
 class AttackField(RadioField):
+    """A field for attacks to be used in any WTForm.
+    """
     def __init__(self, *args, **kwargs):
         super(AttackField, self).__init__(*args, **kwargs)
-        self.choices = [('carlini', 'L2CarliniWagner'),
-                        ('deepfool', 'LinDeepFool')]
+        self.choices = [(i, item[0])
+                        for i, item in enumerate(set_attacks)]
 
 
 class RegistrationForm(FlaskForm):

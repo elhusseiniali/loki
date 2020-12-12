@@ -1,118 +1,130 @@
-from facenet_pytorch import MTCNN, InceptionResnetV1
 import torch
+from torchvision import transforms
 
-import pandas as pd
+import torchvision.models as models
 
-from PIL import Image
+import json
 
 
-class InceptionResNet():
-    """ A variant of FaceNet, a facial recognition system.
-    https://deeplearning4j.org/api/latest/org/deeplearning4j/zoo/model/InceptionResNetV1.html
+class ImageNetClassifier():
+    """A class to provide common setup for all torchivision models that
+    are pre-trained on the ImageNet[1] dataset.
+
+    [1]: http://image-net.org
     """
-    def __init__(self, pretrain='vggface2'):
-        """Setup PyTorch to do all the work.
+    def __init__(self, model):
+        """Basic setup tasks for the model.
 
-        - MTCNN: used to detect faces from input images, and to prepare the
-        image for classification.
-        https://arxiv.org/abs/1604.02878
-        - device: if available, use an NVIDIA GPU (PyTorch has optimizations
-        for CUDA).
-        - resnet: the actual model doing the classification.
-        - names: human names (instead of class indices) for VGGFace2.
-        This implementation is temporary. A better implementation would have
-        a Data class (with Data.data and Data.labels holding images and labels,
-        respectively), and then this class would be used in our classifier.
+        1.  device: if CUDA drivers are available, attach classifier to
+        GPU. Otherwise, use CPU.
+        2.  model.eval(): use model (check parameters below) in classifier
+        mode.
+        3.  transform: used to transform images to the form that the model
+        needs.
+        4.  normalize: normalize images as part of pre-processing expected by
+        the model.
+        5.  labels: human-readable labels (as opposed to class indices) for
+        the classes (e.g. 'dog' instead of some integer).
 
         Parameters
         ----------
-        pretrain : str, optional
-            Dataset that the model was pre-trained on, by default 'vggface2'.
-            https://www.robots.ox.ac.uk/~vgg/data/vgg_face2/
-
-            For now, this is implemented with a default value because it's the
-            only option we tried. We might have to revisit the design for other
-            variants. Note that, in facenet_pytorch, there is another option
-            (specifically, the casia-webface dataset).
+        model: [type]
+            [description]
         """
         self.device = torch.device('cuda:0' if torch.cuda.is_available()
                                    else 'cpu')
+        self.model = model.to(self.device)
+        self.model.eval()
 
-        self.mtcnn = MTCNN(
-            image_size=160, margin=0, min_face_size=20,
-            thresholds=[0.6, 0.7, 0.7], factor=0.709, post_process=True,
-            device=self.device
-        )
-        self.resnet = InceptionResnetV1(pretrained=pretrain).eval()\
-                                                            .to(self.device)
-        self.resnet.classify = True
+        self.transform = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor()
+        ])
 
-        self.names = self.vggface2_labels()
+        self.normalize = transforms.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225])
+        self.labels = self.generate_labels()
 
-    def vggface2_labels(self):
-        """Extract all the names from identity_meta.csv, provided
-        by the authors of VGGFace2.
+    def generate_labels(self):
+        """Get labels from imagenet_class_index.json.
 
         Returns
         -------
-        [Pandas DataFrame], dict-like.
-            A dict-like structure that has two columns/keys: Class_ID and Name.
+        idx2label: [list of str]
+            idx2label[class_id] gives the actual label as a string.
         """
-        id_meta = pd.read_csv("loki/static/models/vggface2/identity_meta.csv",
-                              sep="\n")
-        id_meta = id_meta[
-            'Class_ID, Name, Sample_Num, Flag, Gender'].str\
-                                                       .split(',', expand=True)
+        class_idx = json.load(open("./loki/static/models/imagenet/"
+                                   "imagenet_class_index.json"))
+        idx2label = [class_idx[str(k)][1] for k in range(len(class_idx))]
 
-        id_meta.columns = [
-            'Class_ID', 'Name', 'Sample_Num', 'Flag', 'Gender', 'None']
-        id_meta.drop(columns=['None'], inplace=True)
+        return idx2label
 
-        vgg_names = id_meta.drop(columns=[
-            'Sample_Num', 'Flag', 'Gender']).set_index('Class_ID')
+    def prep_label(self, index):
+        return torch.as_tensor(index).to(self.device).unsqueeze(0)
 
-        return vgg_names
-
-    def get_label(self, index, key="Name"):
-        """Get the human name from class ID.
+    def prep_tensor(self, img, normalize=True):
+        """Prepare an image to be given to the model.
 
         Parameters
         ----------
-        index : [int]
-            Class ID (usually, training sets are oragnized as folders of
-            different IDs, one folder per class, or human, in our case)
-        key : str, optional
-            Key inside the struct that holds the names, by default "Name".
+        img: [PIL image or np.ndarray]
+            Any image.
+        normalize: bool, optional
+            Choice to normalize an image or not, by default True.
+            For prediction, images need to be normalized. When prepping
+            for an attack, they shouldn't be (because Foolbox does it
+            on its own).
 
         Returns
         -------
-        [type]
-            [description]
+        [PyTorch.Tensor]
+            PyTorch tensor representing the input image, attached to whatever
+            device the model is attached to (i.e. GPU or CPU).
         """
-        return eval(self.names[key][index])
+        if normalize:
+            img_t = self.normalize(self.transform(img))
+        else:
+            img_t = self.transform(img)
+        batch_t = torch.unsqueeze(img_t, 0).to(self.device)
 
-    def predict(self, path):
-        """Run the classifier.
+        return batch_t
+
+    def predict(self, img, n=5):
+        """Get classification from model.
 
         Parameters
         ----------
-        path : [str]
-            Input image path.
+        img: [PIL Image or nd.array]
+            Any image.
+        n: int, optional
+            number of classes, by default 5.
 
         Returns
         -------
-        [str]
-            Name of the person whose face the model thinks the
-            image belongs to.
+        [list of tuple]
+            A tuple in this list has the form:
+                (tensor(class_id, device), label, percentage), where:
+                - class_id is the id for the predicted ImageNet class,
+                device is CPU or GPU;
+                - label is the human-readable label of the
+                class from class_id;
+                - percentage is the model's confidence level that the image
+                belongs to this class.
         """
-        img = Image.open("loki/" + path)
+        out = self.model(self.prep_tensor(img))
 
-        # crop and pre-whiten image tensor
-        img_cropped = self.mtcnn(img).to(self.device)
+        _, index = torch.sort(out, descending=True)
+        percentage = torch.nn.functional.softmax(out, dim=1)[0] * 100
 
-        img_probs = self.resnet(img_cropped.unsqueeze(0))
+        return [(i, self.labels[i],
+                percentage[i].item()) for i in index[0][:n]]
 
-        result = img_probs[0].argmax()
-        index = result.item() + 1
 
-        return self.get_label(index=index)
+pretrained_classifiers = [
+    ("AlexNet", ImageNetClassifier(model=models.
+                                   alexnet(pretrained=True))),
+    ("Inception v3", ImageNetClassifier(model=models.
+                                        inception_v3(pretrained=True)))
+]
