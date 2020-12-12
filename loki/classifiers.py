@@ -1,6 +1,8 @@
 import torch
 from torchvision import transforms
 
+import torchvision.models as models
+
 import json
 
 
@@ -55,7 +57,7 @@ class ImageNetClassifier():
         """
         class_idx = json.load(open("./loki/static/models/imagenet/"
                                    "imagenet_class_index.json"))
-        idx2label = [class_idx[k][1] for k in range(len(class_idx))]
+        idx2label = [class_idx[str(k)][1] for k in range(len(class_idx))]
 
         return idx2label
 
@@ -118,3 +120,11 @@ class ImageNetClassifier():
 
         return [(i, self.labels[i],
                 percentage[i].item()) for i in index[0][:n]]
+
+
+pretrained_classifiers = [
+    ("AlexNet", ImageNetClassifier(model=models.
+                                   alexnet(pretrained=True))),
+    ("Inception v3", ImageNetClassifier(model=models.
+                                        inception_v3(pretrained=True)))
+]
