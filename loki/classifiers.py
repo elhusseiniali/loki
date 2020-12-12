@@ -55,7 +55,7 @@ class ImageNetClassifier():
         """
         class_idx = json.load(open("./loki/static/models/imagenet/"
                                    "imagenet_class_index.json"))
-        idx2label = [class_idx[str(k)][1] for k in range(len(class_idx))]
+        idx2label = [class_idx[k][1] for k in range(len(class_idx))]
 
         return idx2label
 
