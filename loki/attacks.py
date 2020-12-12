@@ -149,3 +149,9 @@ class PyTorchAttack():
 
         img = Image.open(buf)
         return img
+
+
+attacks = [
+    ("LinfDeepFool", fb.attacks.LinfDeepFoolAttack()),
+    ("L2CarliniWagner", fb.attacks.L2CarliniWagnerAttack())
+]
