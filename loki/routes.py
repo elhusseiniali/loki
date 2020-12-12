@@ -189,7 +189,7 @@ def visualize_attack():
     """
     form = VisualizeAttackForm()
     if form.validate_on_submit():
-        index = len(form.model.choices) - int(form.model.data)
+        index = int(form.model.data) - 1
         classifier = pretrained_classifiers[int(form.model.data)][1]
 
         img = Image.open(form.image.data)
