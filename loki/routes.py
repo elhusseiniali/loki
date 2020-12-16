@@ -244,3 +244,7 @@ def predict():
                                label=label, index=index)
     return render_template('predict.html',
                            title='Classify an image.', form=form)
+
+@app.route("/report_test")
+def report_test():
+    return render_template('report_test.html', title='Home')
