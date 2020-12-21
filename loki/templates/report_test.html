@@ -1,5 +1,21 @@
 {% extends 'layout.html' %}
 {% block content %}
+<h1>Before</h1>
+<div class="row">
+    {% for i in range(10) %}
+        <div class="column">
+        <img src="static/profile_pictures/default.jpg" alt="Snow" style="width:100%">
+        </div>
+    {% endfor %}
+</div>
+<h1>After</h1>
+<div class="row">
+    {% for i in range(10) %}
+        <div class="column">
+        <img src="static/profile_pictures/default.jpg" alt="Snow" style="width:100%">
+        </div>
+    {% endfor %}
+</div>
 <div style="width: 100%; overflow: hidden;">
     <div style="width: 600px; float: left;"> <div id="BarPlotBeforeAttack" style="width:500px;height:500px;"></div> </div>
     <div style="margin-left: 500px;"> <div id="BarPlotAfterAttack" style="width:500px;height:500px;"></div> </div>
@@ -19,7 +35,6 @@
         </div>
     </div>
 </div>
-
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
