@@ -49,7 +49,7 @@
                                 {% endfor %}
                             {% endif %}
                             {% if form.validate_on_submit() %}
-                                <a href="{{ url_for('visualize_attack') }}">
+                                <a href="{{ url_for('attacks.visualize_attack') }}">
                                     <button type="button" class="btn btn-dark">{{ form.submit.label }}</button>
                                 </a>
                             {% else %}
