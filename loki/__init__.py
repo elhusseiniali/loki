@@ -24,7 +24,6 @@ login_manager.login_message_category = 'info'
 #   This is because the linter cannot distinguish between imports in a script
 #   and imports in a package. The order of the imports is also important.
 #   These two imports *had* to happen after initializing db.
-from loki import routes
 from loki.models import User, Classifier, Report
 
 from flask_admin import Admin
