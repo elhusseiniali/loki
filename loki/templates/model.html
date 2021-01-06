@@ -6,7 +6,7 @@
 		  <h2 class="article-title">{{ model.name }}</h2>
 		  <p class="article-content">{{model.upload_date.strftime('%H:%M / %d-%m-%Y') }}</p>
 		    <div>
-			  <a href="{{ url_for('download_model', model_id=model.id) }}">
+			  <a href="{{ url_for('classifiers.download_model', model_id=model.id) }}">
 				<button type="button" class="btn btn-dark">Download</button>
 			  </a>
 			  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"> Delete </button>
@@ -32,7 +32,7 @@
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-			<form action="{{url_for('delete_model', model_id=model.id)}}", method="POST">
+			<form action="{{url_for('classifiers.delete_model', model_id=model.id)}}", method="POST">
 			  <input class ="btn btn-danger" type="submit" value="Delete">
 			</form>
 		  </div>

@@ -5,18 +5,18 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 
+from flask_restx import Api
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '60808326457a6384f78964761aaa161c'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-# This is to suppress SQLAlchemy warnings
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+from loki.config import Config
 
-db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
 
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'
+db = SQLAlchemy()
+bcrypt = Bcrypt()
+
+apix = Api()
+
+login_manager = LoginManager()
+login_manager.login_view = 'users.login'
 login_manager.login_message_category = 'info'
 
 
@@ -24,18 +24,40 @@ login_manager.login_message_category = 'info'
 #   This is because the linter cannot distinguish between imports in a script
 #   and imports in a package. The order of the imports is also important.
 #   These two imports *had* to happen after initializing db.
-from loki import routes
 from loki.models import User, Classifier, Report
 
 from flask_admin import Admin
 from loki.admin_views import UserView, ClassifierView, ReportView
 
 
-# set optional bootswatch theme
-app.config['FLASK_ADMIN_SWATCH'] = 'flatly'
-
-admin = Admin(app, name='Loki Admin', template_mode='bootstrap3')
+admin = Admin(name='Loki Admin', template_mode='bootstrap3')
 # Add administrative views here
 admin.add_view(UserView(User, db.session))
 admin.add_view(ClassifierView(Classifier, db.session))
 admin.add_view(ReportView(Report, db.session))
+
+
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+
+    db.init_app(app)
+    bcrypt.init_app(app)
+    login_manager.init_app(app)
+    apix.init_app(app)
+    admin.init_app(app)
+
+    from loki.api.users.routes import users
+    from loki.api.main.routes import main
+    from loki.api.classifiers.routes import classifiers
+    from loki.api.attacks.routes import attacks
+    from loki.api.errors.handlers import errors
+
+    app.register_blueprint(main)
+    app.register_blueprint(errors)
+
+    app.register_blueprint(users)
+    app.register_blueprint(classifiers)
+    app.register_blueprint(attacks)
+
+    return app

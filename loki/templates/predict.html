@@ -54,7 +54,7 @@
                             </div>
                         </fieldset>
                         {% if form.validate_on_submit() %}
-                            <a href="{{ url_for('predict') }}">
+                            <a href="{{ url_for('classifiers.form_predict') }}">
                                 <button type="button" class="btn btn-dark">Classify a new image</button>
                             </a>
                         {% else %}
