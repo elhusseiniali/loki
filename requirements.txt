@@ -21,7 +21,7 @@ Flask-Validator==1.4.2
 Flask-WTF==0.14.3
 foolbox==3.2.1
 gitdb==4.0.5
-GitPython==3.1.11
+GitPython==3.1.12
 idna==2.10
 iniconfig==1.1.1
 isbnlib==3.10.3
