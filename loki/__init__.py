@@ -7,31 +7,17 @@ from flask_login import LoginManager
 
 from flask_restx import Api
 
-from flask_mail import Mail
+from loki.config import Config
 
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '60808326457a6384f78964761aaa161c'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-# This is to suppress SQLAlchemy warnings
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy()
+bcrypt = Bcrypt()
 
-db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
+apix = Api()
 
-api = Api(app)
-
-login_manager = LoginManager(app)
+login_manager = LoginManager()
 login_manager.login_view = 'users.login'
 login_manager.login_message_category = 'info'
-
-app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USER_TLS'] = True
-app.config['MAIL_USERNAME'] = "username"
-app.config['MAIL_PASSWORD'] = "password"
-
-mail = Mail(app)
 
 
 #   Below import is necessary, even if the linter complains about it.
@@ -45,23 +31,34 @@ from flask_admin import Admin
 from loki.admin_views import UserView, ClassifierView, ReportView
 
 
-# set optional bootswatch theme
-app.config['FLASK_ADMIN_SWATCH'] = 'flatly'
-
-admin = Admin(app, name='Loki Admin', template_mode='bootstrap3')
+admin = Admin(name='Loki Admin', template_mode='bootstrap3')
 # Add administrative views here
 admin.add_view(UserView(User, db.session))
 admin.add_view(ClassifierView(Classifier, db.session))
 admin.add_view(ReportView(Report, db.session))
 
 
-from loki.users.routes import users
-from loki.main.routes import main
-from loki.classifiers.routes import classifiers
-from loki.attacks.routes import attacks
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
 
+    db.init_app(app)
+    bcrypt.init_app(app)
+    login_manager.init_app(app)
+    apix.init_app(app)
+    admin.init_app(app)
 
-app.register_blueprint(users)
-app.register_blueprint(main)
-app.register_blueprint(classifiers)
-app.register_blueprint(attacks)
+    from loki.api.users.routes import users
+    from loki.api.main.routes import main
+    from loki.api.classifiers.routes import classifiers
+    from loki.api.attacks.routes import attacks
+    from loki.api.errors.handlers import errors
+
+    app.register_blueprint(main)
+    app.register_blueprint(errors)
+
+    app.register_blueprint(users)
+    app.register_blueprint(classifiers)
+    app.register_blueprint(attacks)
+
+    return app
