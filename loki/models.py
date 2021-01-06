@@ -1,4 +1,4 @@
-from loki import app, db, login_manager, bcrypt
+from loki import db, login_manager, bcrypt
 from flask_login import UserMixin
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_validator import ValidateEmail
