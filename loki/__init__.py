@@ -5,15 +5,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 
-from flask_restx import Api
-
 from loki.config import Config
 
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
-
-apix = Api()
 
 login_manager = LoginManager()
 login_manager.login_view = 'users.login'
@@ -44,7 +40,6 @@ def create_app(config_class=Config):
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
-    apix.init_app(app)
     admin.init_app(app)
 
     from loki.api.users.routes import users
@@ -52,6 +47,9 @@ def create_app(config_class=Config):
     from loki.api.classifiers.routes import classifiers
     from loki.api.attacks.routes import attacks
     from loki.api.errors.handlers import errors
+
+    from loki.api import blueprint as api
+    app.register_blueprint(api, url_prefix='/api/1')
 
     app.register_blueprint(main)
     app.register_blueprint(errors)
