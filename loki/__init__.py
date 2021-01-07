@@ -46,6 +46,7 @@ def create_app(config_class=Config):
     from loki.api.main.routes import main
     from loki.api.classifiers.routes import classifiers
     from loki.api.attacks.routes import attacks
+    from loki.api.reports.routes import reports
     from loki.api.errors.handlers import errors
 
     from loki.api import blueprint as api
@@ -57,5 +58,6 @@ def create_app(config_class=Config):
     app.register_blueprint(users)
     app.register_blueprint(classifiers)
     app.register_blueprint(attacks)
+    app.register_blueprint(reports)
 
     return app
