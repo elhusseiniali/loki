@@ -1,0 +1,62 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<div class="content-section">
+    <div class="row">
+        <form class="" action="" method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <main role="main" class="container">
+                <div class="row">
+                    <div class="col md-4">
+                        <div class="form-group">
+                            <h3>{{form.model.label}}</h3>
+                            {% if form.validate_on_submit() %}
+                            <select class="form-control" id="model_selector" name="model">
+                                <option value="">{{form.model.choices[index + 1][1]}}</option>
+                            </select>
+                            {% else %}
+                            <select class="form-control" id="model_selector" name="model">
+                                {% for choice in form.model.choices %}
+                                    <option value="{{ choice[0] }}">{{ choice[1] }}</option>
+                                {% endfor %}
+                            </select>
+                            {% endif %}
+                        </div>
+                        <h3>{{ form.attacks.label }}</h3>
+                            {% if form.attacks.errors %}
+                                <span class="text-danger"> You must select an attack! </span>
+                                <br>
+                            {% endif %}
+                            {% if form.validate_on_submit() %}
+                                {% for subfield in form.attacks %}
+                                    {% if subfield.label.text == form.attacks.data %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                                        <label class="form-check-label" for="exampleRadios1">{{ subfield.label }}</label>
+                                    </div>
+                                    {% else %}
+                                    <div class="form-check disabled">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" disabled>
+                                        <label class="form-check-label" for="inlineRadio3">{{ subfield.label }}</label>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {% for subfield in form.attacks %}
+                                    <tr>{{ subfield }} {{ subfield.label }}</tr>
+                                    <br>
+                                {% endfor %}
+                            {% endif %}
+                            <div class="form-group">
+                                {{ form.submit(class="btn btn-dark") }}
+                            </div>
+                    </div>
+                </div>
+            </main>
+        </form>
+
+    </div>
+</div>
+
+{% endblock content %}
