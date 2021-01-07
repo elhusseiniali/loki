@@ -16,12 +16,59 @@ from loki.utils import save_image
 
 from loki.models import Classifier, Report
 
+from flask_restx import Namespace, Resource, reqparse
+
+import base64
+import io
+
 
 classifiers = Blueprint('classifiers', __name__)
+api = Namespace('classifiers', description='All operations on classifiers.')
 
 
-@classifiers.route("/classifiers/predict/<classifier_index>",
-                   methods=['POST', 'GET'])
+@api.route('/')
+class ClassifierList(Resource):
+    @api.doc('Get a list of the names of all the available classifiers.')
+    def get(self):
+        return [classifier[0] for classifier in pretrained_classifiers]
+
+
+@api.route('/<classifier_id>')
+@api.param('classifier_id', 'Classifier identifier')
+@api.response(200, 'Success: Classifier found')
+@api.response(404, 'Error: Classifier not found')
+class ClassifierID(Resource):
+    def get(self, classifier_id):
+        try:
+            return pretrained_classifiers[int(classifier_id)][0]
+        except Exception:
+            api.abort(404)
+
+
+parser = reqparse.RequestParser()
+parser.add_argument('image_data', required=True)
+parser.add_argument('classifier_id')
+
+
+@api.route('/classify')
+class Classify(Resource):
+    @api.expect(parser)
+    def put(self):
+        args = parser.parse_args()
+        im_b64 = args['image_data']
+        im_binary = base64.b64decode(im_b64)
+
+        buf = io.BytesIO(im_binary)
+        img = Image.open(buf)
+
+        classifier_id = args['classifier_id']
+        label = predict(img, classifier_id)
+
+        return [{"index": elem[0].item(),
+                 "label": elem[1],
+                 "percentage": elem[2]} for elem in label]
+
+
 def predict(image, classifier_index):
     classifier = pretrained_classifiers[int(classifier_index)][1]
     return classifier.predict(image)
