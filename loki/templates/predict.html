@@ -68,7 +68,24 @@
                             <legend class="border-bottom mb-4">
                                 Predicted identity
                             </legend>
-                            <h3> {{ label }} </h3>
+                            {% if form.validate_on_submit() %}
+                            <table class="table">
+                                <thead class="thead-dark">
+                                    <tr>
+                                    <th scope="col">Prediction</th>
+                                    <th scope="col">Probability</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for pred in label %}
+                                        <tr>
+                                        <td>{{ pred[1] }}</td>
+                                        <td>{{ pred[2] }}</td>            
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                </table>
+                            {% endif %}
                         </div>
                     </br>
                         <div class="row">
