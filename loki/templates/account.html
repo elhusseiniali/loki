@@ -115,10 +115,11 @@
             <small class="text-muted">
                 <a class="ml-2" href="{{ url_for('classifiers.upload_model') }}">Add a new model.</a>
             </small>
-        </div>
-        <div>
             <small class="text-muted">
-                <a class="ml-2" href="{{ url_for('users.account') }}">Access all reports.</a>
+                <a class="ml-2" href="{{ url_for('reports.new_report') }}">Add a new report.</a>
+            </small>
+            <small class="text-muted">
+                <a class="ml-2" href="{{ url_for('reports.all_reports') }}">Access all reports.</a>
             </small>
         </div>
         {% endblock content %}

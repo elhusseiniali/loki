@@ -102,7 +102,7 @@ def run_attack(image, classifier_id, attack_id):
     [PIL Image]
         Image after applying the attack to it.
     """
-    classifier = pretrained_classifiers[int(classifier_id)][1]
+    classifier = pretrained_classifiers[int(classifier_id)]['classifier']
 
     # result = classifier.predict(img, n=1)[0][1]
     label_index = classifier.predict(image, n=1)[0][0].item()

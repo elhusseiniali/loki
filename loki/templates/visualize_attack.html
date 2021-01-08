@@ -80,7 +80,7 @@
                         </div>
                         <br>
                         {% if form.classify.data == True and not(form.errors)%}
-                        <h3><B> Before attack: </B> Carotte</h3>
+                        <h3><B> Before attack: </B> {{preds[0][0][1]}} (p = {{preds[0][0][2]/100}})</h3>
                         {% endif %}
                         <div class="form-group">
                             {% if form.image.errors %}
@@ -102,7 +102,7 @@
                         </div>
                         <br>
                         {% if form.classify.data == True and not(form.errors)%}
-                        <h3><B> After attack: </B> Pomme</h3>
+                        <h3><B> After attack: </B> {{preds[1][0][1]}} (p = {{preds[1][0][2]/100}}) </h3>
                         {% endif %}
                     </div>
                 </div>
