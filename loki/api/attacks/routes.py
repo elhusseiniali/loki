@@ -52,6 +52,13 @@ parser.add_argument('classifier_id')
 class RunAttack(Resource):
     @api.expect(parser)
     def put(self):
+        """Run an attack given classifier_id, image_data, and attack_id.
+
+        Returns
+        -------
+        [image_data]
+            Base64-encoded image.
+        """
         args = parser.parse_args()
         im_b64 = args['image_data']
         im_binary = base64.b64decode(im_b64)
@@ -72,6 +79,22 @@ class RunAttack(Resource):
 
 
 def run_attack(image, classifier_id, attack_id):
+    """Run an attack.
+
+    Parameters
+    ----------
+    image : [PIL Image]
+        Some input image.
+    classifier_id : [int]
+        Classifier identifier in pretrained_classifiers.
+    attack_id : [int]
+        Attack identifier in set_attacks.
+
+    Returns
+    -------
+    [PIL Image]
+        Image after applying the attack to it.
+    """
     classifier = pretrained_classifiers[int(classifier_id)][1]
 
     # result = classifier.predict(img, n=1)[0][1]
