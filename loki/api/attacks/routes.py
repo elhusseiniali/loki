@@ -22,8 +22,8 @@ class AttackList(Resource):
 
         Returns
         -------
-        [List of JSON]
-            Every JSON has the form
+        List of JSON, where
+            every JSON has the form
             {
                 "name": attack name,
                 "paper": attack research paper
@@ -41,6 +41,7 @@ class AttackList(Resource):
 @api.param('attack_id', 'The attack identifier')
 @api.response('200', 'Success: Attack found')
 @api.response('404', 'Error: Attack not found')
+@api.response('422', 'Error: Index has to be an integer')
 class Attack(Resource):
     @api.doc('Get an attack from its id.')
     def get(self, attack_id):
@@ -49,20 +50,22 @@ class Attack(Resource):
 
         Returns
         -------
-        [JSON]
+        JSON
             with the form
-            {{
+            {
                 "name": attack name,
                 "paper": attack research paper
-            }}
+            }
         """
         try:
             return {
                 "name": set_attacks[int(attack_id)]["name"],
                 "paper": set_attacks[int(attack_id)]["paper"]
             }
-        except Exception:
+        except IndexError:
             api.abort(404)
+        except ValueError:
+            api.abort(422)
 
 
 parser = reqparse.RequestParser()
@@ -72,6 +75,8 @@ parser.add_argument('classifier_id')
 
 
 @api.route('/run')
+@api.response(404, 'Error: Index out of bounds')
+@api.response(422, 'Error: Check parameters')
 class RunAttack(Resource):
     @api.expect(parser)
     def put(self):
@@ -91,21 +96,26 @@ class RunAttack(Resource):
         """
         args = parser.parse_args()
         im_b64 = args['image_data']
-        im_binary = base64.b64decode(im_b64)
+        try:
+            im_binary = base64.b64decode(im_b64)
 
-        buf = io.BytesIO(im_binary)
-        img = Image.open(buf)
+            buf = io.BytesIO(im_binary)
+            img = Image.open(buf)
 
-        classifier_id = args['classifier_id']
-        attack_id = args['attack_id']
+            classifier_id = args['classifier_id']
+            attack_id = args['attack_id']
 
-        result_image = run_attack(img, classifier_id, attack_id)
+            result_image = run_attack(img, classifier_id, attack_id)
 
-        im_file = io.BytesIO()
-        result_image.save(im_file, format="JPEG")
-        im_bytes = im_file.getvalue()
+            im_file = io.BytesIO()
+            result_image.save(im_file, format="JPEG")
+            im_bytes = im_file.getvalue()
 
-        return {"image_data": base64.b64encode(im_bytes).decode()}
+            return {"image_data": base64.b64encode(im_bytes).decode()}
+        except IndexError:
+            api.abort(404)
+        except ValueError:
+            api.abort(422)
 
 
 def run_attack(image, classifier_id, attack_id):
