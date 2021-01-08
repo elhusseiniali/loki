@@ -44,7 +44,7 @@ def create_app(config_class=Config):
 
     from loki.api.users.views import users
     from loki.api.main.routes import main
-    from loki.api.classifiers.routes import classifiers
+    from loki.api.classifiers.views import classifiers
     from loki.api.attacks.views import attack_views
     from loki.api.reports.routes import reports
     from loki.api.errors.handlers import errors
