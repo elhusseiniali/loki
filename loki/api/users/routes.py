@@ -1,5 +1,5 @@
 from loki.schemas.users import UserSchema
-from loki.dao import user_dao
+from loki.dao.users import user_dao
 from loki.services.users import user_service
 
 from flask_restx import Namespace, Resource
