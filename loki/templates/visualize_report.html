@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Before</h1>
+<div class="row">
+    {% for i in range(len) %}
+        <div class="column">
+            <img src="{{ images_before[i] }}" style="width:100%">
+            <br>
+            {{ responses_before[i]['label'] }}
+        </div>
+    {% endfor %}
+</div>
+<h1>After</h1>
+<div class="row">
+    {% for i in range(len) %}
+        <div class="column">
+            <img src="{{ images_after[i] }}" style="width:100%">
+            <br>
+            {{ responses_after[i]['label'] }}
+        </div>
+    {% endfor %}
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+{% endblock content %}

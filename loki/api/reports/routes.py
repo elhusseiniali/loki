@@ -10,7 +10,7 @@ from loki.models import Classifier, Report
 from PIL import Image
 
 import base64
-import io
+import json
 import requests
 
 reports = Blueprint('reports', __name__)
@@ -41,6 +41,8 @@ def new_report():
     form = ReportForm()
     if form.validate_on_submit():
         images = form.images.data
+        images_before = []
+        images_after = []
         responses_before = []
         responses_after = []
 
@@ -51,18 +53,26 @@ def new_report():
             # Before attack
             BASE_CLASSIFY = "http://localhost:5000/api/1/classifiers/classify"
             im_b64 = base64.b64encode(image.read())
+            images_before.append("data:image/jpeg;base64,"+im_b64.decode("utf-8"))
             files = {'image_data': im_b64,
                      'classifier_id': form.model.data}
             response = requests.put(BASE_CLASSIFY, data=files)
-            responses_before.append(response[0])
+            label = json.loads(response.text)
+            print(type(label))
+            print(label[0])
+            responses_before.append(label[0])
 
             # After attack
-            responses_after.append(response[0])
+            images_after.append("data:image/jpeg;base64,"+im_b64.decode("utf-8"))
+            responses_after.append(label[0])
         # save the report in the database
-
-        return render_template('home.html',
+        print(responses_before)
+        return render_template('visualize_report.html',
                                title='Visualize Report.',
+                               len = len(images),
                                images=images,
+                               images_before=images_before,
+                               images_after=images_after,
                                responses_before=responses_before,
                                responses_after=responses_after)
 
