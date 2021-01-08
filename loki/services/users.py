@@ -1,4 +1,4 @@
-from loki.dao import user_dao, User, db
+from loki.dao.users import user_dao, User, db
 
 
 class UserService():
@@ -30,11 +30,12 @@ class UserService():
             return user
         return None
 
-    def update_user(self, user_id, username=None, email=None):
-        if(user_id is None):
+    def update_user(self, user_id, username=None, email=None,
+                    image_file=None):
+        if (user_id is None):
             return False
 
-        if (username is None) and (email is None):
+        if (username is None) and (email is None) and (image_file is None):
             return False
 
         try:
@@ -44,6 +45,8 @@ class UserService():
                 user.username = username
             if email:
                 user.email = email
+            if image_file:
+                user.image_file = image_file
 
             db.session.commit()
 
