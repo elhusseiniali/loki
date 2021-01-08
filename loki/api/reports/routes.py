@@ -10,6 +10,10 @@ from loki.models import Classifier, Report
 import base64
 import json
 import requests
+from PIL import Image
+import io
+import numpy as np
+
 
 reports = Blueprint('reports', __name__)
 api = Namespace('reports', description='All operations on reports.')
@@ -41,6 +45,7 @@ def new_report():
         images = form.images.data
         images_before = []
         images_after = []
+        pixel_differences = []
         responses_before = []
         responses_after = []
 
@@ -50,7 +55,8 @@ def new_report():
             # Classify images
             # Before attack
             BASE_CLASSIFY = "http://localhost:5000/api/1/classifiers/classify"
-            im_b64 = base64.b64encode(image.read())
+            img_before = image.read()
+            im_b64 = base64.b64encode(img_before)
             images_before.append("data:image/jpeg;base64," +
                                  im_b64.decode("utf-8"))
             files = {'image_data': im_b64,
@@ -63,6 +69,18 @@ def new_report():
             images_after.append("data:image/jpeg;base64," +
                                 im_b64.decode("utf-8"))
             responses_after.append(label[0])
+
+            # Pixel difference
+            img_before = Image.open(io.BytesIO(img_before))
+            img_before_array = np.asarray(img_before)
+            diff = img_before_array - img_before_array
+            pixel_diff = Image.fromarray(diff)
+            buffered = io.BytesIO()
+            pixel_diff.save(buffered, format="JPEG")
+            img_str = base64.b64encode(buffered.getvalue())
+            pixel_differences.append("data:image/jpeg;base64," +
+                                     img_str.decode("utf-8"))
+
         # save the report in the database
         return render_template('visualize_report.html',
                                title='Visualize Report.',
@@ -70,6 +88,7 @@ def new_report():
                                images=images,
                                images_before=images_before,
                                images_after=images_after,
+                               pixel_differences=pixel_differences,
                                responses_before=responses_before,
                                responses_after=responses_after)
 
