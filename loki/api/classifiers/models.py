@@ -109,16 +109,41 @@ class ImageNetClassifier():
 
 
 pretrained_classifiers = [
-    ("AlexNet", ImageNetClassifier(model=models.
-                                   alexnet(pretrained=True))),
-    ("Inception v3", ImageNetClassifier(model=models.
-                                        inception_v3(pretrained=True))),
-    ("GoogleNet", ImageNetClassifier(model=models.
-                                     googlenet(pretrained=True))),
-    ("VGG16", ImageNetClassifier(model=models.
-                                 vgg16(pretrained=True))),
-    ("Wide ResNet 50-2", ImageNetClassifier(model=models.
-                                            wide_resnet50_2(pretrained=True))),
-    ("ResNet18", ImageNetClassifier(model=models.
-                                    resnet18(pretrained=True)))
+    {
+        "name": "AlexNet",
+        "classifier": ImageNetClassifier(model=models.
+                                         alexnet(pretrained=True)),
+        "paper": "https://papers.nips.cc/paper/2012/file/"
+                 "c399862d3b9d6b76c8436e924a68c45b-Paper.pdf"
+    },
+    {
+        "name": "Inception v3",
+        "classifier": ImageNetClassifier(model=models.
+                                         inception_v3(pretrained=True)),
+        "paper": "https://arxiv.org/abs/1512.00567"
+    },
+    {
+        "name": "GoogleNet",
+        "classifier": ImageNetClassifier(model=models.
+                                         googlenet(pretrained=True)),
+        "paper": "https://arxiv.org/abs/1409.4842"
+    },
+    {
+        "name": "VGG-16",
+        "classifier": ImageNetClassifier(model=models.
+                                         vgg16(pretrained=True)),
+        "paper": "https://arxiv.org/abs/1409.1556"
+    },
+    {
+        "name": "Wide ResNet 50-2",
+        "classifier": ImageNetClassifier(model=models.
+                                         wide_resnet50_2(pretrained=True)),
+        "paper": "https://arxiv.org/abs/1512.03385"
+    },
+    {
+        "name": "ResNet18",
+        "classifier": ImageNetClassifier(model=models.
+                                         resnet18(pretrained=True)),
+        "paper": "https://arxiv.org/abs/1512.03385"
+    }
 ]
