@@ -152,6 +152,14 @@ class PyTorchAttack():
 
 
 attacks = [
-    ("LinfDeepFool", fb.attacks.LinfDeepFoolAttack()),
-    ("L2CarliniWagner", fb.attacks.L2CarliniWagnerAttack())
+    {
+        "name": "LinfDeepFool",
+        "attack": fb.attacks.LinfDeepFoolAttack(),
+        "paper": "https://arxiv.org/abs/1511.04599"
+    },
+    {
+        "name": "L2CarliniWagner",
+        "attack": fb.attacks.L2CarliniWagnerAttack(),
+        "paper": "https://arxiv.org/abs/1608.04644"
+    }
 ]
