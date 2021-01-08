@@ -3,7 +3,7 @@ from torchvision import transforms
 
 import torchvision.models as models
 
-import json
+from loki.dao.datasets import ImageNetDAO
 
 
 class ImageNetClassifier():
@@ -45,21 +45,7 @@ class ImageNetClassifier():
         self.normalize = transforms.Normalize(
             mean=[0.485, 0.456, 0.406],
             std=[0.229, 0.224, 0.225])
-        self.labels = self.generate_labels()
-
-    def generate_labels(self):
-        """Get labels from imagenet_class_index.json.
-
-        Returns
-        -------
-        idx2label: [list of str]
-            idx2label[class_id] gives the actual label as a string.
-        """
-        class_idx = json.load(open("./loki/static/models/imagenet/"
-                                   "imagenet_class_index.json"))
-        idx2label = [class_idx[str(k)][1] for k in range(len(class_idx))]
-
-        return idx2label
+        self.labels = ImageNetDAO.get_all()
 
     def prep_label(self, index):
         return torch.as_tensor(index).to(self.device).unsqueeze(0)
