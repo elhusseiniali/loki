@@ -14,7 +14,12 @@ class DatasetList(Resource):
     def get(self):
         """Get a list of the names of all datasets in set_datasets.
         """
-        return [dataset['name'] for dataset in set_datasets]
+        return [
+            {
+                "name": dataset['name'],
+                "paper": dataset['paper']
+            } for dataset in set_datasets
+        ]
 
 
 parser = reqparse.RequestParser()
