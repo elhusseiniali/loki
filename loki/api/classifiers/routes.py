@@ -86,7 +86,7 @@ def form_predict():
     form = PredictForm()
 
     if form.validate_on_submit():
-        index = int(form.model.data) - 1
+        index = int(form.model.data)+1
 
         image_file = save_image(form.image.data, path="tmp")
         path = url_for('static',
