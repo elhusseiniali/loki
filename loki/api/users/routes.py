@@ -2,34 +2,60 @@ from loki.schemas.users import UserSchema
 from loki.dao.users import user_dao
 from loki.services.users import user_service
 
-from flask_restx import Namespace, Resource
-from flask import request
+from flask_restx import Namespace, Resource, reqparse
 
 
 api = Namespace('users', description='User-related operations')
 user_schema = UserSchema()
 
 
-@api.route('/')
+@api.route('/all')
+@api.response('200', 'Success')
 class Users(Resource):
-
-    @api.doc(description="Get all users from the database.")
     def get(self):
+        """An endpoint to get all users from the database.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        [JSON]
+            dict of the form {"users": [list-of-users]}
+        """
         all_users = user_dao.get_all()
         return user_schema.dump(all_users, many=True)
 
-    @api.doc(params={"username": "user username",
-                     "email": "user email",
-                     "password": "user password"},
-             description="Add a user to the database.",
-             responses={201: "The user was created successfully.",
-                        422: "Error: The parameters were"
-                             " valid but the request failed.",
-                        400: "Error: Bad Request. Check parameters"})
+
+parser = reqparse.RequestParser()
+parser.add_argument('username', required=True)
+parser.add_argument('email', required=True)
+parser.add_argument('password', required=True)
+
+
+@api.route('/add')
+@api.response('201', 'Success: The user was created successfully.')
+@api.response('400', 'Error: Bad request. Check parameters.')
+@api.response('422', 'Error: The request failed.')
+class AddUser(Resource):
+    @api.expect(parser)
     def post(self):
-        username = request.args.get('username')
-        email = request.args.get('email')
-        password = request.args.get('password')
+        """Add a new user.
+
+        Parameters
+        ----------
+        - username:
+            Usernames have to be unique.
+        - email:
+            Emails have to be unique.
+        - password:
+            Passwords are automatically hashed when they are stored.
+        """
+        args = parser.parse_args()
+        username = args['username']
+        email = args['email']
+        password = args['password']
 
         if not(username is None) and \
            not(email is None) and \
@@ -38,9 +64,7 @@ class Users(Resource):
                 user_service.create_user(username=username,
                                          email=email,
                                          password=password)
-
                 return "The user was created successfully.", 201
-
             except Exception as e:
                 api.abort(422, e, status="Could not save information",
                           statusCode="422")
@@ -49,16 +73,33 @@ class Users(Resource):
                   status="Could not save information", statusCode="400")
 
 
-@api.route('/user_id=<int:user_id>')
+@api.route('/<int:user_id>')
+@api.param('user_id', 'User identifier', required=True)
+@api.response('200', 'Success: User found.')
+@api.response('404', 'Error: User not found.')
 class getUser(Resource):
+    def put(self, user_id):
+        """Get user by id.
 
-    @api.doc(description="Get a user by id from the database.",
-             responses={404: "The user was not found.",
-                        200: "The user was found."})
-    def get(self, user_id=None):
+        Parameters
+        ----------
+        - user_id : [int]
+
+        Returns
+        -------
+        [JSON]
+            dict with the structure:
+            {
+                "user": {
+                    "username": username,
+                    "email": email,
+                    "password": hashed password,
+                    "image_path": name of profile picture
+                }
+            }
+        """
         user = user_dao.get_by_id(user_id=user_id)
-
-        if not(user is None):
+        if user:
             return user_schema.dump(user)
 
         api.abort(404, message="The user was not found.",
