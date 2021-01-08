@@ -42,7 +42,7 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     admin.init_app(app)
 
-    from loki.api.users.routes import users
+    from loki.api.users.views import users
     from loki.api.main.routes import main
     from loki.api.classifiers.routes import classifiers
     from loki.api.attacks.routes import attacks
