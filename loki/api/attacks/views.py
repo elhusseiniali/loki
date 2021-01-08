@@ -48,5 +48,5 @@ def visualize_attack():
 
         return render_template('visualize_attack.html', form=form,
                                image_file=image_file, result_file=result_file,
-                               index=index)
+                               index=index, preds=preds)
     return render_template('visualize_attack.html', form=form)
