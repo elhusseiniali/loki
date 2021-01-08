@@ -42,9 +42,10 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     admin.init_app(app)
 
-    from loki.api.users.routes import users
+    from loki.api.users.views import users
     from loki.api.main.routes import main
     from loki.api.classifiers.routes import classifiers
+    from loki.api.attacks.views import attack_views
     from loki.api.attacks.routes import attacks
     from loki.api.reports.routes import reports
     from loki.api.errors.handlers import errors
@@ -57,6 +58,7 @@ def create_app(config_class=Config):
 
     app.register_blueprint(users)
     app.register_blueprint(classifiers)
+    app.register_blueprint(attack_views)
     app.register_blueprint(attacks)
     app.register_blueprint(reports)
 

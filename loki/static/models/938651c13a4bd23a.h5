@@ -1,0 +1,168 @@
+# A solver for the n-queens problem
+#
+# It uses a recursive search algorithm with backtracking,
+# and displays naively the current partial solution.
+#
+# Some background information on Wikipedia:
+#   https://en.wikipedia.org/wiki/Eight_queens_puzzle
+#
+# This exercise is in Python but you're welcome to translate
+# the provided code your favorite language (e.g. OCaml) before
+# modifying it.
+#
+# Question 1
+# ----------
+# Modify the code to add a more graphical display of the current
+# partial solution, using pygame [1] or curses [2].
+# The "old" display should remain available and the search
+# algorithm should not be duplicated. More specifically,
+# search(size,G) should start the search with a graphical progress
+# display, and start(size,O) should do the same with the old
+# display, for some G and O. The two modes should be available to
+# the user via the command-line.
+#
+# [1] https://docs.python.org/3/howto/curses.html
+# [2] https://www.pygame.org/
+#
+# Question 2
+# ----------
+# Modify the procedure so that it also allows to obtain
+# the number of solutions instead of printing and exiting
+# after having found the first solution.
+# It should still be possible to obtain the old behaviour
+# (which avoids exploring the whole solution space).
+# The two modes should be available to the user via the
+# command-line.
+# Bonus points if other interesting uses are enabled by the
+# modified procedure.
+import sys
+import pygame
+
+
+class Game():
+    def __init__(self, N=10):
+        self.N = N
+
+        self.BLACK = (0, 0, 0)
+        self.WHITE = (255, 255, 255)
+        self.GREEN = (0, 255, 0)
+        self.RED = (255, 0, 0)
+
+        # Side of each cell
+        self.LENGTH = 50
+
+        # Margin between each cell
+        self.MARGIN = 5
+
+        self.grid = []
+        for row in range(self.N):
+            self.grid.append([])
+            for column in range(self.N):
+                self.grid[row].append(0)
+
+        window_length = (self.N * self.LENGTH) + ((self.N + 1) * self.MARGIN)
+        self.WINDOW_SIZE = (window_length, window_length)
+
+        pygame.init()
+        self.screen = pygame.display.set_mode(self.WINDOW_SIZE)
+        pygame.display.set_caption(f"{self.N}-Queens")
+
+        self.done = False
+        self.clock = pygame.time.Clock()
+
+    def run(self, sol):
+        while not self.done:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.done = True
+                else:
+                    for row in range(len(sol)):
+                        self.grid[row][sol[row]] = 1
+                        pygame.display.flip()
+
+            self.screen.fill(self.BLACK)
+
+            for row in range(self.N):
+                for column in range(self.N):
+                    color = self.WHITE
+                    if self.grid[row][column] == 1:
+                        color = self.GREEN
+
+                    pygame.draw.\
+                        rect(self.screen,
+                             color,
+                             [(self.MARGIN + self.LENGTH) * column + self.MARGIN,
+                              (self.MARGIN + self.LENGTH) * row + self.MARGIN,
+                              self.LENGTH,
+                              self.LENGTH])
+            self.clock.tick(60)
+            pygame.display.flip()
+
+        pygame.quit()
+
+    def reset(self):
+        for row in range(self.N):
+            for column in range(self.N):
+                self.grid[row][column] = 0
+
+
+def search(size, graphical=False, full=False):
+    # The algorithm attempts to set one queen per line,
+    # starting with line 0 and processing lines in order,
+    # backtracking when it stuck.
+    #
+    # In order to test rapidly for possible positions, it
+    # maintains tables of free columns and diagonals:
+    #  - col[j] indicates that column j is free
+    #  - up[k] indicates that the upward-going diagonal k is free
+    #  - up[k] indicates that the downward-going diagonal k is free
+    # Here j belongs to range(size) and k belong to range(2*size-1).
+    col = [-1 for _ in range(size)]
+    up = [-1 for _ in range(2 * size - 1)]
+    down = [-1 for _ in range(2 * size - 1)]
+    # The current solution is maintained for display as a list of
+    # successive column indices.
+    sol = []
+    valid = []
+
+    def searchline(i):
+        if i == size:
+            print("Solution found.")
+            valid.append(sol)
+
+            if not full:
+                exit(0)
+
+            if graphical:
+                x = Game(N=size)
+                x.run(sol=sol)
+
+        for j in range(size):
+            if col[j] and down[i + j] and up[i - j + size - 1]:
+                col[j] = down[i + j] = up[i - j + size - 1] = False
+                sol.append(j)
+                print(sol)
+                searchline(i + 1)
+                sol.pop()
+                col[j] = down[i + j] = up[i - j + size - 1] = True
+    searchline(0)
+
+    if not(valid):
+        print("No solution!")
+        exit(0)
+    else:
+        print(f"\n\n\nFound {len(valid)} solutions.")
+# http://programarcadegames.com/index.php?lang=en&chapter=array_backed_grids
+# http://programarcadegames.com/python_examples/f.php?file=pygame_base_template.py
+
+
+if __name__ == "__main__":
+    size = 7
+    if len(sys.argv) > 1:
+        try:
+            size = int(sys.argv[1])
+        except (IndexError, ValueError):
+            print("Usage: %s <int>" % sys.argv[0])
+            exit(1)
+    print("Searching for size %d..." % size)
+    search(size, graphical=False, full=True)

@@ -26,11 +26,16 @@ classifiers = Blueprint('classifiers', __name__)
 api = Namespace('classifiers', description='All operations on classifiers.')
 
 
-@api.route('/')
+@api.route('/all')
 class ClassifierList(Resource):
     @api.doc('Get a list of the names of all the available classifiers.')
     def get(self):
-        return [classifier[0] for classifier in pretrained_classifiers]
+        return [
+            {
+                "name": classifier["name"],
+                "paper": classifier["paper"]
+            } for classifier in pretrained_classifiers
+        ]
 
 
 @api.route('/<classifier_id>')
@@ -40,7 +45,7 @@ class ClassifierList(Resource):
 class ClassifierID(Resource):
     def get(self, classifier_id):
         try:
-            return pretrained_classifiers[int(classifier_id)][0]
+            return pretrained_classifiers[int(classifier_id)]["name"]
         except Exception:
             api.abort(404)
 
@@ -70,7 +75,7 @@ class Classify(Resource):
 
 
 def predict(image, classifier_index):
-    classifier = pretrained_classifiers[int(classifier_index)][1]
+    classifier = pretrained_classifiers[int(classifier_index)]["classifier"]
     return classifier.predict(image)
 
 

@@ -3,7 +3,7 @@ from torchvision import transforms
 
 import torchvision.models as models
 
-import json
+from loki.dao.datasets import ImageNetDAO
 
 
 class ImageNetClassifier():
@@ -45,21 +45,7 @@ class ImageNetClassifier():
         self.normalize = transforms.Normalize(
             mean=[0.485, 0.456, 0.406],
             std=[0.229, 0.224, 0.225])
-        self.labels = self.generate_labels()
-
-    def generate_labels(self):
-        """Get labels from imagenet_class_index.json.
-
-        Returns
-        -------
-        idx2label: [list of str]
-            idx2label[class_id] gives the actual label as a string.
-        """
-        class_idx = json.load(open("./loki/static/models/imagenet/"
-                                   "imagenet_class_index.json"))
-        idx2label = [class_idx[str(k)][1] for k in range(len(class_idx))]
-
-        return idx2label
+        self.labels = ImageNetDAO.get_all()
 
     def prep_label(self, index):
         return torch.as_tensor(index).to(self.device).unsqueeze(0)
@@ -123,16 +109,41 @@ class ImageNetClassifier():
 
 
 pretrained_classifiers = [
-    ("AlexNet", ImageNetClassifier(model=models.
-                                   alexnet(pretrained=True))),
-    ("Inception v3", ImageNetClassifier(model=models.
-                                        inception_v3(pretrained=True))),
-    ("GoogleNet", ImageNetClassifier(model=models.
-                                     googlenet(pretrained=True))),
-    ("VGG16", ImageNetClassifier(model=models.
-                                 vgg16(pretrained=True))),
-    ("Wide ResNet 50-2", ImageNetClassifier(model=models.
-                                            wide_resnet50_2(pretrained=True))),
-    ("ResNet18", ImageNetClassifier(model=models.
-                                    resnet18(pretrained=True)))
+    {
+        "name": "AlexNet",
+        "classifier": ImageNetClassifier(model=models.
+                                         alexnet(pretrained=True)),
+        "paper": "https://papers.nips.cc/paper/2012/file/"
+                 "c399862d3b9d6b76c8436e924a68c45b-Paper.pdf"
+    },
+    {
+        "name": "Inception v3",
+        "classifier": ImageNetClassifier(model=models.
+                                         inception_v3(pretrained=True)),
+        "paper": "https://arxiv.org/abs/1512.00567"
+    },
+    {
+        "name": "GoogleNet",
+        "classifier": ImageNetClassifier(model=models.
+                                         googlenet(pretrained=True)),
+        "paper": "https://arxiv.org/abs/1409.4842"
+    },
+    {
+        "name": "VGG-16",
+        "classifier": ImageNetClassifier(model=models.
+                                         vgg16(pretrained=True)),
+        "paper": "https://arxiv.org/abs/1409.1556"
+    },
+    {
+        "name": "Wide ResNet 50-2",
+        "classifier": ImageNetClassifier(model=models.
+                                         wide_resnet50_2(pretrained=True)),
+        "paper": "https://arxiv.org/abs/1512.03385"
+    },
+    {
+        "name": "ResNet18",
+        "classifier": ImageNetClassifier(model=models.
+                                         resnet18(pretrained=True)),
+        "paper": "https://arxiv.org/abs/1512.03385"
+    }
 ]
