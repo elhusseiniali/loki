@@ -4,9 +4,15 @@
 <div class="row">
     {% for i in range(len) %}
         <div class="column">
-            <img src="{{ images_before[i] }}" style="width:100%">
+            <figure>
+                <img src="{{ images_before[i] }}" style="width:100%">
+                <figcaption>
+                    <center>
+                {{ responses_before[i]['label'] }}
+                    </center>
+                </figcaption>
+            </figure>
             <br>
-            {{ responses_before[i]['label'] }}
         </div>
     {% endfor %}
 </div>
@@ -14,9 +20,15 @@
 <div class="row">
     {% for i in range(len) %}
         <div class="column">
-            <img src="{{ images_after[i] }}" style="width:100%">
+            <figure>
+                <img src="{{ images_before[i] }}" style="width:100%">
+                <figcaption>
+                    <center>
+                {{ responses_after[i]['label'] }}
+                    </center>
+                </figcaption>
+            </figure>
             <br>
-            {{ responses_after[i]['label'] }}
         </div>
     {% endfor %}
 </div>
