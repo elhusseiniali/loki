@@ -42,5 +42,6 @@ ImageNetDAO = DatasetDAO(Dataset(labels=imagenet_labels))
 datasets = [{
     "name": "ImageNet",
     "DAO": ImageNetDAO,
-    "label_path": imagenet_path
+    "label_path": imagenet_path,
+    "paper": "https://arxiv.org/abs/1409.0575"
 }]
