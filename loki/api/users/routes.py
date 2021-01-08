@@ -1,101 +1,65 @@
-from flask import Blueprint
-import json
-from flask import render_template, flash, redirect, url_for, request, abort
-from flask import send_file
-from loki import db, api
+from loki.schemas.users import UserSchema
+from loki.dao import user_dao
+from loki.services.users import user_service
 
-from loki.api.users.forms import (RegistrationForm, LoginForm,
-                                  UpdateAccountForm)
-from flask_login import login_user, current_user, logout_user, login_required
-
-from loki.models import User, Classifier
-from loki.utils import save_image
+from flask_restx import Namespace, Resource
+from flask import request
 
 
-users = Blueprint('users', __name__)
+api = Namespace('users', description='User-related operations')
+user_schema = UserSchema()
 
 
-@users.route("/register",
-             methods=['GET', 'POST'])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+@api.route('/')
+class Users(Resource):
 
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data,
-                    email=form.email.data,
-                    password=form.password.data)
-        db.session.add(user)
-        db.session.commit()
+    @api.doc(description="Get all users from the database.")
+    def get(self):
+        all_users = user_dao.get_all()
+        return user_schema.dump(all_users, many=True)
 
-        flash('Account created! You can now log in.', 'success')
-        return redirect(url_for('users.login'))
+    @api.doc(params={"username": "user username",
+                     "email": "user email",
+                     "password": "user password"},
+             description="Add a user to the database.",
+             responses={201: "The user was created successfully.",
+                        422: "Error: The parameters were"
+                             " valid but the request failed.",
+                        400: "Error: Bad Request. Check parameters"})
+    def post(self):
+        username = request.args.get('username')
+        email = request.args.get('email')
+        password = request.args.get('password')
 
-    return render_template('register.html',
-                           title='Register',
-                           form=form)
+        if not(username is None) and \
+           not(email is None) and \
+           not(password is None):
+            try:
+                user_service.create_user(username=username,
+                                         email=email,
+                                         password=password)
 
+                return "The user was created successfully.", 201
 
-@users.route("/login",
-             methods=['GET', 'POST'])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user and user.verify_password(form.password.data):
-            login_user(user, remember=form.remember.data)
-            next_page = request.args.get('next')
-            return redirect(next_page) if next_page \
-                else redirect(url_for('main.home'))
-        else:
-            flash("Login unsuccessful!", 'danger')
+            except Exception as e:
+                api.abort(422, e, status="Could not save information",
+                          statusCode="422")
 
-    return render_template('login.html',
-                           title='Log in',
-                           form=form)
+        api.abort(400, "Bad Request. Check parameters.",
+                  status="Could not save information", statusCode="400")
 
 
-@users.route("/logout",
-             methods=['GET'])
-def logout():
-    logout_user()
-    return redirect(url_for('main.home'))
+@api.route('/user_id=<int:user_id>')
+class getUser(Resource):
 
+    @api.doc(description="Get a user by id from the database.",
+             responses={404: "The user was not found.",
+                        200: "The user was found."})
+    def get(self, user_id=None):
+        user = user_dao.get_by_id(user_id=user_id)
 
-@users.route("/account",
-             methods=['GET', 'POST'])
-@login_required
-def account():
-    form = UpdateAccountForm()
+        if not(user is None):
+            return user_schema.dump(user)
 
-    if form.validate_on_submit():
-        if form.image.data:
-            image_file = save_image(form.image.data, path="profile_pictures")
-            current_user.image_file = image_file
-
-        current_user.username = form.username.data
-        current_user.email = form.email.data
-        db.session.commit()
-        flash("Your account has been successfully updated!", 'success')
-        return redirect(url_for('users.account'))
-
-    elif request.method == 'GET':
-        form.username.data = current_user.username
-        form.email.data = current_user.email
-
-    image_file = url_for('static',
-                         filename=f"profile_pictures/"
-                                  f"{current_user.image_file}")
-
-    page = request.args.get('page', 1, type=int)
-    models = Classifier.query.filter_by(user=current_user)\
-                             .order_by(Classifier.upload_date.desc())\
-                             .paginate(page=page, per_page=5)
-
-    return render_template('account.html',
-                           title='Account',
-                           image_file=image_file, form=form,
-                           models=models)
+        api.abort(404, message="The user was not found.",
+                  status="Could not find information", statusCode="404")
