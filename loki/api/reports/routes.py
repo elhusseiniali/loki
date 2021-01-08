@@ -4,10 +4,8 @@ from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from flask_restx import Namespace
 from loki import db
-from loki.api.classifiers.routes import predict
 from loki.api.reports.forms import ReportForm
 from loki.models import Classifier, Report
-from PIL import Image
 
 import base64
 import json
@@ -48,28 +46,27 @@ def new_report():
 
         for image in images:
             # launch attack
-            
+
             # Classify images
             # Before attack
             BASE_CLASSIFY = "http://localhost:5000/api/1/classifiers/classify"
             im_b64 = base64.b64encode(image.read())
-            images_before.append("data:image/jpeg;base64,"+im_b64.decode("utf-8"))
+            images_before.append("data:image/jpeg;base64," +
+                                 im_b64.decode("utf-8"))
             files = {'image_data': im_b64,
                      'classifier_id': form.model.data}
             response = requests.put(BASE_CLASSIFY, data=files)
             label = json.loads(response.text)
-            print(type(label))
-            print(label[0])
             responses_before.append(label[0])
 
             # After attack
-            images_after.append("data:image/jpeg;base64,"+im_b64.decode("utf-8"))
+            images_after.append("data:image/jpeg;base64," +
+                                im_b64.decode("utf-8"))
             responses_after.append(label[0])
         # save the report in the database
-        print(responses_before)
         return render_template('visualize_report.html',
                                title='Visualize Report.',
-                               len = len(images),
+                               len=len(images),
                                images=images,
                                images_before=images_before,
                                images_after=images_after,
