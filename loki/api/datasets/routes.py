@@ -28,9 +28,13 @@ class DatasetList(Resource):
 @api.response(404, 'Error: Dataset not found')
 @api.response(422, 'Error: Check parameters')
 class Dataset(Resource):
-    @api.doc('Get dataset from id')
     def put(self, dataset_id):
+        """Get dataset from dataset_id
 
+        Parameters
+        ----------
+        dataset_id : [int]
+        """
         try:
             return {
                 "name": set_datasets[int(dataset_id)]["name"],
@@ -43,36 +47,56 @@ class Dataset(Resource):
 
 
 parser = reqparse.RequestParser()
-parser.add_argument('class_id', required=False)
+parser.add_argument('class_id', required=True)
 
 
 @api.route('/labels/<dataset_id>')
-@api.param('dataset_id', 'Dataset identifier')
+@api.param('dataset_id', 'Dataset identifier', required=True)
+@api.response('200', 'Success')
+@api.response('404', 'Error: index out of bounds.')
+@api.response('422', 'Error: indices have to be integers.')
 class Label(Resource):
     @api.expect(parser)
     def put(self, dataset_id):
-        """Get labels from dataset.
+        """Get label corresponding to class_id from dataset.
 
         Parameters
         ----------
         dataset_id : [int]
             dataset id from set_datasets
-        class_id : [int], optional
+        class_id : [int]
             class id
 
         Returns
         -------
-        if class_id is given:
-            human-readable label for class_id (e.g. "goldfish" for 1)
-        else:
-            all labels in selected dataset.
+        human-readable label for class_id (e.g. "goldfish" for 1)
+
         """
-        DAO = set_datasets[int(dataset_id)]["DAO"]
+        try:
+            DAO = set_datasets[int(dataset_id)]["DAO"]
+        except IndexError:
+            api.abort(404)
+        except ValueError:
+            api.abort(422)
 
         args = parser.parse_args()
         class_id = args['class_id']
 
-        if not class_id:
-            return DAO.get_all()
-        else:
+        try:
             return DAO.get_by_id(class_id)
+        except IndexError:
+            api.abort(404)
+        except ValueError:
+            api.abort(422)
+
+    def get(self, dataset_id):
+        """Get all labels from dataset
+        """
+        try:
+            DAO = set_datasets[int(dataset_id)]["DAO"]
+        except IndexError:
+            api.abort(404)
+        except ValueError:
+            api.abort(422)
+
+        return DAO.get_all()
