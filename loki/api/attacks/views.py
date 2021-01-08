@@ -6,7 +6,10 @@ from loki.utils import save_image
 from PIL import Image
 
 from loki.api.attacks.routes import run_attack
-
+from loki.api.classifiers.routes import predict
+import requests
+import base64
+import json
 
 attack_views = Blueprint('attack_views', __name__)
 
@@ -32,6 +35,15 @@ def visualize_attack():
         result_image = run_attack(img, classifier_id, attack_id)
         result_file = save_image(result_image, path="tmp",
                                  output_size=(400, 400))
+
+        if form.classify.data:
+            preds = []
+            label_before = predict(img, classifier_id)
+            label_after = predict(result_image, classifier_id)
+
+            preds.append(label_before)
+            preds.append(label_after)
+
         flash("Attack successully run!", 'success')
 
         return render_template('visualize_attack.html', form=form,
