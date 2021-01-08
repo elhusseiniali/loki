@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 
-from loki.config import Config
+from loki.config import BaseConfig
 
 
 db = SQLAlchemy()
@@ -33,7 +33,7 @@ admin.add_view(ClassifierView(Classifier, db.session))
 admin.add_view(ReportView(Report, db.session))
 
 
-def create_app(config_class=Config):
+def create_app(config_class=BaseConfig):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
@@ -44,7 +44,7 @@ def create_app(config_class=Config):
 
     from loki.api.users.views import users
     from loki.api.main.routes import main
-    from loki.api.classifiers.routes import classifiers
+    from loki.api.classifiers.views import classifiers
     from loki.api.attacks.views import attack_views
     from loki.api.reports.routes import reports
     from loki.api.errors.handlers import errors
