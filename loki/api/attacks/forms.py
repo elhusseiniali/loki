@@ -12,7 +12,7 @@ class AttackField(RadioField):
     """
     def __init__(self, *args, **kwargs):
         super(AttackField, self).__init__(*args, **kwargs)
-        self.choices = [(i, item[0])
+        self.choices = [(i, item["name"])
                         for i, item in enumerate(set_attacks)]
 
 
@@ -21,7 +21,7 @@ class VisualizeAttackForm(FlaskForm):
     attacks = AttackField(label="Select attack(s)")
     image = FileField('Upload an image',
                       id='image',
-                      validators=[FileAllowed(['jpg', 'jpeg', 'png']),
+                      validators=[FileAllowed(['jpg', 'jpeg']),
                                   FileRequired()])
     classify = BooleanField('Classify image')
     submit = SubmitField('Visualize attack')
