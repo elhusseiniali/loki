@@ -22,11 +22,31 @@ class DatasetList(Resource):
         ]
 
 
+@api.route('/<dataset_id>')
+@api.param('dataset_id', 'Dataset identifier')
+@api.response(200, 'Success: Dataset found')
+@api.response(404, 'Error: Dataset not found')
+@api.response(422, 'Error: Check parameters')
+class Dataset(Resource):
+    @api.doc('Get dataset from id')
+    def put(self, dataset_id):
+
+        try:
+            return {
+                "name": set_datasets[int(dataset_id)]["name"],
+                "paper": set_datasets[int(dataset_id)]["paper"]
+            }
+        except IndexError:
+            api.abort(404)
+        except ValueError:
+            api.abort(422)
+
+
 parser = reqparse.RequestParser()
 parser.add_argument('class_id', required=False)
 
 
-@api.route('/<dataset_id>')
+@api.route('/labels/<dataset_id>')
 @api.param('dataset_id', 'Dataset identifier')
 class Label(Resource):
     @api.expect(parser)
