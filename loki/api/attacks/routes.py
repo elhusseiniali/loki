@@ -54,6 +54,13 @@ class RunAttack(Resource):
     def put(self):
         """Run an attack given classifier_id, image_data, and attack_id.
 
+        Parameters
+        ----------
+        image_data: [string]
+            Base64-encoded image.
+        attack_id:  [int]
+        classifier_id: [int]
+
         Returns
         -------
         [image_data]
