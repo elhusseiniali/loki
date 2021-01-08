@@ -2,14 +2,17 @@ from flask import Blueprint
 import json
 from flask import render_template, flash, redirect, url_for, request, abort
 from flask import send_file
-from loki import db, api
+from loki import api
 
 from loki.api.users.forms import (RegistrationForm, LoginForm,
                                   UpdateAccountForm)
 from flask_login import login_user, current_user, logout_user, login_required
 
-from loki.models import User, Classifier
+from loki.models import Classifier
 from loki.utils import save_image
+
+from loki.services.users import user_service
+from loki.dao.users import user_dao
 
 
 users = Blueprint('users', __name__)
@@ -23,11 +26,11 @@ def register():
 
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data,
-                    email=form.email.data,
-                    password=form.password.data)
-        db.session.add(user)
-        db.session.commit()
+        username = form.username.data
+        email = form.email.data
+        password = form.password.data
+
+        user_service.create_user(username, email, password)
 
         flash('Account created! You can now log in.', 'success')
         return redirect(url_for('users.login'))
@@ -44,7 +47,7 @@ def login():
         return redirect(url_for('main.home'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = user_dao.get_by_email(email=form.email.data)
         if user and user.verify_password(form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
@@ -74,11 +77,16 @@ def account():
     if form.validate_on_submit():
         if form.image.data:
             image_file = save_image(form.image.data, path="profile_pictures")
-            current_user.image_file = image_file
+        else:
+            image_file = None
 
-        current_user.username = form.username.data
-        current_user.email = form.email.data
-        db.session.commit()
+        new_username = form.username.data
+        new_email = form.email.data
+
+        user_id = current_user.id
+        user_service.update_user(user_id=user_id, username=new_username,
+                                 email=new_email, image_file=image_file)
+
         flash("Your account has been successfully updated!", 'success')
         return redirect(url_for('users.account'))
 
