@@ -14,10 +14,21 @@ import io
 api = Namespace('attacks', description='Operations on adversarial attacks')
 
 
-@api.route('/')
+@api.route('/all')
+@api.response('200', 'Success')
 class AttackList(Resource):
-    @api.doc('Get a list of the names of all attacks.')
     def get(self):
+        """Get a list of all the attacks.
+
+        Returns
+        -------
+        [List of JSON]
+            Every JSON has the form
+            {
+                "name": attack name,
+                "paper": attack research paper
+            }
+        """
         return [
             {
                 "name": attack["name"],
@@ -28,11 +39,23 @@ class AttackList(Resource):
 
 @api.route('/<attack_id>')
 @api.param('attack_id', 'The attack identifier')
-@api.response(200, 'Success: Attack found')
-@api.response(404, 'Error: Attack not found')
+@api.response('200', 'Success: Attack found')
+@api.response('404', 'Error: Attack not found')
 class Attack(Resource):
     @api.doc('Get an attack from its id.')
     def get(self, attack_id):
+        """Get the name of an attack and its research paper.
+        IDs start from 0.
+
+        Returns
+        -------
+        [JSON]
+            with the form
+            {{
+                "name": attack name,
+                "paper": attack research paper
+            }}
+        """
         try:
             return {
                 "name": set_attacks[int(attack_id)]["name"],
@@ -48,7 +71,7 @@ parser.add_argument('attack_id')
 parser.add_argument('classifier_id')
 
 
-@api.route('/run/')
+@api.route('/run')
 class RunAttack(Resource):
     @api.expect(parser)
     def put(self):
