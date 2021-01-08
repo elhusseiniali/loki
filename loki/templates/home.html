@@ -1,4 +1,53 @@
 {% extends 'layout.html' %}
 {% block content %}
-    <h1> Something! </h1>
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col"> Dataset Name </th>
+            <th scope="col">Paper</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for dataset in datasets %}
+            <tr>
+                <td>{{dataset['name']}}</td>
+                <td><a class="article-title" href="{{dataset['paper']}}">{{dataset['paper']}}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col"> Classifiers Name </th>
+            <th scope="col">Paper</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for classifier in classifiers %}
+            <tr>
+                <td>{{classifier['name']}}</td>
+                <td><a class="article-title" href="{{classifier['paper']}}">{{classifier['paper']}}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Attacks Name </th>
+            <th scope="col">Paper</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for attack in attacks %}
+            <tr>
+                <td>{{attack['name']}}</td>
+                <td><a class="article-title" href="{{attack['paper']}}">{{attack['paper']}}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock content %}
