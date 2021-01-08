@@ -12,6 +12,7 @@ class UserSchema(BaseSchema):
     username = fields.String(required=True)
     email = fields.Email(required=True)
     password = fields.String(required=True)
+    image_file = fields.String(required=False)
 
     @post_load
     def make_object(self, data, **kwargs):
