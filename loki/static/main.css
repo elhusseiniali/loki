@@ -115,10 +115,8 @@ h1, h2, h3, h4, h5, h6 {
   padding: 1px;
 }
 
-figcaption {
-  background-color: black;
-  color: white;
-  font-style: italic;
+figcaption {  
+  color: black;
   font-size: xx-small;
   padding: 2px;
   text-align: center;

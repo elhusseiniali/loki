@@ -1,11 +1,11 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h1>Before</h1>
+<h3>Before</h3>
 <div class="row">
     {% for i in range(len) %}
         <div class="column">
             <figure>
-                <img src="{{ images_before[i] }}" style="width:100%" id="image_before_{{i}}">
+                <img src="{{ images_before[i] }}" class="img-responsive" width="100" height="100" id="image_before_{{i}}">
                 <figcaption>
                     {{ responses_before[i]['label'] }}
                 </figcaption>
@@ -14,12 +14,12 @@
         <br>
     {% endfor %}
 </div>
-<h1>After</h1>
+<h3>After</h3>
 <div class="row">
     {% for i in range(len) %}
         <div class="column">
             <figure>
-                <img src="{{ images_after[i] }}" style="width:100%" id="image_after_{{i}}">
+                <img src="{{ images_after[i] }}" class="img-responsive" width="100" height="100" id="image_after_{{i}}">
                 <figcaption>
                     {{ responses_after[i]['label'] }}
                 </figcaption>
@@ -28,12 +28,12 @@
         <br>
     {% endfor %}
 </div>
-<h1>Pixel difference</h1>
+<h3>Pixel difference</h3>
 <div class="row">
     {% for i in range(len) %}
         <div class="column">
             <figure>
-                <img src="{{ pixel_differences[i] }}" style="width:100%">
+                <img src="{{ pixel_differences[i] }}" class="img-responsive" width="100" height="100" >
             </figure>
         </div>
         <br>
