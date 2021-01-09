@@ -45,8 +45,8 @@ def visualize_attack():
 
         preds = []
         if form.classify.data:
-            label_before = predict(img, classifier_id)
-            label_after = predict(result_image, classifier_id)
+            _, label_before = predict(img, classifier_id)
+            _, label_after = predict(result_image, classifier_id)
 
             preds.append(label_before)
             preds.append(label_after)
