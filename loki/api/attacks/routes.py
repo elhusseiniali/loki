@@ -108,7 +108,10 @@ class RunAttack(Resource):
 
             (original_image,
              result_image,
-             difference_image) = run_attack(img, classifier_id, attack_id)
+             difference_image) = run_attack(img,
+                                            classifier_id,
+                                            attack_id,
+                                            scale=4)
 
             original_file = io.BytesIO()
             original_image.save(original_file, format="JPEG")
