@@ -32,6 +32,10 @@ admin.add_view(UserView(User, db.session))
 admin.add_view(ClassifierView(Classifier, db.session))
 admin.add_view(ReportView(Report, db.session))
 
+# Image dimensions
+MAX_HEIGHT = 400
+MAX_WIDTH = 400
+
 
 def create_app(config_class=BaseConfig):
     app = Flask(__name__)
