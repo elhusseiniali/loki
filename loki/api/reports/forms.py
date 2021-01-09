@@ -9,6 +9,6 @@ from wtforms import MultipleFileField
 class ReportForm(FlaskForm):
     model = ClassifierField('Select the model for the report')
     images = MultipleFileField('Select Images',
-                               validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
+                               validators=[FileAllowed(['jpg', 'jpeg'])])
     attacks = AttackField(label="Select attack(s)")
     submit = SubmitField('Launch new report')

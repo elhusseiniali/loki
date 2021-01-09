@@ -106,13 +106,27 @@ class RunAttack(Resource):
             classifier_id = args['classifier_id']
             attack_id = args['attack_id']
 
-            _, result_image = run_attack(img, classifier_id, attack_id)
+            (original_image,
+             result_image,
+             difference_image) = run_attack(img, classifier_id, attack_id)
 
-            im_file = io.BytesIO()
-            result_image.save(im_file, format="JPEG")
-            im_bytes = im_file.getvalue()
+            original_file = io.BytesIO()
+            original_image.save(original_file, format="JPEG")
+            original_bytes = original_file.getvalue()
 
-            return {"image_data": base64.b64encode(im_bytes).decode()}
+            result_file = io.BytesIO()
+            result_image.save(result_file, format="JPEG")
+            result_bytes = result_file.getvalue()
+
+            difference_file = io.BytesIO()
+            difference_image.save(difference_file, format="JPEG")
+            difference_bytes = difference_file.getvalue()
+
+            return {
+                "original_image": base64.b64encode(original_bytes).decode(),
+                "result_image": base64.b64encode(result_bytes).decode(),
+                "difference_image": base64.b64encode(difference_bytes).decode()
+            }
         except IndexError:
             api.abort(404)
         except ValueError:
@@ -149,8 +163,12 @@ def run_attack(image, classifier_id, attack_id, scale=1):
 
     adv, _ = attack.run(original_image,
                         labels=label)
+    difference_tensor = adv - original_image
+
     result_image = get_image_from_tensor(images=adv, scale=scale)
     original_image = get_image_from_tensor(images=original_image,
                                            scale=scale)
+    difference = get_image_from_tensor(images=difference_tensor,
+                                       scale=scale)
 
-    return original_image, result_image
+    return original_image, result_image, difference
