@@ -19,7 +19,7 @@ class ClassifierField(SelectField):
         user_models = Classifier.query.filter_by(user=current_user). \
             order_by(Classifier.upload_date.desc())
 
-        pretrained_choices = [(i, item["name"])
+        pretrained_choices = [(i, item.name)
                               for i, item in enumerate(pretrained_classifiers)]
 
         offset = len(pretrained_choices)

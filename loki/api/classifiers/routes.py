@@ -19,8 +19,8 @@ class ClassifierList(Resource):
         """
         return [
             {
-                "name": classifier["name"],
-                "paper": classifier["paper"]
+                "name": classifier.name,
+                "paper": classifier.paper
             } for classifier in pretrained_classifiers
         ]
 
@@ -37,8 +37,8 @@ class ClassifierID(Resource):
         """
         try:
             return {
-                "name": pretrained_classifiers[int(classifier_id)]["name"],
-                "paper": pretrained_classifiers[int(classifier_id)]["paper"]
+                "name": pretrained_classifiers[int(classifier_id)].name,
+                "paper": pretrained_classifiers[int(classifier_id)].paper
             }
         except IndexError:
             api.abort(404)
@@ -100,5 +100,5 @@ class Classify(Resource):
 
 
 def predict(image, classifier_index):
-    classifier = pretrained_classifiers[int(classifier_index)]["classifier"]
+    classifier = pretrained_classifiers[int(classifier_index)].classifier
     return classifier.predict(image)
