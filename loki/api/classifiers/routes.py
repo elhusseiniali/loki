@@ -4,6 +4,7 @@ from loki.api.classifiers.models import pretrained_classifiers
 
 
 from flask_restx import Namespace, Resource, reqparse
+from loki.api.utils import get_image_from_tensor
 
 import base64
 import io
