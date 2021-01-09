@@ -36,8 +36,8 @@ def visualize_attack():
         result_file = save_image(result_image, path="tmp",
                                  output_size=(400, 400))
 
+        preds = []
         if form.classify.data:
-            preds = []
             label_before = predict(img, classifier_id)
             label_after = predict(result_image, classifier_id)
 
