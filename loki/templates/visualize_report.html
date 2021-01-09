@@ -5,13 +5,12 @@
     {% for i in range(len) %}
         <div class="column">
             <figure>
-                <img src="{{ images_before[i] }}" class="img-responsive" width="100" height="100" id="image_before_{{i}}">
+                <img src="{{ original_images[i] }}" class="img-responsive" width="100" height="100" id="original_images{{i}}">
                 <figcaption>
-                    {{ responses_before[i]['label'] }}
+                    {{ original_labels[i] }}
                 </figcaption>
             </figure>
         </div>
-        <br>
     {% endfor %}
 </div>
 <h3>After</h3>
@@ -19,13 +18,12 @@
     {% for i in range(len) %}
         <div class="column">
             <figure>
-                <img src="{{ images_after[i] }}" class="img-responsive" width="100" height="100" id="image_after_{{i}}">
+                <img src="{{ result_images[i] }}" class="img-responsive" width="100" height="100" id="result_images{{i}}">
                 <figcaption>
-                    {{ responses_after[i]['label'] }}
+                    {{ result_labels[i] }}
                 </figcaption>
             </figure>
         </div>
-        <br>
     {% endfor %}
 </div>
 <h3>Pixel difference</h3>
@@ -33,10 +31,9 @@
     {% for i in range(len) %}
         <div class="column">
             <figure>
-                <img src="{{ pixel_differences[i] }}" class="img-responsive" width="100" height="100" >
+                <img src="{{ difference_images[i] }}" class="img-responsive" width="100" height="100" >
             </figure>
         </div>
-        <br>
     {% endfor %}
 </div>
 
