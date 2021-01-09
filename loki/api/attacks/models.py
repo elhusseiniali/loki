@@ -66,7 +66,7 @@ class PyTorchAttack():
         """
         advs, _, is_adv = self.attack(self.fmodel, images, labels,
                                       epsilons=epsilons)
-        return advs
+        return advs, is_adv
 
     @staticmethod
     def get_image(
