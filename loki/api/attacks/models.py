@@ -68,7 +68,7 @@ attacks = [
     },
     {
         "name": "L2CarliniWagner",
-        "attack": fb.attacks.L2CarliniWagnerAttack(),
+        "attack": fb.attacks.L2CarliniWagnerAttack(steps=1000),
         "paper": "https://arxiv.org/abs/1608.04644"
     }
 ]
