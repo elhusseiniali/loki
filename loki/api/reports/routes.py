@@ -3,6 +3,8 @@ from loki.services.reports import report_service
 from loki.schemas.reports import ReportSchema
 
 from flask_restx import Namespace, Resource, reqparse
+from sklearn.metrics import confusion_matrix
+import json
 
 
 api = Namespace('reports', description='Report-related operations')
@@ -32,3 +34,38 @@ class getReport(Resource):
             api.abort(404)
         except ValueError:
             api.abort(422)
+
+
+parser = reqparse.RequestParser()
+parser.add_argument('y_before', action='split', required=True)
+parser.add_argument('y_after', action='split', required=True)
+
+
+@api.route('/confusion_matrix')
+@api.response(200, 'Success')
+@api.response(422, 'Error: The request failed')
+class ConfusionMatrix(Resource):
+    @api.expect(parser)
+    def put(self):
+        """Generate confusion matrix from two lists of labels.
+
+        Parameters
+        ----------
+        - y_before
+        - y_after
+        [Lists] of labels
+
+        Returns
+        -------
+        List of lists representing the confusion matrix.
+        """
+        args = parser.parse_args()
+        y_before = args['y_before']
+        y_after = args['y_after']
+
+        labels = list(set(y_before + y_after))
+        try:
+            cm = confusion_matrix(y_before, y_after, labels=labels)
+            return cm.tolist()
+        except Exception as e:
+            api.abort(422, e, status="Something went wrong")
