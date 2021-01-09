@@ -71,8 +71,8 @@ class Attack(Resource):
 
 parser = reqparse.RequestParser()
 parser.add_argument('image_data', required=True)
-parser.add_argument('attack_id')
-parser.add_argument('classifier_id')
+parser.add_argument('attack_id', type=int, required=True)
+parser.add_argument('classifier_id', type=int, required=True)
 
 
 @api.route('/run')
@@ -108,7 +108,10 @@ class RunAttack(Resource):
 
             (original_image,
              result_image,
-             difference_image) = run_attack(img, classifier_id, attack_id)
+             difference_image) = run_attack(img,
+                                            classifier_id,
+                                            attack_id,
+                                            scale=4)
 
             original_file = io.BytesIO()
             original_image.save(original_file, format="JPEG")
@@ -119,13 +122,16 @@ class RunAttack(Resource):
             result_bytes = result_file.getvalue()
 
             difference_file = io.BytesIO()
-            difference_image.save(difference_file, format="JPEG")
+            difference_image.save(difference_file, format="PNG")
             difference_bytes = difference_file.getvalue()
 
             return {
-                "original_image": base64.b64encode(original_bytes).decode(),
-                "result_image": base64.b64encode(result_bytes).decode(),
-                "difference_image": base64.b64encode(difference_bytes).decode()
+                "original_image":
+                    base64.b64encode(original_bytes).decode(),
+                "result_image":
+                    base64.b64encode(result_bytes).decode(),
+                "difference_image":
+                    base64.b64encode(difference_bytes).decode()
             }
         except IndexError:
             api.abort(404)
@@ -133,7 +139,7 @@ class RunAttack(Resource):
             api.abort(422)
 
 
-def run_attack(image, classifier_id, attack_id, scale=1):
+def run_attack(image, classifier_id, attack_id, scale=1, epsilons=0.03):
     """Run an attack.
 
     Parameters
@@ -162,13 +168,15 @@ def run_attack(image, classifier_id, attack_id, scale=1):
                            set_attacks[int(attack_id)]["attack"])
 
     adv, _ = attack.run(original_image,
-                        labels=label)
+                        labels=label,
+                        epsilons=epsilons)
     difference_tensor = adv - original_image
 
     result_image = get_image_from_tensor(images=adv, scale=scale)
     original_image = get_image_from_tensor(images=original_image,
                                            scale=scale)
     difference = get_image_from_tensor(images=difference_tensor,
-                                       scale=scale)
+                                       scale=scale, bounds=(-0.1, 0.1),
+                                       ext='PNG')
 
     return original_image, result_image, difference
