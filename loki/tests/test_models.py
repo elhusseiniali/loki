@@ -12,10 +12,13 @@ class TestObjectCreation(unittest.TestCase):
         assert frege
 
         resnet = Classifier(name="ResNet",
-                     file_path="dummy_path",
-                     user=frege)
+                            file_path="dummy_path",
+                            user=frege)
         assert resnet
 
         some_report = Report(date=datetime.now(),
                              model=resnet)
         assert some_report
+
+        another_report = Report(date=datetime.now())
+        assert another_report
