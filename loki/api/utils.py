@@ -14,6 +14,7 @@ import io
 
 def get_image_from_tensor(
         images: Any,
+        ext='jpg',
         *,
         n: Optional[int] = None,
         data_format: Optional[str] = None,
@@ -87,7 +88,7 @@ def get_image_from_tensor(
                 ax.imshow(x[i])
 
     buf = io.BytesIO()
-    plt.savefig(buf, format='jpg')
+    plt.savefig(buf, format=ext)
     buf.seek(0)
 
     img = Image.open(buf)
