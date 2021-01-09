@@ -2,6 +2,7 @@ from loki.api.attacks.models import PyTorchAttack
 from loki.api.attacks.models import attacks as set_attacks
 
 from loki.api.classifiers.models import pretrained_classifiers
+from loki.api.utils import get_image_from_tensor
 
 from PIL import Image
 
@@ -148,8 +149,8 @@ def run_attack(image, classifier_id, attack_id, scale=1):
 
     adv, _ = attack.run(original_image,
                         labels=label)
-    result_image = PyTorchAttack.get_image(images=adv, scale=scale)
-    original_image = PyTorchAttack.get_image(images=original_image,
-                                             scale=scale)
+    result_image = get_image_from_tensor(images=adv, scale=scale)
+    original_image = get_image_from_tensor(images=original_image,
+                                           scale=scale)
 
     return original_image, result_image
