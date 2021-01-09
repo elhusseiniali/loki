@@ -10,6 +10,7 @@ from loki.api.classifiers.routes import predict
 import requests
 import base64
 import json
+import numpy as np
 
 from loki import MAX_WIDTH, MAX_HEIGHT
 
@@ -44,12 +45,18 @@ def visualize_attack():
                                    output_size=(MAX_WIDTH, MAX_HEIGHT))
 
         preds = []
+        probs = []
+        size = 5  # top 5 predictions
         if form.classify.data:
-            _, label_before = predict(img, classifier_id)
-            _, label_after = predict(result_image, classifier_id)
+            _, original_label = predict(img, classifier_id)
+            _, result_label = predict(result_image, classifier_id)
 
-            preds.append(label_before)
-            preds.append(label_after)
+            preds.append([original_label[i][1] for i in range(size)])
+            preds.append([result_label[i][1] for i in range(size)])
+            probs.append([np.round(original_label[i][2]/100, 4)
+                         for i in range(size)])
+            probs.append([np.round(result_label[i][2]/100, 4)
+                         for i in range(size)])
 
         flash("Attack successully run!",
               'success')
@@ -57,5 +64,6 @@ def visualize_attack():
         return render_template('visualize_attack.html', form=form,
                                image_file=original_file,
                                result_file=result_file,
-                               index=index, preds=preds)
+                               index=index, preds=preds,
+                               probs=probs, size=size)
     return render_template('visualize_attack.html', form=form)

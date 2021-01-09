@@ -80,7 +80,22 @@
                         </div>
                         <br>
                         {% if form.classify.data == True and not(form.errors)%}
-                        <h3><B> Before attack: </B> {{preds[0][0][1]}} (p = {{preds[0][0][2]/100}})</h3>
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                <th scope="col">Prediction</th>
+                                <th scope="col">Probability</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in range(size)%}
+                                    <tr>
+                                    <td>{{ preds[0][i] }}</td>
+                                    <td>{{ probs[0][i] }}</td>            
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            </table>
                         {% endif %}
                         <div class="form-group">
                             {% if form.image.errors %}
@@ -102,7 +117,22 @@
                         </div>
                         <br>
                         {% if form.classify.data == True and not(form.errors)%}
-                        <h3><B> After attack: </B> {{preds[1][0][1]}} (p = {{preds[1][0][2]/100}}) </h3>
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                <th scope="col">Prediction</th>
+                                <th scope="col">Probability</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in range(size)%}
+                                    <tr>
+                                    <td>{{ preds[1][i] }}</td>
+                                    <td>{{ probs[1][i] }}</td>            
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                         {% endif %}
                     </div>
                 </div>
