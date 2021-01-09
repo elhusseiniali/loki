@@ -3,6 +3,8 @@ from flask_login import UserMixin
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_validator import ValidateEmail
 
+import sqlalchemy.types as types
+
 import datetime
 
 
@@ -58,6 +60,7 @@ class User(db.Model, UserMixin):
     _password = db.Column(db.String(128), nullable=False)
 
     models = db.relationship("Classifier", back_populates="user")
+    reports = db.relationship("Report", back_populates="user")
 
     def __repr__(self):
         return (f"User('{self.username}': '{self.email}')")
@@ -160,12 +163,23 @@ class Report(db.Model):
     model_id = db.Column(db.Integer, db.ForeignKey("classifier.id"))
     model = db.relationship("Classifier", back_populates="reports")
 
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship("User", back_populates="reports")
+
+    pretrained_classifier = db.Column(db.Integer, nullable=True)
+
     data = db.Column(db.JSON)
 
-    def __init__(self, date, model):
+    def __init__(self, date=datetime.datetime.now,
+                 model=None, pretrained_classifier=None):
         self.date = date
         self.model = model
+        self.pretrained_classifier = pretrained_classifier
 
     def __repr__(self):
-        return(f"Report for {self.model}, "
-               f"generated on {self.date}.")
+        if self.model:
+            return(f"Report for {self.model}, "
+                   f"generated on {self.date}.")
+        elif self.pretrained_classifier:
+            return(f"Report for {self.pretrained_classifier.name}, "
+                   f"generated on {self.date}.")
