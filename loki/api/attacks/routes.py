@@ -71,8 +71,8 @@ class Attack(Resource):
 
 parser = reqparse.RequestParser()
 parser.add_argument('image_data', required=True)
-parser.add_argument('attack_id')
-parser.add_argument('classifier_id')
+parser.add_argument('attack_id', type=int, required=True)
+parser.add_argument('classifier_id', type=int, required=True)
 
 
 @api.route('/run')
@@ -126,9 +126,12 @@ class RunAttack(Resource):
             difference_bytes = difference_file.getvalue()
 
             return {
-                "original_image": base64.b64encode(original_bytes).decode(),
-                "result_image": base64.b64encode(result_bytes).decode(),
-                "difference_image": base64.b64encode(difference_bytes).decode()
+                "original_image":
+                    base64.b64encode(original_bytes).decode(),
+                "result_image":
+                    base64.b64encode(result_bytes).decode(),
+                "difference_image":
+                    base64.b64encode(difference_bytes).decode()
             }
         except IndexError:
             api.abort(404)
@@ -136,7 +139,7 @@ class RunAttack(Resource):
             api.abort(422)
 
 
-def run_attack(image, classifier_id, attack_id, scale=1):
+def run_attack(image, classifier_id, attack_id, scale=1, epsilons=0.03):
     """Run an attack.
 
     Parameters
@@ -165,7 +168,8 @@ def run_attack(image, classifier_id, attack_id, scale=1):
                            set_attacks[int(attack_id)]["attack"])
 
     adv, _ = attack.run(original_image,
-                        labels=label)
+                        labels=label,
+                        epsilons=epsilons)
     difference_tensor = adv - original_image
 
     result_image = get_image_from_tensor(images=adv, scale=scale)
