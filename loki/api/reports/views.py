@@ -40,6 +40,20 @@ def all_reports():
                methods=['POST', 'GET'])
 @login_required
 def new_report():
+    # DUMMY DATA
+    X_values = ['Bird', 'Cat', 'Dog', 'Mouse']
+    Z_values_before = [
+        [4, 0, 0, 0],
+        [0, 3, 1, 0],
+        [0, 0, 4, 0],
+        [1, 0, 0, 3],
+    ]
+    Z_values_after = [
+        [2, 0, 0, 2],
+        [0, 1, 3, 0],
+        [1, 1, 1, 1],
+        [3, 0, 0, 1],
+    ]
     form = ReportForm()
     if form.validate_on_submit():
         images = form.images.data
@@ -96,6 +110,10 @@ def new_report():
                                result_images=result_images,
                                difference_images=difference_images,
                                original_labels=original_labels,
-                               result_labels=result_labels)
+                               result_labels=result_labels,
+                               X_values=X_values,
+                               Z_values_before=Z_values_before,
+                               Z_values_after=Z_values_after
+                               )
 
     return render_template('new_report.html', title='Reports', form=form)

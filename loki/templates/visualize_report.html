@@ -36,6 +36,132 @@
         </div>
     {% endfor %}
 </div>
-
+<div style="width: 100%; overflow: hidden;">
+    <div style="width: 600px; float: left;"> 
+        <div id="ConfusionMatrixBeforeAttack" style="width:500px;height:500px;"></div>
+        <div class="selector-before">
+        Class: <select class="classdata-before"> </select>
+        </div>
+    </div>
+    <div style="margin-left: 500px;"> 
+        <div id="ConfusionMatrixAfterAttack" style="width:500px;height:500px;"></div>
+        <div class="selector-after">
+        Class: <select class="classdata-after"> </select>
+        </div>
+    </div>
+</div>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    var xValues = {{ X_values|tojson }};
+    var zValues_before = {{ Z_values_before|tojson }};
+    var zValues_after = {{ Z_values_after|tojson }};
+
+    var colorscaleValue = [
+    [0, '#DBE6FB'],
+    [1, '#022E85']
+    ];
+    function setConfusionPlot(zValues, title, class_index) {
+        if (class_index!=undefined){
+            var x = xValues;
+            var y = [xValues[class_index]];
+            var z = [zValues[class_index]];
+        }
+        else{
+            var x = xValues;
+            var y = xValues;
+            var z = zValues;
+        }
+
+        var data = [{
+            x: x,
+            y: y,
+            z: z,
+            type: 'heatmap',
+            colorscale: colorscaleValue,
+        }];
+        var layout = {
+            title: title,
+            annotations: [],
+            xaxis: {
+                ticks: '',
+                title: 'Predicted label'
+            },
+            yaxis: {
+                ticks: '',
+                ticksuffix: ' ',
+                width: 700,
+                height: 700,
+                autosize: false,
+                title: 'True label'
+            }
+        };
+        for ( var i = 0; i < y.length; i++ ) {
+            for ( var j = 0; j < x.length; j++ ) {
+                var currentValue = z[i][j];
+                if (currentValue != 0.0 & i!=j) {
+                var textColor = 'red';
+                }else if(currentValue == 0.0){
+                var textColor = 'blue';
+                }
+                else{
+                var textColor = 'white';
+                }
+                var result = {
+                xref: 'x1',
+                yref: 'y1',
+                x: x[j],
+                y: y[i],
+                text: z[i][j],
+                showarrow: false,
+                font: {
+                    color: textColor
+                }
+                };
+                layout.annotations.push(result);
+            }
+        }
+        Plotly.newPlot(title, data, layout);
+    };
+
+    setConfusionPlot(zValues_before, 'ConfusionMatrixBeforeAttack');
+    setConfusionPlot(zValues_after, 'ConfusionMatrixAfterAttack');
+
+    var innerContainer_before = document.querySelector('.selector-before'),
+        classSelector_before = innerContainer_before.querySelector('.classdata-before');
+    var innerContainer_after = document.querySelector('.selector-after'),
+        classSelector_after = innerContainer_after.querySelector('.classdata-after');
+
+    function assignOptions(textArray, selector) {
+        for (var i = 0; i < textArray.length;  i++) {
+            var currentOption = document.createElement('option');
+            currentOption.text = textArray[i];
+            selector.appendChild(currentOption);
+        }
+    }
+    var selectorvalues = xValues.slice();
+    selectorvalues.unshift('All')
+
+    assignOptions(selectorvalues, classSelector_before);
+    assignOptions(selectorvalues, classSelector_after);
+
+
+    function updateClass_before(){
+        if (classSelector_before.value=='All'){
+            setConfusionPlot(zValues_before, 'ConfusionMatrixBeforeAttack');
+        }
+        var classdata = xValues.indexOf(classSelector_before.value);
+        setConfusionPlot(zValues_before, 'ConfusionMatrixBeforeAttack', classdata);
+    }
+    function updateClass_after(){
+        if (classSelector_after.value=='All'){
+            setConfusionPlot(zValues_after, 'ConfusionMatrixAfterAttack');
+        }
+        var classdata = xValues.indexOf(classSelector_after.value);
+        setConfusionPlot(zValues_after, 'ConfusionMatrixAfterAttack', classdata);
+    }
+
+    classSelector_before.addEventListener('change', updateClass_before, false);
+    classSelector_after.addEventListener('change', updateClass_after, false);
+
+</script>
 {% endblock content %}
