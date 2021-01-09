@@ -15,6 +15,7 @@ from loki.models import Classifier, Report
 from PIL import Image
 
 from loki.api.classifiers.routes import predict
+from loki import MAX_WIDTH, MAX_HEIGHT
 
 
 classifiers = Blueprint('classifiers', __name__)
@@ -29,13 +30,14 @@ def form_predict():
     if form.validate_on_submit():
         index = int(form.model.data) + 1
 
-        image_file = save_image(form.image.data, path="tmp")
-        path = url_for('static',
-                       filename=f"tmp/"
-                                f"{image_file}")
+        img = Image.open(form.image.data)
+        width, height = img.size
 
-        img = Image.open(f"./loki/{path}")
-        label = predict(img, int(form.model.data))
+        ratio = min(MAX_WIDTH / 100, MAX_HEIGHT / 100)
+
+        image, label = predict(img, int(form.model.data), scale=ratio)
+        image_file = save_image(image, path="tmp",
+                                output_size=(MAX_WIDTH, MAX_HEIGHT))
 
         flash("Done!", 'success')
 
