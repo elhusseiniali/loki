@@ -4,6 +4,7 @@ from torchvision import transforms
 import torchvision.models as models
 
 from loki.dao.datasets import ImageNetDAO
+import enum
 
 
 class ImageNetClassifier():
@@ -108,42 +109,61 @@ class ImageNetClassifier():
                 percentage[i].item()) for i in index[0][:n]]
 
 
+class PretrainedClassifier():
+    def __init__(self, name=None, classifier=None, paper=None):
+        self.name = name
+        self.classifier = classifier
+        self.paper = paper
+
+    def __repr__(self):
+        return f"{self.name}"
+
+
 pretrained_classifiers = [
-    {
-        "name": "AlexNet",
-        "classifier": ImageNetClassifier(model=models.
-                                         alexnet(pretrained=True)),
-        "paper": "https://papers.nips.cc/paper/2012/file/"
-                 "c399862d3b9d6b76c8436e924a68c45b-Paper.pdf"
-    },
-    {
-        "name": "Inception v3",
-        "classifier": ImageNetClassifier(model=models.
-                                         inception_v3(pretrained=True)),
-        "paper": "https://arxiv.org/abs/1512.00567"
-    },
-    {
-        "name": "GoogleNet",
-        "classifier": ImageNetClassifier(model=models.
-                                         googlenet(pretrained=True)),
-        "paper": "https://arxiv.org/abs/1409.4842"
-    },
-    {
-        "name": "VGG-16",
-        "classifier": ImageNetClassifier(model=models.
-                                         vgg16(pretrained=True)),
-        "paper": "https://arxiv.org/abs/1409.1556"
-    },
-    {
-        "name": "Wide ResNet 50-2",
-        "classifier": ImageNetClassifier(model=models.
-                                         wide_resnet50_2(pretrained=True)),
-        "paper": "https://arxiv.org/abs/1512.03385"
-    },
-    {
-        "name": "ResNet18",
-        "classifier": ImageNetClassifier(model=models.
-                                         resnet18(pretrained=True)),
-        "paper": "https://arxiv.org/abs/1512.03385"
-    }
+
+    PretrainedClassifier(
+        name="AlexNet",
+        classifier=ImageNetClassifier(model=models.
+                                      alexnet(pretrained=True)),
+        paper="https://papers.nips.cc/paper/2012/file/"
+              "c399862d3b9d6b76c8436e924a68c45b-Paper.pdf"
+    ),
+    PretrainedClassifier(
+        name="Inception v3",
+        classifier=ImageNetClassifier(model=models.
+                                      inception_v3(pretrained=True)),
+        paper="https://arxiv.org/abs/1512.00567"
+    ),
+    PretrainedClassifier(
+        name="GoogleNet",
+        classifier=ImageNetClassifier(model=models.
+                                      googlenet(pretrained=True)),
+        paper="https://arxiv.org/abs/1409.4842"
+    ),
+    PretrainedClassifier(
+        name="VGG-16",
+        classifier=ImageNetClassifier(model=models.
+                                      vgg16(pretrained=True)),
+        paper="https://arxiv.org/abs/1409.1556"
+    ),
+    PretrainedClassifier(
+        name="Wide ResNet 50-2",
+        classifier=ImageNetClassifier(model=models.
+                                      wide_resnet50_2(pretrained=True)),
+        paper="https://arxiv.org/abs/1512.03385"
+    ),
+    PretrainedClassifier(
+        name="ResNet18",
+        classifier=ImageNetClassifier(model=models.
+                                      resnet18(pretrained=True)),
+        paper="https://arxiv.org/abs/1512.03385"
+    )
 ]
+"""
+PretrainedClassifiersList = [
+    (classifier.name, index)
+    for index, classifier in enumerate(pretrained_classifiers, 1)
+]
+PretrainedClassifiers = enum.Enum('PretrainedClassifiers',
+                                  PretrainedClassifiersList)
+"""
