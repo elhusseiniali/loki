@@ -4,7 +4,8 @@ from torchvision import transforms
 import torchvision.models as models
 
 from loki.dao.datasets import ImageNetDAO
-import enum
+
+from loki.api.attacks.models import PyTorchAttack
 
 
 class ImageNetClassifier():
@@ -107,6 +108,10 @@ class ImageNetClassifier():
 
         return [(i, self.labels[i],
                 percentage[i].item()) for i in index[0][:n]]
+
+    def get_image(self, images, scale=1):
+        prep_images = self.prep_tensor(images, normalize=False)
+        return PyTorchAttack.get_image(images=prep_images, scale=scale)
 
 
 class PretrainedClassifier():

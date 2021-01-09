@@ -87,7 +87,7 @@ class Classify(Resource):
             img = Image.open(buf)
 
             classifier_id = args['classifier_id']
-            label = predict(img, classifier_id)
+            _, label = predict(img, classifier_id)
 
         except IndexError:
             api.abort(404)
@@ -99,6 +99,6 @@ class Classify(Resource):
                  "percentage": elem[2]} for elem in label]
 
 
-def predict(image, classifier_index):
+def predict(image, classifier_index, scale=1):
     classifier = pretrained_classifiers[int(classifier_index)].classifier
-    return classifier.predict(image)
+    return classifier.get_image(image, scale), classifier.predict(image)

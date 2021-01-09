@@ -5,6 +5,9 @@ import numpy as np
 import eagerpy as ep
 
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
+
 
 from PIL import Image
 import io

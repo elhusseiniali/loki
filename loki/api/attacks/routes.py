@@ -105,7 +105,7 @@ class RunAttack(Resource):
             classifier_id = args['classifier_id']
             attack_id = args['attack_id']
 
-            result_image = run_attack(img, classifier_id, attack_id)
+            _, result_image = run_attack(img, classifier_id, attack_id)
 
             im_file = io.BytesIO()
             result_image.save(im_file, format="JPEG")
@@ -118,7 +118,7 @@ class RunAttack(Resource):
             api.abort(422)
 
 
-def run_attack(image, classifier_id, attack_id):
+def run_attack(image, classifier_id, attack_id, scale=1):
     """Run an attack.
 
     Parameters
@@ -140,14 +140,16 @@ def run_attack(image, classifier_id, attack_id):
     # result = classifier.predict(img, n=1)[0][1]
     label_index = classifier.predict(image, n=1)[0][0].item()
     label = classifier.prep_label(label_index)
+    original_image = classifier.prep_tensor(image,
+                                            normalize=False)
 
     attack = PyTorchAttack(classifier.model,
                            set_attacks[int(attack_id)]["attack"])
 
-    adv, _ = attack.run(classifier.prep_tensor(image,
-                                               normalize=False),
+    adv, _ = attack.run(original_image,
                         labels=label)
-    result_image = PyTorchAttack.get_image(images=adv,
-                                           scale=3.5)
+    result_image = PyTorchAttack.get_image(images=adv, scale=scale)
+    original_image = PyTorchAttack.get_image(images=original_image,
+                                             scale=scale)
 
-    return result_image
+    return original_image, result_image

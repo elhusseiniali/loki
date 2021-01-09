@@ -11,6 +11,8 @@ import requests
 import base64
 import json
 
+from loki import MAX_WIDTH, MAX_HEIGHT
+
 attack_views = Blueprint('attack_views', __name__)
 
 
@@ -26,15 +28,20 @@ def visualize_attack():
 
         img = Image.open(form.image.data)
 
+        width, height = img.size
+
         classifier_id = int(form.model.data)
         attack_id = int(form.attacks.data)
 
-        image_file = save_image(form.image.data, path="tmp",
-                                output_size=(400, 400))
+        ratio = min(MAX_WIDTH / 100, MAX_HEIGHT / 100)
 
-        result_image = run_attack(img, classifier_id, attack_id)
+        original_image, result_image = run_attack(img, classifier_id,
+                                                  attack_id, scale=ratio)
+
         result_file = save_image(result_image, path="tmp",
-                                 output_size=(400, 400))
+                                 output_size=(MAX_WIDTH, MAX_HEIGHT))
+        original_file = save_image(original_image, path="tmp",
+                                   output_size=(MAX_WIDTH, MAX_HEIGHT))
 
         preds = []
         if form.classify.data:
@@ -44,9 +51,11 @@ def visualize_attack():
             preds.append(label_before)
             preds.append(label_after)
 
-        flash("Attack successully run!", 'success')
+        flash("Attack successully run!",
+              'success')
 
         return render_template('visualize_attack.html', form=form,
-                               image_file=image_file, result_file=result_file,
+                               image_file=original_file,
+                               result_file=result_file,
                                index=index, preds=preds)
     return render_template('visualize_attack.html', form=form)
