@@ -122,7 +122,7 @@ class RunAttack(Resource):
             result_bytes = result_file.getvalue()
 
             difference_file = io.BytesIO()
-            difference_image.save(difference_file, format="JPEG")
+            difference_image.save(difference_file, format="PNG")
             difference_bytes = difference_file.getvalue()
 
             return {
@@ -172,6 +172,7 @@ def run_attack(image, classifier_id, attack_id, scale=1):
     original_image = get_image_from_tensor(images=original_image,
                                            scale=scale)
     difference = get_image_from_tensor(images=difference_tensor,
-                                       scale=scale)
+                                       scale=scale, bounds=(-0.1, 0.1),
+                                       ext='PNG')
 
     return original_image, result_image, difference
