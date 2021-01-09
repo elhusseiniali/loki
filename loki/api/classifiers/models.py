@@ -5,7 +5,7 @@ import torchvision.models as models
 
 from loki.dao.datasets import ImageNetDAO
 
-from loki.api.attacks.models import PyTorchAttack
+from loki.api.utils import get_image_from_tensor
 
 
 class ImageNetClassifier():
@@ -111,7 +111,7 @@ class ImageNetClassifier():
 
     def get_image(self, images, scale=1):
         prep_images = self.prep_tensor(images, normalize=False)
-        return PyTorchAttack.get_image(images=prep_images, scale=scale)
+        return get_image_from_tensor(images=prep_images, scale=scale)
 
 
 class PretrainedClassifier():
