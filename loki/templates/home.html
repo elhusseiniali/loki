@@ -27,8 +27,8 @@
         <tbody>
             {% for classifier in classifiers %}
             <tr>
-                <td>{{classifier['name']}}</td>
-                <td><a class="article-title" href="{{classifier['paper']}}">{{classifier['paper']}}</a></td>
+                <td>{{classifier.name}}</td>
+                <td><a class="article-title" href="{{classifier.paper}}">{{classifier.paper}}</a></td>
             </tr>
             {% endfor %}
         </tbody>
