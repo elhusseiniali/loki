@@ -39,6 +39,8 @@ parser.add_argument('password', required=True)
 @api.response('400', 'Error: Bad request. Check parameters.')
 @api.response('422', 'Error: The request failed.')
 class AddUser(Resource):
+    """Resource to add a new user.
+    """
     @api.expect(parser)
     def post(self):
         """Add a new user.
@@ -78,6 +80,8 @@ class AddUser(Resource):
 @api.response('200', 'Success: User found.')
 @api.response('404', 'Error: User not found.')
 class getUser(Resource):
+    """Resource to get a user by their ID.
+    """
     def put(self, user_id):
         """Get user by id.
 

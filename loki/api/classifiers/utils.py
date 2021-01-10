@@ -4,7 +4,7 @@ from flask import current_app
 
 
 def save_model(form_model):
-    """Save model file under /static/models.
+    """Save user-uploaded model file under /static/models.
 
     Parameters
     ----------

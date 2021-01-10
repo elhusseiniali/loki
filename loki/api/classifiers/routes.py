@@ -15,6 +15,8 @@ api = Namespace('classifiers', description='All operations on classifiers.')
 
 @api.route('/all')
 class ClassifierList(Resource):
+    """Resource to get a list of all pretrained classifiers.
+    """
     def get(self):
         """Get a list of all classifiers.
         """
@@ -32,6 +34,8 @@ class ClassifierList(Resource):
 @api.response(404, 'Error: Classifier not found')
 @api.response(422, 'Error: ID has to be an integer')
 class ClassifierID(Resource):
+    """Resource to get information on a specific pretrained classifier.
+    """
     def get(self, classifier_id):
         """Get information for a classifier from classifier_id.
         IDs start from 0.
@@ -57,6 +61,8 @@ parser.add_argument('classifier_id')
 @api.response(404, 'Error: Index does not exist')
 @api.response(422, 'Error: Check parameters')
 class Classify(Resource):
+    """Resource to get a classification.
+    """
     @api.expect(parser)
     def put(self):
         """Classify image with pre-trained classifier.
@@ -77,6 +83,16 @@ class Classify(Resource):
             "label": label (name of class index),
             "percentage": classifier confidence
         }
+
+        Responses
+        ---------
+        - 200:
+            The classifier ran without errors.
+        - 404:
+            An ID passed was out of bounds.
+        - 422:
+            An ID was not an int, or the Base64-encoding was
+            not valid.
         """
         args = parser.parse_args()
         im_b64 = args['image_data']
@@ -101,5 +117,7 @@ class Classify(Resource):
 
 
 def predict(image, classifier_index, scale=1):
+    """Return the prepared image and the prediction.
+    """
     classifier = pretrained_classifiers[int(classifier_index)].classifier
     return classifier.get_image(image, scale), classifier.predict(image)

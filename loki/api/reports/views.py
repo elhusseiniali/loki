@@ -13,7 +13,6 @@ import requests
 from PIL import Image
 import io
 import numpy as np
-import datetime
 
 
 reports = Blueprint('reports', __name__)
@@ -24,6 +23,8 @@ api = Namespace('reports', description='All operations on reports.')
                methods=['POST', 'GET'])
 @login_required
 def all_reports():
+    """View to get all reports.
+    """
     models = Classifier.query.filter_by(user=current_user)\
                              .order_by(Classifier.upload_date.desc())\
                              .all()
@@ -41,6 +42,8 @@ def all_reports():
                methods=['POST', 'GET'])
 @login_required
 def new_report():
+    """View to create a new report.
+    """
     form = ReportForm()
     if form.validate_on_submit():
         images = form.images.data
@@ -50,7 +53,7 @@ def new_report():
         original_labels = []
         result_labels = []
         classifier_id = form.model.data
-        classifier_name = form.model.choices[-int(classifier_id)-1][1]
+        classifier_name = form.model.choices[-int(classifier_id) - 1][1]
         attack_id = form.attacks.data
         attack_name = form.attacks.choices[int(attack_id)][1]
         time = datetime.datetime.now()
@@ -69,12 +72,15 @@ def new_report():
                 images_dict['original_image'], images_dict['result_image'], \
                 images_dict['difference_image']
 
-            original_images.append("data:image/jpeg;base64," +
-                                   original_image.encode().decode("utf-8"))
-            result_images.append("data:image/jpeg;base64," +
-                                 result_image.encode().decode("utf-8"))
-            difference_images.append("data:image/jpeg;base64," +
-                                     difference_image.encode().decode("utf-8"))
+            original_images.append(
+                "data:image/jpeg;base64,"
+                f"{original_image.encode().decode('utf-8')}")
+            result_images.append(
+                "data:image/jpeg;base64,"
+                f"{result_image.encode().decode('utf-8')}")
+            difference_images.append(
+                "data:image/jpeg;base64,"
+                f"{difference_image.encode().decode('utf-8')}")
 
             # Classify images
             # Before attack
@@ -95,6 +101,7 @@ def new_report():
 
         # Data for the confusion matrix
         BASE_CONFUSION = "http://localhost:5000/api/1/reports/confusion_matrix"
+        # Endpoint takes comma-separated values
         str_original_labels = ",".join(original_labels)
         str_result_labels = ",".join(result_labels)
         data = {
@@ -104,8 +111,7 @@ def new_report():
         response = requests.put(BASE_CONFUSION, data=data)
         confusion_matrix = response.json()
         classes = list(set(original_labels + result_labels))
-        X_values = ['Bird', 'Cat', 'Dog', 'Mouse']
-        # save the report in the database
+        # display the report
         return render_template('visualize_report.html',
                                title='Visualize Report.',
                                classifier_name=classifier_name,
@@ -118,7 +124,6 @@ def new_report():
                                difference_images=difference_images,
                                original_labels=original_labels,
                                result_labels=result_labels,
-                               X_values=X_values,
                                confusion_matrix=confusion_matrix,
                                classes=classes
                                )

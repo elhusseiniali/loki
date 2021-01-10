@@ -35,6 +35,7 @@ def form_predict():
         img = Image.open(form.image.data)
         width, height = img.size
 
+        # ratio is used to preserve the aspect-ratio
         ratio = min(MAX_WIDTH / 100, MAX_HEIGHT / 100)
 
         image, label = predict(img, int(form.model.data), scale=ratio)

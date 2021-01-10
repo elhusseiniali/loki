@@ -9,6 +9,7 @@ api = Namespace('datasets', description='Operations on datasets')
 
 
 @api.route('/all')
+@api.response(200, 'Success')
 class DatasetList(Resource):
     @api.doc('Get a list of all datasets')
     def get(self):
@@ -33,7 +34,16 @@ class Dataset(Resource):
 
         Parameters
         ----------
-        dataset_id : [int]
+        - dataset_id : [int]
+
+        Responses
+        ---------
+        - 200:
+            The dataset information was found.
+        - 404:
+            The ID passed was out of bounds.
+        - 422:
+            The ID was not an int.
         """
         try:
             return {
@@ -71,6 +81,15 @@ class Label(Resource):
         -------
         human-readable label for class_id (e.g. "goldfish" for 1)
 
+        Responses
+        ---------
+        - 200:
+            The label was found.
+        - 404:
+            The ID passed was out of bounds.
+        - 422:
+            The ID was not an int.
+
         """
         try:
             DAO = set_datasets[int(dataset_id)]["DAO"]
@@ -90,7 +109,16 @@ class Label(Resource):
             api.abort(422)
 
     def get(self, dataset_id):
-        """Get all labels from dataset
+        """Get all labels from dataset.
+
+        Responses
+        ---------
+        - 200:
+            The information was found.
+        - 404:
+            The ID passed was out of bounds.
+        - 422:
+            The ID was not an int.
         """
         try:
             DAO = set_datasets[int(dataset_id)]["DAO"]
