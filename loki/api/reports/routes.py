@@ -62,7 +62,6 @@ class ConfusionMatrix(Resource):
         args = parser.parse_args()
         y_before = args['y_before']
         y_after = args['y_after']
-
         labels = list(set(y_before + y_after))
         try:
             cm = confusion_matrix(y_before, y_after, labels=labels)

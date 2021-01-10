@@ -37,24 +37,17 @@
     {% endfor %}
 </div>
 <div style="width: 100%; overflow: hidden;">
-    <div style="width: 600px; float: left;"> 
-        <div id="ConfusionMatrixBeforeAttack" style="width:500px;height:500px;"></div>
-        <div class="selector-before">
-        Class: <select class="classdata-before"> </select>
-        </div>
-    </div>
-    <div style="margin-left: 500px;"> 
-        <div id="ConfusionMatrixAfterAttack" style="width:500px;height:500px;"></div>
-        <div class="selector-after">
-        Class: <select class="classdata-after"> </select>
+    <div style="width: 600px;"> 
+        <div id="ConfusionMatrix" style="width:500px;height:500px;"></div>
+        <div class="selector">
+        Class: <select class="classdata"> </select>
         </div>
     </div>
 </div>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script>
-    var xValues = {{ X_values|tojson }};
-    var zValues_before = {{ Z_values_before|tojson }};
-    var zValues_after = {{ Z_values_after|tojson }};
+    var xValues = {{ classes|tojson }};
+    var confusion_matrix_values = {{ confusion_matrix|tojson }};
 
     var colorscaleValue = [
     [0, '#DBE6FB'],
@@ -123,13 +116,10 @@
         Plotly.newPlot(title, data, layout);
     };
 
-    setConfusionPlot(zValues_before, 'ConfusionMatrixBeforeAttack');
-    setConfusionPlot(zValues_after, 'ConfusionMatrixAfterAttack');
+    setConfusionPlot(confusion_matrix_values, 'ConfusionMatrix');
 
-    var innerContainer_before = document.querySelector('.selector-before'),
-        classSelector_before = innerContainer_before.querySelector('.classdata-before');
-    var innerContainer_after = document.querySelector('.selector-after'),
-        classSelector_after = innerContainer_after.querySelector('.classdata-after');
+    var innerContainer = document.querySelector('.selector'),
+        classSelector = innerContainer.querySelector('.classdata');
 
     function assignOptions(textArray, selector) {
         for (var i = 0; i < textArray.length;  i++) {
@@ -141,27 +131,17 @@
     var selectorvalues = xValues.slice();
     selectorvalues.unshift('All')
 
-    assignOptions(selectorvalues, classSelector_before);
-    assignOptions(selectorvalues, classSelector_after);
+    assignOptions(selectorvalues, classSelector);
 
 
-    function updateClass_before(){
-        if (classSelector_before.value=='All'){
-            setConfusionPlot(zValues_before, 'ConfusionMatrixBeforeAttack');
+    function updateClass(){
+        if (classSelector.value=='All'){
+            setConfusionPlot(confusion_matrix_values, 'ConfusionMatrix');
         }
-        var classdata = xValues.indexOf(classSelector_before.value);
-        setConfusionPlot(zValues_before, 'ConfusionMatrixBeforeAttack', classdata);
+        var classdata = xValues.indexOf(classSelector.value);
+        setConfusionPlot(confusion_matrix_values, 'ConfusionMatrix', classdata);
     }
-    function updateClass_after(){
-        if (classSelector_after.value=='All'){
-            setConfusionPlot(zValues_after, 'ConfusionMatrixAfterAttack');
-        }
-        var classdata = xValues.indexOf(classSelector_after.value);
-        setConfusionPlot(zValues_after, 'ConfusionMatrixAfterAttack', classdata);
-    }
-
-    classSelector_before.addEventListener('change', updateClass_before, false);
-    classSelector_after.addEventListener('change', updateClass_after, false);
+    classSelector.addEventListener('change', updateClass, false);
 
 </script>
 {% endblock content %}
