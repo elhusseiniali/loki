@@ -28,7 +28,7 @@ def form_predict():
     form = PredictForm()
 
     if form.validate_on_submit():
-        index = int(form.model.data) + 1
+        index_model = int(form.model.data)
 
         img = Image.open(form.image.data)
         width, height = img.size
@@ -44,7 +44,7 @@ def form_predict():
         return render_template('predict.html',
                                title='Classify an image.',
                                image_file=image_file, form=form,
-                               label=label, index=index)
+                               label=label, index_model=index_model)
     return render_template('predict.html',
                            title='Classify an image.', form=form)
 

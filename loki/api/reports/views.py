@@ -13,6 +13,7 @@ import requests
 from PIL import Image
 import io
 import numpy as np
+import datetime
 
 
 reports = Blueprint('reports', __name__)
@@ -43,53 +44,83 @@ def new_report():
     form = ReportForm()
     if form.validate_on_submit():
         images = form.images.data
-        images_before = []
-        images_after = []
-        pixel_differences = []
-        responses_before = []
-        responses_after = []
+        original_images = []
+        result_images = []
+        difference_images = []
+        original_labels = []
+        result_labels = []
+        classifier_id = form.model.data
+        classifier_name = form.model.choices[-int(classifier_id)-1][1]
+        attack_id = form.attacks.data
+        attack_name = form.attacks.choices[int(attack_id)][1]
+        time = datetime.datetime.now()
 
         for image in images:
-            # launch attack
+            # Launch attack
+            BASE_ATTACK = "http://localhost:5000/api/1/attacks/run"
+            im = image.read()
+            im_b64 = base64.b64encode(im)
+            files = {'image_data': im_b64,
+                     'attack_id': attack_id,
+                     'classifier_id': classifier_id}
+            response = requests.put(BASE_ATTACK, data=files)
+            images_dict = json.loads(response.text)
+            original_image, result_image, difference_image = \
+                images_dict['original_image'], images_dict['result_image'], \
+                images_dict['difference_image']
+
+            original_images.append("data:image/jpeg;base64," +
+                                   original_image.encode().decode("utf-8"))
+            result_images.append("data:image/jpeg;base64," +
+                                 result_image.encode().decode("utf-8"))
+            difference_images.append("data:image/jpeg;base64," +
+                                     difference_image.encode().decode("utf-8"))
 
             # Classify images
             # Before attack
             BASE_CLASSIFY = "http://localhost:5000/api/1/classifiers/classify"
-            img_before = image.read()
-            im_b64 = base64.b64encode(img_before)
-            images_before.append("data:image/jpeg;base64," +
-                                 im_b64.decode("utf-8"))
             files = {'image_data': im_b64,
-                     'classifier_id': form.model.data}
+                     'classifier_id': classifier_id}
             response = requests.put(BASE_CLASSIFY, data=files)
-            label = json.loads(response.text)
-            responses_before.append(label[0])
+            preds = json.loads(response.text)
+            original_labels.append(preds[0]['label'])
 
             # After attack
-            images_after.append("data:image/jpeg;base64," +
-                                im_b64.decode("utf-8"))
-            responses_after.append(label[0])
+            im_b64 = result_image.encode()
+            files = {'image_data': im_b64,
+                     'classifier_id': classifier_id}
+            response = requests.put(BASE_CLASSIFY, data=files)
+            preds = json.loads(response.text)
+            result_labels.append(preds[0]['label'])
 
-            # Pixel difference
-            img_before = Image.open(io.BytesIO(img_before))
-            img_before_array = np.asarray(img_before)
-            diff = img_before_array - img_before_array
-            pixel_diff = Image.fromarray(diff)
-            buffered = io.BytesIO()
-            pixel_diff.save(buffered, format="JPEG")
-            img_str = base64.b64encode(buffered.getvalue())
-            pixel_differences.append("data:image/jpeg;base64," +
-                                     img_str.decode("utf-8"))
-
+        # Data for the confusion matrix
+        BASE_CONFUSION = "http://localhost:5000/api/1/reports/confusion_matrix"
+        str_original_labels = ",".join(original_labels)
+        str_result_labels = ",".join(result_labels)
+        data = {
+            "y_before": str_original_labels,
+            "y_after": str_result_labels
+        }
+        response = requests.put(BASE_CONFUSION, data=data)
+        confusion_matrix = response.json()
+        classes = list(set(original_labels + result_labels))
+        X_values = ['Bird', 'Cat', 'Dog', 'Mouse']
         # save the report in the database
         return render_template('visualize_report.html',
                                title='Visualize Report.',
+                               classifier_name=classifier_name,
+                               attack_name=attack_name,
+                               time=time,
                                len=len(images),
                                images=images,
-                               images_before=images_before,
-                               images_after=images_after,
-                               pixel_differences=pixel_differences,
-                               responses_before=responses_before,
-                               responses_after=responses_after)
+                               original_images=original_images,
+                               result_images=result_images,
+                               difference_images=difference_images,
+                               original_labels=original_labels,
+                               result_labels=result_labels,
+                               X_values=X_values,
+                               confusion_matrix=confusion_matrix,
+                               classes=classes
+                               )
 
     return render_template('new_report.html', title='Reports', form=form)

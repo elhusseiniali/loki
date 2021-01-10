@@ -13,7 +13,7 @@
                             <h3>{{form.model.label}}</h3>
                             {% if form.validate_on_submit() %}
                             <select class="form-control" id="model_selector" name="model">
-                                <option value="">{{form.model.choices[index + 1][1]}}</option>
+                                <option value="">{{form.model.choices[-index_model-1][1]}}</option>
                             </select>
                             {% else %}
                             <select class="form-control" id="model_selector" name="model">
@@ -30,7 +30,7 @@
                             {% endif %}
                             {% if form.validate_on_submit() %}
                                 {% for subfield in form.attacks %}
-                                    {% if subfield.label.text == form.attacks.data %}
+                                    {% if subfield.label.text == form.attacks.choices[index_attack][1] %}
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
                                         <label class="form-check-label" for="exampleRadios1">{{ subfield.label }}</label>
@@ -50,14 +50,15 @@
                             {% endif %}
                             {% if form.validate_on_submit() %}
                                 <a href="{{ url_for('attack_views.visualize_attack') }}">
-                                    <button type="button" class="btn btn-dark">{{ form.submit.label }}</button>
+                                    <button type="button" class="btn btn-dark">New attack</button>
                                 </a>
                             {% else %}
+                            <br>
                             <div class="form-check">
                                 {{ form.classify(class="form-check-input") }}
-                                <h3>
+                                <h5>
                                     {{ form.classify.label(class="form-check-input-label") }}
-                                </h3>
+                                </h5>
                             </div>
                             <div class="form-group">
                                 {{ form.submit(class="btn btn-dark") }}
@@ -80,7 +81,22 @@
                         </div>
                         <br>
                         {% if form.classify.data == True and not(form.errors)%}
-                        <h3><B> Before attack: </B> {{preds[0][0][1]}} (p = {{preds[0][0][2]/100}})</h3>
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                <th scope="col">Prediction</th>
+                                <th scope="col">Probability</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in range(size)%}
+                                    <tr>
+                                    <td>{{ preds[0][i] }}</td>
+                                    <td>{{ probs[0][i] }}</td>            
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            </table>
                         {% endif %}
                         <div class="form-group">
                             {% if form.image.errors %}
@@ -102,7 +118,22 @@
                         </div>
                         <br>
                         {% if form.classify.data == True and not(form.errors)%}
-                        <h3><B> After attack: </B> {{preds[1][0][1]}} (p = {{preds[1][0][2]/100}}) </h3>
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                <th scope="col">Prediction</th>
+                                <th scope="col">Probability</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in range(size)%}
+                                    <tr>
+                                    <td>{{ preds[1][i] }}</td>
+                                    <td>{{ probs[1][i] }}</td>            
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                         {% endif %}
                     </div>
                 </div>

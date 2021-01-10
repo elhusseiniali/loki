@@ -1,44 +1,197 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h1>Before</h1>
-<div class="row">
-    {% for i in range(len) %}
-        <div class="column">
-            <figure>
-                <img src="{{ images_before[i] }}" style="width:100%" id="image_before_{{i}}">
-                <figcaption>
-                    {{ responses_before[i]['label'] }}
-                </figcaption>
-            </figure>
+<input id="clickMe" type="button" value="Download PDF" onclick="CreatePDFfromHTML();" />
+<div class='html-content'>
+    <legend class="border-bottom mb-4">
+        Report information
+    </legend>
+    <div class="row">
+        <div class="ml-4">
+        <ul class="list-group">
+            <li class="list-group-item">Classifier: <b>{{ classifier_name }}</b></li>
+            <li class="list-group-item">Attack: <b>{{ attack_name }}</b></li>
+            <li class="list-group-item">Date: <b>{{ time.strftime('%H:%M / %d-%m-%Y') }}</b></li>
+        </ul>
         </div>
-        <br>
-    {% endfor %}
-</div>
-<h1>After</h1>
-<div class="row">
-    {% for i in range(len) %}
-        <div class="column">
-            <figure>
-                <img src="{{ images_after[i] }}" style="width:100%" id="image_after_{{i}}">
-                <figcaption>
-                    {{ responses_after[i]['label'] }}
-                </figcaption>
-            </figure>
+    </div>
+    <legend class="border-bottom mb-4">
+        Before
+    </legend>
+    <div class="row">
+        {% for i in range(len) %}
+            <div class="column">
+                <figure>
+                    <img src="{{ original_images[i] }}" class="img-responsive" width="100" height="100" id="original_images{{i}}">
+                    <figcaption>
+                        {{ original_labels[i] }}
+                    </figcaption>
+                </figure>
+            </div>
+        {% endfor %}
+    </div>
+    <legend class="border-bottom mb-4">
+        After
+    </legend>
+    <div class="row">
+        {% for i in range(len) %}
+            <div class="column">
+                <figure>
+                    <img src="{{ result_images[i] }}" class="img-responsive" width="100" height="100" id="result_images{{i}}">
+                    <figcaption>
+                        {{ result_labels[i] }}
+                    </figcaption>
+                </figure>
+            </div>
+        {% endfor %}
+    </div>
+    <legend class="border-bottom mb-4">
+        Pixel Difference
+    </legend>
+    <div class="row">
+        {% for i in range(len) %}
+            <div class="column">
+                <figure>
+                    <img src="{{ difference_images[i] }}" class="img-responsive" width="100" height="100" >
+                </figure>
+            </div>
+        {% endfor %}
+    </div>
+    <legend class="border-bottom mb-4">
+        Confusion Matrix
+    </legend>
+    <div style="width: 100%; overflow: hidden;">
+        <div style="width: 600px;"> 
+            <div id="ConfusionMatrix" style="width:500px;height:500px;"></div>
+            <div class="selector">
+            Class: <select class="classdata"> </select>
+            </div>
         </div>
-        <br>
-    {% endfor %}
+    </div>
 </div>
-<h1>Pixel difference</h1>
-<div class="row">
-    {% for i in range(len) %}
-        <div class="column">
-            <figure>
-                <img src="{{ pixel_differences[i] }}" style="width:100%">
-            </figure>
-        </div>
-        <br>
-    {% endfor %}
-</div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+<script>
+    function CreatePDFfromHTML() {
+    var HTML_Width = $(".html-content").width();
+    var HTML_Height = $(".html-content").height();
+    var top_left_margin = 15;
+    var PDF_Width = HTML_Width + (top_left_margin * 2);
+    var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+    var canvas_image_width = HTML_Width;
+    var canvas_image_height = HTML_Height;
 
+    var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+    html2canvas($(".html-content")[0]).then(function (canvas) {
+        var imgData = canvas.toDataURL("image/jpeg", 1.0);
+        var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+        pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+        for (var i = 1; i <= totalPDFPages; i++) { 
+            pdf.addPage(PDF_Width, PDF_Height);
+            pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height);
+        }
+        pdf.save("Report.pdf");
+    });
+}
+</script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    var xValues = {{ classes|tojson }};
+    var confusion_matrix_values = {{ confusion_matrix|tojson }};
+
+    var colorscaleValue = [
+    [0, '#DBE6FB'],
+    [1, '#022E85']
+    ];
+    function setConfusionPlot(zValues, title, class_index) {
+        if (class_index!=undefined){
+            var x = xValues;
+            var y = [xValues[class_index]];
+            var z = [zValues[class_index]];
+        }
+        else{
+            var x = xValues;
+            var y = xValues;
+            var z = zValues;
+        }
+
+        var data = [{
+            x: x,
+            y: y,
+            z: z,
+            type: 'heatmap',
+            colorscale: colorscaleValue,
+        }];
+        var layout = {
+            title: title,
+            annotations: [],
+            xaxis: {
+                ticks: '',
+                title: 'Predicted label'
+            },
+            yaxis: {
+                ticks: '',
+                ticksuffix: ' ',
+                width: 700,
+                height: 700,
+                autosize: false,
+                title: 'True label'
+            }
+        };
+        for ( var i = 0; i < y.length; i++ ) {
+            for ( var j = 0; j < x.length; j++ ) {
+                var currentValue = z[i][j];
+                if (currentValue != 0.0 & i!=j) {
+                var textColor = 'red';
+                }else if(currentValue == 0.0){
+                var textColor = 'blue';
+                }
+                else{
+                var textColor = 'white';
+                }
+                var result = {
+                xref: 'x1',
+                yref: 'y1',
+                x: x[j],
+                y: y[i],
+                text: z[i][j],
+                showarrow: false,
+                font: {
+                    color: textColor
+                }
+                };
+                layout.annotations.push(result);
+            }
+        }
+        Plotly.newPlot(title, data, layout);
+    };
+
+    setConfusionPlot(confusion_matrix_values, 'ConfusionMatrix');
+
+    var innerContainer = document.querySelector('.selector'),
+        classSelector = innerContainer.querySelector('.classdata');
+
+    function assignOptions(textArray, selector) {
+        for (var i = 0; i < textArray.length;  i++) {
+            var currentOption = document.createElement('option');
+            currentOption.text = textArray[i];
+            selector.appendChild(currentOption);
+        }
+    }
+    var selectorvalues = xValues.slice();
+    selectorvalues.unshift('All')
+
+    assignOptions(selectorvalues, classSelector);
+
+
+    function updateClass(){
+        if (classSelector.value=='All'){
+            setConfusionPlot(confusion_matrix_values, 'ConfusionMatrix');
+        }
+        var classdata = xValues.indexOf(classSelector.value);
+        setConfusionPlot(confusion_matrix_values, 'ConfusionMatrix', classdata);
+    }
+    classSelector.addEventListener('change', updateClass, false);
+
+</script>
 {% endblock content %}
