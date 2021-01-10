@@ -55,9 +55,9 @@ def visualize_attack():
 
             preds.append([original_label[i][1] for i in range(size)])
             preds.append([result_label[i][1] for i in range(size)])
-            probs.append([np.round(original_label[i][2]/100, 4)
+            probs.append([np.round(original_label[i][2] / 100, 4)
                          for i in range(size)])
-            probs.append([np.round(result_label[i][2]/100, 4)
+            probs.append([np.round(result_label[i][2] / 100, 4)
                          for i in range(size)])
 
         flash("Attack successully run!",
