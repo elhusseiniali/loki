@@ -92,15 +92,16 @@
                             <legend class="border-bottom mb-4">
                                 About the model.
                             </legend>
-                            <p>
-                                This section is supposed to have some information about
-                                the model (e.g. who the authors are, link to the original paper, some
-                                useful precision metrics, etc...).
-                                They'll be packaged in some JSON for the pre-trained models we provide,
-                                and for user-uploaded models, they'll either have user-uploaded information
-                                (in which case we have to modify the database schema a bit), or the column
-                                would just disappear.
-                            </p>
+                            {% if form.validate_on_submit() %}
+                            <div class="row">
+                                <div class="ml-4">
+                                <ul class="list-group">
+                                    <li class="list-group-item">Classifier: <b>{{ name }}</b></li>
+                                    <li class="list-group-item">Paper: <b><a class="article-title" href="{{paper}}">{{paper}}</a></b></li>
+                                </ul>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
