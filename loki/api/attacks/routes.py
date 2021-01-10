@@ -20,6 +20,8 @@ api = Namespace('attacks', description='Operations on adversarial attacks')
 @api.route('/all')
 @api.response('200', 'Success')
 class AttackList(Resource):
+    """Resource to get a list of all attacks.
+    """
     def get(self):
         """Get a list of all the attacks.
 
@@ -46,6 +48,8 @@ class AttackList(Resource):
 @api.response('404', 'Error: Attack not found')
 @api.response('422', 'Error: Index has to be an integer')
 class Attack(Resource):
+    """Resource to get information on a specific attack.
+    """
     @api.doc('Get an attack from its id.')
     def get(self, attack_id):
         """Get the name of an attack and its research paper.
@@ -59,6 +63,14 @@ class Attack(Resource):
                 "name": attack name,
                 "paper": attack research paper
             }
+        Responses
+        ---------
+        - 200:
+            The attack information was found.
+        - 404:
+            The ID passed was out of bounds.
+        - 422:
+            The ID was not an int.
         """
         try:
             return {
@@ -78,9 +90,12 @@ parser.add_argument('classifier_id', type=int, required=True)
 
 
 @api.route('/run')
+@api.response(200, 'Success')
 @api.response(404, 'Error: Index out of bounds')
 @api.response(422, 'Error: Check parameters')
 class RunAttack(Resource):
+    """Resource to run an attack.
+    """
     @api.expect(parser)
     def put(self):
         """Run an attack given classifier_id, image_data, and attack_id.
@@ -94,8 +109,27 @@ class RunAttack(Resource):
 
         Returns
         -------
-        [image_data]
-            Base64-encoded image.
+        - original_image: [str]
+            Base64-encoded image after it is prepared
+            for the classifier, before applying the attack.
+        - result_image: [str]
+            Base64-encoded image after applying
+            the attack.
+        - difference_image: [str]
+            Base64-encoded image of the pixel difference
+            between result_image and original_image.
+
+        Responses
+        ---------
+        - 200:
+            The attack was run.
+        - 404:
+            One of the IDs passed was out of bounds.
+        - 422:
+            One of the parameters was wrong. This means
+            that something that was not an int was passed as
+            one of the IDs, or invalid Base64 data was passed
+            for the image.
         """
         args = parser.parse_args()
         im_b64 = args['image_data']
@@ -154,11 +188,49 @@ def run_attack(image, classifier_id, attack_id, robust=False, scale=1):
         Classifier identifier in pretrained_classifiers.
     attack_id : [int]
         Attack identifier in set_attacks.
+    robust : [bool]
+
+        .If this is passed, the attack is run with 20
+        different epsilons.
+            This allows us to study the robustness of the model
+            to the attack.
+            If the model's accuracy varies wildly, then
+            the model is not robust. If it remains mostly
+            uniform, then the model is robust.
+
+        .If this is True, is_adv will change:
+            It will have the shape [20, N], where N is the
+            number of images passed in image.
+            this means that is_adv[i][j] will be the bool
+            for the i-th epsilon, on the j-th attack.
+    scale : [int]
+        The scale to use to output the images.
+        Images after an attack will be compressed to 100x100.
+        A desired output of 400x400 would require a scale of 4.
+        The resizing is done in a way that preserves aspect ratios.
 
     Returns
     -------
-    [PIL Image]
-        Image after applying the attack to it.
+    - original_image
+        [PIL Image]
+            Image before applying the attack to it,
+            after the pre-processing needed to classify
+            it.
+    - result_image
+        [PIL Image]
+            Image after running the attack.
+    - difference_image
+        [PIL Image]
+            Image of the pixel differences between result_image
+            and original_image.
+    - is_adv
+        [torch.Tensor]
+            Explained in PyTorchAttack.run.
+    - epsilons
+        [float or np.array]
+            The epsilons used to run the attack.
+            This depends only on whether or not
+            a robustness analysis was requested.
     """
     classifier = pretrained_classifiers[int(classifier_id)].classifier
 

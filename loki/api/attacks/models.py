@@ -9,10 +9,7 @@ class PyTorchAttack():
     """
     def __init__(self, model, attack):
         """
-        The only part that makes this ImageNet-specific is the
-        pre-processing done. When we explore other models and datasets,
-        I'll remove the hard-coded values and pass them differently, to
-        make this mode accessible.
+        Set-up PyTorchModel to be able to run an attack.
 
         Parameters
         ----------
@@ -52,8 +49,18 @@ class PyTorchAttack():
 
         Returns
         -------
+        - advs
         [torch.Tensor]
             Adversarial versions of all passed images.
+        - is_adv
+        [torch.Tensor]
+            Tensor with:
+                for image in images:
+                    . True if self.fmodel changes its
+                    classification of the image
+                    . False otherwise
+            If multiple images are passed, then is_adv[i] would be
+            the tensor described above, for image[i].
         """
         advs, _, is_adv = self.attack(self.fmodel, images, labels,
                                       epsilons=epsilons)

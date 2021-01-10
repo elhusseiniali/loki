@@ -46,6 +46,8 @@ def visualize_attack():
         original_file = save_image(original_image, path="tmp",
                                    output_size=(MAX_WIDTH, MAX_HEIGHT))
 
+        # Get predictions before and after running
+        # the attack
         preds = []
         probs = []
         size = 5  # top 5 predictions

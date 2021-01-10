@@ -14,6 +14,8 @@ report_schema = ReportSchema()
 @api.route('/all')
 @api.response('200', 'Success')
 class Reports(Resource):
+    """Resource to get all reports.
+    """
     def get(self):
         all_reports = report_dao.get_all()
         return report_schema.dump(all_reports, many=True)
@@ -25,6 +27,8 @@ class Reports(Resource):
 @api.response('404', 'Error: Report not found')
 @api.response('422', 'Error: report_id has to be an int')
 class getReport(Resource):
+    """Resource to get specific report by ID.
+    """
     def put(self, report_id):
         try:
             report = report_dao.get_by_report_id(report_id)
@@ -45,6 +49,8 @@ parser.add_argument('y_after', action='split', required=True)
 @api.response(200, 'Success')
 @api.response(422, 'Error: The request failed')
 class ConfusionMatrix(Resource):
+    """Resource to get a confusion matrix.
+    """
     @api.expect(parser)
     def put(self):
         """Generate confusion matrix from two lists of labels.

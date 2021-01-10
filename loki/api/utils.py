@@ -25,7 +25,7 @@ def get_image_from_tensor(
         scale: float = 1,
         **kwargs: Any,
 ) -> None:
-    """This function returns a PIL image of the passed Tensor.
+    """This function returns a PIL image from the passed Tensor.
     Adapted from Foolbox.plot.images[1].
 
     [1]: https://github.com/bethgelab/foolbox/

@@ -110,11 +110,28 @@ class ImageNetClassifier():
                 percentage[i].item()) for i in index[0][:n]]
 
     def get_image(self, images, scale=1):
+        """Return the image after applying all transforms.
+
+        Parameters
+        ----------
+        images : [PIL.Image or nd.array]
+
+        scale : int, optional
+            Scale to resize the image, by default 1
+
+        Returns
+        -------
+        [PIL Image]
+            Image after applying all transforms and resizing.
+        """
         prep_images = self.prep_tensor(images, normalize=False)
         return get_image_from_tensor(images=prep_images, scale=scale)
 
 
 class PretrainedClassifier():
+    """Class to store some information on
+    pre-trained classifiers.
+    """
     def __init__(self, name=None, classifier=None, paper=None):
         self.name = name
         self.classifier = classifier
