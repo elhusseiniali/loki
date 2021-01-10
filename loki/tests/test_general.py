@@ -10,8 +10,8 @@ from loki.models import User
 
 class BaseTestCase(TestCase):
     """A base test case.
-    
-    Nota Bene : If you don’t define create_app a NotImplementedError will be raised.
+
+    If you don’t define create_app a NotImplementedError will be raised.
     """
 
     def create_app(self):
@@ -19,7 +19,9 @@ class BaseTestCase(TestCase):
 
     def setUp(self):
         db.create_all()
-        db.session.add(User(username="admin", email="ad@min.com", password="admin"))
+        db.session.add(
+            User(username="admin", email="ad@min.com", password="admin")
+        )
         db.session.commit()
 
     def tearDown(self):
@@ -90,7 +92,9 @@ class FlaskTestCase(BaseTestCase):
     # Ensure 'Classify an image' behaves correctly when non-authenticated
     def test_classifiers_classify(self):
         response = self.client.get(
-            '/classifiers/classify', content_type='html/text', follow_redirects=True
+            '/classifiers/classify',
+            content_type='html/text',
+            follow_redirects=True
         )
         self.assertEqual(response.status_code, 200)
         self.assert_template_used('login.html')
