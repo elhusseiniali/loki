@@ -11,6 +11,8 @@ from flask_restx import Namespace, Resource, reqparse
 import base64
 import io
 
+import numpy as np
+
 
 api = Namespace('attacks', description='Operations on adversarial attacks')
 
@@ -108,10 +110,12 @@ class RunAttack(Resource):
 
             (original_image,
              result_image,
-             difference_image) = run_attack(img,
-                                            classifier_id,
-                                            attack_id,
-                                            scale=4)
+             difference_image,
+             is_adv,
+             epsilons) = run_attack(img,
+                                    classifier_id,
+                                    attack_id,
+                                    scale=4)
 
             original_file = io.BytesIO()
             original_image.save(original_file, format="JPEG")
@@ -139,7 +143,7 @@ class RunAttack(Resource):
             api.abort(422)
 
 
-def run_attack(image, classifier_id, attack_id, scale=1, epsilons=0.03):
+def run_attack(image, classifier_id, attack_id, robust=False, scale=1):
     """Run an attack.
 
     Parameters
@@ -163,13 +167,20 @@ def run_attack(image, classifier_id, attack_id, scale=1, epsilons=0.03):
     label = classifier.prep_label(label_index)
     original_image = classifier.prep_tensor(image,
                                             normalize=False)
+    if robust:
+        epsilons = np.linspace(0.0, 0.005, num=20)
+    else:
+        epsilons = 0.03
 
     attack = PyTorchAttack(classifier.model,
                            set_attacks[int(attack_id)]["attack"])
 
-    adv, _ = attack.run(original_image,
-                        labels=label,
-                        epsilons=epsilons)
+    adv, is_adv = attack.run(original_image,
+                             labels=label,
+                             epsilons=epsilons)
+    if robust:
+        adv = adv[0]
+
     difference_tensor = adv - original_image
 
     result_image = get_image_from_tensor(images=adv, scale=scale)
@@ -179,4 +190,4 @@ def run_attack(image, classifier_id, attack_id, scale=1, epsilons=0.03):
                                        scale=scale, bounds=(-0.1, 0.1),
                                        ext='PNG')
 
-    return original_image, result_image, difference
+    return original_image, result_image, difference, is_adv, epsilons

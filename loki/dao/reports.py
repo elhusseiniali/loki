@@ -28,7 +28,7 @@ class ReportDAO():
         return db.session.query(Report).get(report_id)
 
     def get_by_user_id(self, user_id):
-        return db.session.query(Report).filter_by(user_id).first()
+        return db.session.query(Report).filter_by(user_id).all()
 
 
 report_dao = ReportDAO()
