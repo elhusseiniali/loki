@@ -16,8 +16,12 @@ class ClassifierField(SelectField):
     """
     def __init__(self, *args, **kwargs):
         super(ClassifierField, self).__init__(*args, **kwargs)
-        user_models = Classifier.query.filter_by(user=current_user). \
-            order_by(Classifier.upload_date.desc())
+        # For user_model support, just uncomment the two next lines
+        # and comment the third; this would require some
+        # extra work in api/classifiers/models
+        # user_models = Classifier.query.filter_by(user=current_user). \
+        #    order_by(Classifier.upload_date.desc())
+        user_models = None
 
         pretrained_choices = [(i, item.name)
                               for i, item in enumerate(pretrained_classifiers)]
@@ -25,7 +29,8 @@ class ClassifierField(SelectField):
         offset = len(pretrained_choices)
 
         if not user_models:
-            user_choices = [(user_models.count() + offset, 'None')]
+            # user_choices = [(user_models.count() + offset, 'None')]
+            user_choices = []
         else:
             user_choices = [(model.id + offset - 1,
                              model.name) for model in user_models]
