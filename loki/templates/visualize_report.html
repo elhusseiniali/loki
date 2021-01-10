@@ -1,68 +1,99 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="row">
+<input id="clickMe" type="button" value="Download PDF" onclick="CreatePDFfromHTML();" />
+<div class='html-content'>
     <legend class="border-bottom mb-4">
         Report information
     </legend>
-    <ul class="list-group">
-        <li class="list-group-item">Classifier: <b>{{ classifier_name }}</b></li>
-        <li class="list-group-item">Attack: <b>{{ attack_name }}</b></li>
-        <li class="list-group-item">Date: <b>{{ time.strftime('%H:%M / %d-%m-%Y') }}</b></li>
-      </ul>
-</div>
-<legend class="border-bottom mb-4">
-    Before
-</legend>
-<div class="row">
-    {% for i in range(len) %}
-        <div class="column">
-            <figure>
-                <img src="{{ original_images[i] }}" class="img-responsive" width="100" height="100" id="original_images{{i}}">
-                <figcaption>
-                    {{ original_labels[i] }}
-                </figcaption>
-            </figure>
+    <div class="row">
+        <div class="ml-4">
+        <ul class="list-group">
+            <li class="list-group-item">Classifier: <b>{{ classifier_name }}</b></li>
+            <li class="list-group-item">Attack: <b>{{ attack_name }}</b></li>
+            <li class="list-group-item">Date: <b>{{ time.strftime('%H:%M / %d-%m-%Y') }}</b></li>
+        </ul>
         </div>
-    {% endfor %}
-</div>
-<legend class="border-bottom mb-4">
-    After
-</legend>
-<div class="row">
-    {% for i in range(len) %}
-        <div class="column">
-            <figure>
-                <img src="{{ result_images[i] }}" class="img-responsive" width="100" height="100" id="result_images{{i}}">
-                <figcaption>
-                    {{ result_labels[i] }}
-                </figcaption>
-            </figure>
-        </div>
-    {% endfor %}
-</div>
-<legend class="border-bottom mb-4">
-    Pixel Difference
-</legend>
-<div class="row">
-    {% for i in range(len) %}
-        <div class="column">
-            <figure>
-                <img src="{{ difference_images[i] }}" class="img-responsive" width="100" height="100" >
-            </figure>
-        </div>
-    {% endfor %}
-</div>
-<legend class="border-bottom mb-4">
-    Confusion Matrix
-</legend>
-<div style="width: 100%; overflow: hidden;">
-    <div style="width: 600px;"> 
-        <div id="ConfusionMatrix" style="width:500px;height:500px;"></div>
-        <div class="selector">
-        Class: <select class="classdata"> </select>
+    </div>
+    <legend class="border-bottom mb-4">
+        Before
+    </legend>
+    <div class="row">
+        {% for i in range(len) %}
+            <div class="column">
+                <figure>
+                    <img src="{{ original_images[i] }}" class="img-responsive" width="100" height="100" id="original_images{{i}}">
+                    <figcaption>
+                        {{ original_labels[i] }}
+                    </figcaption>
+                </figure>
+            </div>
+        {% endfor %}
+    </div>
+    <legend class="border-bottom mb-4">
+        After
+    </legend>
+    <div class="row">
+        {% for i in range(len) %}
+            <div class="column">
+                <figure>
+                    <img src="{{ result_images[i] }}" class="img-responsive" width="100" height="100" id="result_images{{i}}">
+                    <figcaption>
+                        {{ result_labels[i] }}
+                    </figcaption>
+                </figure>
+            </div>
+        {% endfor %}
+    </div>
+    <legend class="border-bottom mb-4">
+        Pixel Difference
+    </legend>
+    <div class="row">
+        {% for i in range(len) %}
+            <div class="column">
+                <figure>
+                    <img src="{{ difference_images[i] }}" class="img-responsive" width="100" height="100" >
+                </figure>
+            </div>
+        {% endfor %}
+    </div>
+    <legend class="border-bottom mb-4">
+        Confusion Matrix
+    </legend>
+    <div style="width: 100%; overflow: hidden;">
+        <div style="width: 600px;"> 
+            <div id="ConfusionMatrix" style="width:500px;height:500px;"></div>
+            <div class="selector">
+            Class: <select class="classdata"> </select>
+            </div>
         </div>
     </div>
 </div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+<script>
+    function CreatePDFfromHTML() {
+    var HTML_Width = $(".html-content").width();
+    var HTML_Height = $(".html-content").height();
+    var top_left_margin = 15;
+    var PDF_Width = HTML_Width + (top_left_margin * 2);
+    var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+    var canvas_image_width = HTML_Width;
+    var canvas_image_height = HTML_Height;
+
+    var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+    html2canvas($(".html-content")[0]).then(function (canvas) {
+        var imgData = canvas.toDataURL("image/jpeg", 1.0);
+        var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+        pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+        for (var i = 1; i <= totalPDFPages; i++) { 
+            pdf.addPage(PDF_Width, PDF_Height);
+            pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height);
+        }
+        pdf.save("Report.pdf");
+    });
+}
+</script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script>
     var xValues = {{ classes|tojson }};
