@@ -3,6 +3,9 @@ from loki import db
 
 
 class UserDAO():
+    """Class to handle all database operations
+    for models.User class.
+    """
     __instance__ = None
 
     def __init__(self):

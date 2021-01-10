@@ -67,6 +67,35 @@ attacks = [
         "paper": "https://arxiv.org/abs/1511.04599"
     },
     {
+        "name": "FastGradientSignMethod",
+        "attack": fb.attacks.FGSM(),
+        "paper": "https://arxiv.org/abs/1412.6572"
+    },
+    {
+        "name": "LinfBasicIterativeMethod",
+        "attack": fb.attacks.LinfBasicIterativeAttack(),
+        "paper": "https://arxiv.org/abs/1607.02533"
+    },
+    {
+        "name": "AdditiveUniformNoise",
+        "attack": fb.attacks.LinfAdditiveUniformNoiseAttack(),
+        "paper": "https://dl.acm.org/citation.cfm?id=3134635"
+    },
+    {
+        "name": "NewtonFool",
+        "attack": fb.attacks.NewtonFoolAttack(),
+        "paper": "https://arxiv.org/abs/1607.02533"
+    },
+    {
+        "name": "Spatial Attack",
+        "attack": fb.attacks.SpatialAttack(max_translation=6,
+                                           num_translations=6,
+                                           max_rotation=20,
+                                           num_rotations=5
+                                           ),
+        "paper": "https://arxiv.org/abs/1801.02612"
+    },
+    {
         "name": "L2CarliniWagner",
         "attack": fb.attacks.L2CarliniWagnerAttack(steps=1000),
         "paper": "https://arxiv.org/abs/1608.04644"

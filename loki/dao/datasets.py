@@ -1,5 +1,8 @@
 import json
 
+
+# Load ImageNet labels from JSON provided by
+# the authors of the dataset.
 imagenet_path = "./loki/static/datasets/imagenet/"\
                 "imagenet_class_index.json"
 
@@ -9,6 +12,9 @@ imagenet_labels = [imagenet_class_idx[str(k)][1]
 
 
 class DatasetDAO():
+    """Class to handle all operations
+    involving file access for a dataset.
+    """
     __instance__ = None
 
     def __init__(self, dataset):

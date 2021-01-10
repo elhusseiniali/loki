@@ -36,8 +36,10 @@ def visualize_attack():
 
         ratio = min(MAX_WIDTH / 100, MAX_HEIGHT / 100)
 
-        original_image, result_image, _ = run_attack(img, classifier_id,
-                                                     attack_id, scale=ratio)
+        (original_image,
+         result_image,
+         _, _, _) = run_attack(img, classifier_id,
+                               attack_id, scale=ratio)
 
         result_file = save_image(result_image, path="tmp",
                                  output_size=(MAX_WIDTH, MAX_HEIGHT))

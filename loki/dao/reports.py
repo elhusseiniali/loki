@@ -3,6 +3,9 @@ from loki import db
 
 
 class ReportDAO():
+    """Class to handle all database access
+    required for the models.Report class.
+    """
     __instance__ = None
 
     def __init__(self):
