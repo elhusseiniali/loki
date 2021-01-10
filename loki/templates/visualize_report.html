@@ -1,6 +1,18 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h3>Before</h3>
+<div class="row">
+    <legend class="border-bottom mb-4">
+        Report information
+    </legend>
+    <ul class="list-group">
+        <li class="list-group-item">Classifier: <b>{{ classifier_name }}</b></li>
+        <li class="list-group-item">Attack: <b>{{ attack_name }}</b></li>
+        <li class="list-group-item">Date: <b>{{ time.strftime('%H:%M / %d-%m-%Y') }}</b></li>
+      </ul>
+</div>
+<legend class="border-bottom mb-4">
+    Before
+</legend>
 <div class="row">
     {% for i in range(len) %}
         <div class="column">
@@ -13,7 +25,9 @@
         </div>
     {% endfor %}
 </div>
-<h3>After</h3>
+<legend class="border-bottom mb-4">
+    After
+</legend>
 <div class="row">
     {% for i in range(len) %}
         <div class="column">
@@ -26,7 +40,9 @@
         </div>
     {% endfor %}
 </div>
-<h3>Pixel difference</h3>
+<legend class="border-bottom mb-4">
+    Pixel Difference
+</legend>
 <div class="row">
     {% for i in range(len) %}
         <div class="column">
@@ -36,6 +52,9 @@
         </div>
     {% endfor %}
 </div>
+<legend class="border-bottom mb-4">
+    Confusion Matrix
+</legend>
 <div style="width: 100%; overflow: hidden;">
     <div style="width: 600px;"> 
         <div id="ConfusionMatrix" style="width:500px;height:500px;"></div>

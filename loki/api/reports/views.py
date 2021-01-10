@@ -13,6 +13,7 @@ import requests
 from PIL import Image
 import io
 import numpy as np
+import datetime
 
 
 reports = Blueprint('reports', __name__)
@@ -48,6 +49,11 @@ def new_report():
         difference_images = []
         original_labels = []
         result_labels = []
+        classifier_id = form.model.data
+        classifier_name = form.model.choices[int(classifier_id)][1]
+        attack_id = form.attacks.data
+        attack_name = form.attacks.choices[int(attack_id)][1]
+        time = datetime.datetime.now()
 
         for image in images:
             # Launch attack
@@ -55,8 +61,8 @@ def new_report():
             im = image.read()
             im_b64 = base64.b64encode(im)
             files = {'image_data': im_b64,
-                     'attack_id': form.attacks.data,
-                     'classifier_id': form.model.data}
+                     'attack_id': attack_id,
+                     'classifier_id': classifier_id}
             response = requests.put(BASE_ATTACK, data=files)
             images_dict = json.loads(response.text)
             original_image, result_image, difference_image = \
@@ -74,7 +80,7 @@ def new_report():
             # Before attack
             BASE_CLASSIFY = "http://localhost:5000/api/1/classifiers/classify"
             files = {'image_data': im_b64,
-                     'classifier_id': form.model.data}
+                     'classifier_id': classifier_id}
             response = requests.put(BASE_CLASSIFY, data=files)
             preds = json.loads(response.text)
             original_labels.append(preds[0]['label'])
@@ -82,7 +88,7 @@ def new_report():
             # After attack
             im_b64 = result_image.encode()
             files = {'image_data': im_b64,
-                     'classifier_id': form.model.data}
+                     'classifier_id': classifier_id}
             response = requests.put(BASE_CLASSIFY, data=files)
             preds = json.loads(response.text)
             result_labels.append(preds[0]['label'])
@@ -102,6 +108,9 @@ def new_report():
         # save the report in the database
         return render_template('visualize_report.html',
                                title='Visualize Report.',
+                               classifier_name=classifier_name,
+                               attack_name=attack_name,
+                               time=time,
                                len=len(images),
                                images=images,
                                original_images=original_images,
