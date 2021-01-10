@@ -13,7 +13,7 @@
                             <h3>{{form.model.label}}</h3>
                             {% if form.validate_on_submit() %}
                             <select class="form-control" id="model_selector" name="model">
-                                <option value="">{{form.model.choices[index_model + 1][1]}}</option>
+                                <option value="">{{form.model.choices[-index_model-1][1]}}</option>
                             </select>
                             {% else %}
                             <select class="form-control" id="model_selector" name="model">

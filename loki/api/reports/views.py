@@ -50,7 +50,7 @@ def new_report():
         original_labels = []
         result_labels = []
         classifier_id = form.model.data
-        classifier_name = form.model.choices[int(classifier_id)][1]
+        classifier_name = form.model.choices[-int(classifier_id)-1][1]
         attack_id = form.attacks.data
         attack_name = form.attacks.choices[int(attack_id)][1]
         time = datetime.datetime.now()

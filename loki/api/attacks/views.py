@@ -25,7 +25,7 @@ def visualize_attack():
     """
     form = VisualizeAttackForm()
     if form.validate_on_submit():
-        index_model = int(form.model.data) - 1
+        index_model = int(form.model.data)
         index_attack = int(form.attacks.data)
         img = Image.open(form.image.data)
 

@@ -21,7 +21,7 @@ class ClassifierField(SelectField):
 
         pretrained_choices = [(i, item.name)
                               for i, item in enumerate(pretrained_classifiers)]
-
+        pretrained_choices.reverse()
         offset = len(pretrained_choices)
 
         if not user_models:
