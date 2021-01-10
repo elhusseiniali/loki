@@ -60,12 +60,14 @@
         Confusion Matrix
     </legend>
     <div style="width: 100%; overflow: hidden;">
-        <div style="width: 600px;"> 
-            <div id="ConfusionMatrix" style="width:500px;height:500px;"></div>
+        <center>
+        <div style="width: 800px;"> 
+            <div id="ConfusionMatrix" style="width:600px;height:600px;"></div>
             <div class="selector">
             Class: <select class="classdata"> </select>
             </div>
         </div>
+        </center>
     </div>
 </div>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
@@ -127,15 +129,15 @@
             annotations: [],
             xaxis: {
                 ticks: '',
-                title: 'Predicted label'
+                title: 'Predicted label',
+                automargin: true 
             },
             yaxis: {
                 ticks: '',
                 ticksuffix: ' ',
-                width: 700,
-                height: 700,
                 autosize: false,
-                title: 'True label'
+                title: 'True label',
+                automargin: true 
             }
         };
         for ( var i = 0; i < y.length; i++ ) {
