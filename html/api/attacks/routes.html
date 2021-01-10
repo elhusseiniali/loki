@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>api.attacks.routes API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>api.attacks.routes</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from loki.api.attacks.models import PyTorchAttack
+from loki.api.attacks.models import attacks as set_attacks
+
+from loki.api.classifiers.models import pretrained_classifiers
+from loki.api.utils import get_image_from_tensor
+
+from PIL import Image
+
+from flask_restx import Namespace, Resource, reqparse
+
+import base64
+import io
+
+import numpy as np
+
+
+api = Namespace(&#39;attacks&#39;, description=&#39;Operations on adversarial attacks&#39;)
+
+
+@api.route(&#39;/all&#39;)
+@api.response(&#39;200&#39;, &#39;Success&#39;)
+class AttackList(Resource):
+    &#34;&#34;&#34;Resource to get a list of all attacks.
+    &#34;&#34;&#34;
+    def get(self):
+        &#34;&#34;&#34;Get a list of all the attacks.
+
+        Returns
+        -------
+        List of JSON, where
+            every JSON has the form
+            {
+                &#34;name&#34;: attack name,
+                &#34;paper&#34;: attack research paper
+            }
+        &#34;&#34;&#34;
+        return [
+            {
+                &#34;name&#34;: attack[&#34;name&#34;],
+                &#34;paper&#34;: attack[&#34;paper&#34;]
+            } for attack in set_attacks
+        ]
+
+
+@api.route(&#39;/&lt;attack_id&gt;&#39;)
+@api.param(&#39;attack_id&#39;, &#39;The attack identifier&#39;)
+@api.response(&#39;200&#39;, &#39;Success: Attack found&#39;)
+@api.response(&#39;404&#39;, &#39;Error: Attack not found&#39;)
+@api.response(&#39;422&#39;, &#39;Error: Index has to be an integer&#39;)
+class Attack(Resource):
+    &#34;&#34;&#34;Resource to get information on a specific attack.
+    &#34;&#34;&#34;
+    @api.doc(&#39;Get an attack from its id.&#39;)
+    def get(self, attack_id):
+        &#34;&#34;&#34;Get the name of an attack and its research paper.
+        IDs start from 0.
+
+        Returns
+        -------
+        JSON
+            with the form
+            {
+                &#34;name&#34;: attack name,
+                &#34;paper&#34;: attack research paper
+            }
+        Responses
+        ---------
+        - 200:
+            The attack information was found.
+        - 404:
+            The ID passed was out of bounds.
+        - 422:
+            The ID was not an int.
+        &#34;&#34;&#34;
+        try:
+            return {
+                &#34;name&#34;: set_attacks[int(attack_id)][&#34;name&#34;],
+                &#34;paper&#34;: set_attacks[int(attack_id)][&#34;paper&#34;]
+            }
+        except IndexError:
+            api.abort(404)
+        except ValueError:
+            api.abort(422)
+
+
+parser = reqparse.RequestParser()
+parser.add_argument(&#39;image_data&#39;, required=True)
+parser.add_argument(&#39;attack_id&#39;, type=int, required=True)
+parser.add_argument(&#39;classifier_id&#39;, type=int, required=True)
+
+
+@api.route(&#39;/run&#39;)
+@api.response(200, &#39;Success&#39;)
+@api.response(404, &#39;Error: Index out of bounds&#39;)
+@api.response(422, &#39;Error: Check parameters&#39;)
+class RunAttack(Resource):
+    &#34;&#34;&#34;Resource to run an attack.
+    &#34;&#34;&#34;
+    @api.expect(parser)
+    def put(self):
+        &#34;&#34;&#34;Run an attack given classifier_id, image_data, and attack_id.
+
+        Parameters
+        ----------
+        image_data: [string]
+            Base64-encoded image.
+        attack_id:  [int]
+        classifier_id: [int]
+
+        Returns
+        -------
+        - original_image: [str]
+            Base64-encoded image after it is prepared
+            for the classifier, before applying the attack.
+        - result_image: [str]
+            Base64-encoded image after applying
+            the attack.
+        - difference_image: [str]
+            Base64-encoded image of the pixel difference
+            between result_image and original_image.
+
+        Responses
+        ---------
+        - 200:
+            The attack was run.
+        - 404:
+            One of the IDs passed was out of bounds.
+        - 422:
+            One of the parameters was wrong. This means
+            that something that was not an int was passed as
+            one of the IDs, or invalid Base64 data was passed
+            for the image.
+        &#34;&#34;&#34;
+        args = parser.parse_args()
+        im_b64 = args[&#39;image_data&#39;]
+        try:
+            im_binary = base64.b64decode(im_b64)
+
+            buf = io.BytesIO(im_binary)
+            img = Image.open(buf)
+
+            classifier_id = args[&#39;classifier_id&#39;]
+            attack_id = args[&#39;attack_id&#39;]
+
+            (original_image,
+             result_image,
+             difference_image,
+             is_adv,
+             epsilons) = run_attack(img,
+                                    classifier_id,
+                                    attack_id,
+                                    scale=4)
+
+            original_file = io.BytesIO()
+            original_image.save(original_file, format=&#34;JPEG&#34;)
+            original_bytes = original_file.getvalue()
+
+            result_file = io.BytesIO()
+            result_image.save(result_file, format=&#34;JPEG&#34;)
+            result_bytes = result_file.getvalue()
+
+            difference_file = io.BytesIO()
+            difference_image.save(difference_file, format=&#34;PNG&#34;)
+            difference_bytes = difference_file.getvalue()
+
+            return {
+                &#34;original_image&#34;:
+                    base64.b64encode(original_bytes).decode(),
+                &#34;result_image&#34;:
+                    base64.b64encode(result_bytes).decode(),
+                &#34;difference_image&#34;:
+                    base64.b64encode(difference_bytes).decode()
+            }
+        except IndexError:
+            api.abort(404)
+        except ValueError:
+            api.abort(422)
+
+
+def run_attack(image, classifier_id, attack_id, robust=False, scale=1):
+    &#34;&#34;&#34;Run an attack.
+
+    Parameters
+    ----------
+    image : [PIL Image]
+        Some input image.
+    classifier_id : [int]
+        Classifier identifier in pretrained_classifiers.
+    attack_id : [int]
+        Attack identifier in set_attacks.
+    robust : [bool]
+
+        .If this is passed, the attack is run with 20
+        different epsilons.
+            This allows us to study the robustness of the model
+            to the attack.
+            If the model&#39;s accuracy varies wildly, then
+            the model is not robust. If it remains mostly
+            uniform, then the model is robust.
+
+        .If this is True, is_adv will change:
+            It will have the shape [20, N], where N is the
+            number of images passed in image.
+            this means that is_adv[i][j] will be the bool
+            for the i-th epsilon, on the j-th attack.
+    scale : [int]
+        The scale to use to output the images.
+        Images after an attack will be compressed to 100x100.
+        A desired output of 400x400 would require a scale of 4.
+        The resizing is done in a way that preserves aspect ratios.
+
+    Returns
+    -------
+    - original_image
+        [PIL Image]
+            Image before applying the attack to it,
+            after the pre-processing needed to classify
+            it.
+    - result_image
+        [PIL Image]
+            Image after running the attack.
+    - difference_image
+        [PIL Image]
+            Image of the pixel differences between result_image
+            and original_image.
+    - is_adv
+        [torch.Tensor]
+            Explained in PyTorchAttack.run.
+    - epsilons
+        [float or np.array]
+            The epsilons used to run the attack.
+            This depends only on whether or not
+            a robustness analysis was requested.
+    &#34;&#34;&#34;
+    classifier = pretrained_classifiers[int(classifier_id)].classifier
+
+    # result = classifier.predict(img, n=1)[0][1]
+    label_index = classifier.predict(image, n=1)[0][0].item()
+    label = classifier.prep_label(label_index)
+    original_image = classifier.prep_tensor(image,
+                                            normalize=False)
+    if robust:
+        epsilons = np.linspace(0.0, 0.005, num=20)
+    else:
+        epsilons = 0.03
+
+    attack = PyTorchAttack(classifier.model,
+                           set_attacks[int(attack_id)][&#34;attack&#34;])
+
+    adv, is_adv = attack.run(original_image,
+                             labels=label,
+                             epsilons=epsilons)
+    if robust:
+        adv = adv[0]
+
+    difference_tensor = adv - original_image
+
+    result_image = get_image_from_tensor(images=adv, scale=scale)
+    original_image = get_image_from_tensor(images=original_image,
+                                           scale=scale)
+    difference = get_image_from_tensor(images=difference_tensor,
+                                       scale=scale, bounds=(-0.1, 0.1),
+                                       ext=&#39;PNG&#39;)
+
+    return original_image, result_image, difference, is_adv, epsilons</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="api.attacks.routes.run_attack"><code class="name flex">
+<span>def <span class="ident">run_attack</span></span>(<span>image, classifier_id, attack_id, robust=False, scale=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Run an attack.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>image</code></strong> :&ensp;<code>[PIL Image]</code></dt>
+<dd>Some input image.</dd>
+<dt><strong><code>classifier_id</code></strong> :&ensp;<code>[int]</code></dt>
+<dd>Classifier identifier in pretrained_classifiers.</dd>
+<dt><strong><code>attack_id</code></strong> :&ensp;<code>[int]</code></dt>
+<dd>Attack identifier in set_attacks.</dd>
+<dt><strong><code>robust</code></strong> :&ensp;<code>[bool]</code></dt>
+<dd>
+<p>.If this is passed, the attack is run with 20
+different epsilons.
+This allows us to study the robustness of the model
+to the attack.
+If the model's accuracy varies wildly, then
+the model is not robust. If it remains mostly
+uniform, then the model is robust.</p>
+<p>.If this is True, is_adv will change:
+It will have the shape [20, N], where N is the
+number of images passed in image.
+this means that is_adv[i][j] will be the bool
+for the i-th epsilon, on the j-th attack.</p>
+</dd>
+<dt><strong><code>scale</code></strong> :&ensp;<code>[int]</code></dt>
+<dd>The scale to use to output the images.
+Images after an attack will be compressed to 100x100.
+A desired output of 400x400 would require a scale of 4.
+The resizing is done in a way that preserves aspect ratios.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<ul>
+<li>original_image
+[PIL Image]
+Image before applying the attack to it,
+after the pre-processing needed to classify
+it.</li>
+<li>result_image
+[PIL Image]
+Image after running the attack.</li>
+<li>difference_image
+[PIL Image]
+Image of the pixel differences between result_image
+and original_image.</li>
+<li>is_adv
+[torch.Tensor]
+Explained in PyTorchAttack.run.</li>
+<li>epsilons
+[float or np.array]
+The epsilons used to run the attack.
+This depends only on whether or not
+a robustness analysis was requested.</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run_attack(image, classifier_id, attack_id, robust=False, scale=1):
+    &#34;&#34;&#34;Run an attack.
+
+    Parameters
+    ----------
+    image : [PIL Image]
+        Some input image.
+    classifier_id : [int]
+        Classifier identifier in pretrained_classifiers.
+    attack_id : [int]
+        Attack identifier in set_attacks.
+    robust : [bool]
+
+        .If this is passed, the attack is run with 20
+        different epsilons.
+            This allows us to study the robustness of the model
+            to the attack.
+            If the model&#39;s accuracy varies wildly, then
+            the model is not robust. If it remains mostly
+            uniform, then the model is robust.
+
+        .If this is True, is_adv will change:
+            It will have the shape [20, N], where N is the
+            number of images passed in image.
+            this means that is_adv[i][j] will be the bool
+            for the i-th epsilon, on the j-th attack.
+    scale : [int]
+        The scale to use to output the images.
+        Images after an attack will be compressed to 100x100.
+        A desired output of 400x400 would require a scale of 4.
+        The resizing is done in a way that preserves aspect ratios.
+
+    Returns
+    -------
+    - original_image
+        [PIL Image]
+            Image before applying the attack to it,
+            after the pre-processing needed to classify
+            it.
+    - result_image
+        [PIL Image]
+            Image after running the attack.
+    - difference_image
+        [PIL Image]
+            Image of the pixel differences between result_image
+            and original_image.
+    - is_adv
+        [torch.Tensor]
+            Explained in PyTorchAttack.run.
+    - epsilons
+        [float or np.array]
+            The epsilons used to run the attack.
+            This depends only on whether or not
+            a robustness analysis was requested.
+    &#34;&#34;&#34;
+    classifier = pretrained_classifiers[int(classifier_id)].classifier
+
+    # result = classifier.predict(img, n=1)[0][1]
+    label_index = classifier.predict(image, n=1)[0][0].item()
+    label = classifier.prep_label(label_index)
+    original_image = classifier.prep_tensor(image,
+                                            normalize=False)
+    if robust:
+        epsilons = np.linspace(0.0, 0.005, num=20)
+    else:
+        epsilons = 0.03
+
+    attack = PyTorchAttack(classifier.model,
+                           set_attacks[int(attack_id)][&#34;attack&#34;])
+
+    adv, is_adv = attack.run(original_image,
+                             labels=label,
+                             epsilons=epsilons)
+    if robust:
+        adv = adv[0]
+
+    difference_tensor = adv - original_image
+
+    result_image = get_image_from_tensor(images=adv, scale=scale)
+    original_image = get_image_from_tensor(images=original_image,
+                                           scale=scale)
+    difference = get_image_from_tensor(images=difference_tensor,
+                                       scale=scale, bounds=(-0.1, 0.1),
+                                       ext=&#39;PNG&#39;)
+
+    return original_image, result_image, difference, is_adv, epsilons</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="api.attacks.routes.Attack"><code class="flex name class">
+<span>class <span class="ident">Attack</span></span>
+<span>(</span><span>api=None, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Resource to get information on a specific attack.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Attack(Resource):
+    &#34;&#34;&#34;Resource to get information on a specific attack.
+    &#34;&#34;&#34;
+    @api.doc(&#39;Get an attack from its id.&#39;)
+    def get(self, attack_id):
+        &#34;&#34;&#34;Get the name of an attack and its research paper.
+        IDs start from 0.
+
+        Returns
+        -------
+        JSON
+            with the form
+            {
+                &#34;name&#34;: attack name,
+                &#34;paper&#34;: attack research paper
+            }
+        Responses
+        ---------
+        - 200:
+            The attack information was found.
+        - 404:
+            The ID passed was out of bounds.
+        - 422:
+            The ID was not an int.
+        &#34;&#34;&#34;
+        try:
+            return {
+                &#34;name&#34;: set_attacks[int(attack_id)][&#34;name&#34;],
+                &#34;paper&#34;: set_attacks[int(attack_id)][&#34;paper&#34;]
+            }
+        except IndexError:
+            api.abort(404)
+        except ValueError:
+            api.abort(422)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>flask_restx.resource.Resource</li>
+<li>flask.views.MethodView</li>
+<li>flask.views.View</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="api.attacks.routes.Attack.methods"><code class="name">var <span class="ident">methods</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="api.attacks.routes.Attack.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, attack_id)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the name of an attack and its research paper.
+IDs start from 0.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>JSON</code></dt>
+<dd>with the form
+{
+"name": attack name,
+"paper": attack research paper
+}</dd>
+</dl>
+<h2 id="responses">Responses</h2>
+<ul>
+<li>200:
+The attack information was found.</li>
+<li>404:
+The ID passed was out of bounds.</li>
+<li>422:
+The ID was not an int.</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@api.doc(&#39;Get an attack from its id.&#39;)
+def get(self, attack_id):
+    &#34;&#34;&#34;Get the name of an attack and its research paper.
+    IDs start from 0.
+
+    Returns
+    -------
+    JSON
+        with the form
+        {
+            &#34;name&#34;: attack name,
+            &#34;paper&#34;: attack research paper
+        }
+    Responses
+    ---------
+    - 200:
+        The attack information was found.
+    - 404:
+        The ID passed was out of bounds.
+    - 422:
+        The ID was not an int.
+    &#34;&#34;&#34;
+    try:
+        return {
+            &#34;name&#34;: set_attacks[int(attack_id)][&#34;name&#34;],
+            &#34;paper&#34;: set_attacks[int(attack_id)][&#34;paper&#34;]
+        }
+    except IndexError:
+        api.abort(404)
+    except ValueError:
+        api.abort(422)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="api.attacks.routes.AttackList"><code class="flex name class">
+<span>class <span class="ident">AttackList</span></span>
+<span>(</span><span>api=None, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Resource to get a list of all attacks.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AttackList(Resource):
+    &#34;&#34;&#34;Resource to get a list of all attacks.
+    &#34;&#34;&#34;
+    def get(self):
+        &#34;&#34;&#34;Get a list of all the attacks.
+
+        Returns
+        -------
+        List of JSON, where
+            every JSON has the form
+            {
+                &#34;name&#34;: attack name,
+                &#34;paper&#34;: attack research paper
+            }
+        &#34;&#34;&#34;
+        return [
+            {
+                &#34;name&#34;: attack[&#34;name&#34;],
+                &#34;paper&#34;: attack[&#34;paper&#34;]
+            } for attack in set_attacks
+        ]</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>flask_restx.resource.Resource</li>
+<li>flask.views.MethodView</li>
+<li>flask.views.View</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="api.attacks.routes.AttackList.methods"><code class="name">var <span class="ident">methods</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="api.attacks.routes.AttackList.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get a list of all the attacks.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>List</code> of <code>JSON, where</code></dt>
+<dd>every JSON has the form
+{
+"name": attack name,
+"paper": attack research paper
+}</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get(self):
+    &#34;&#34;&#34;Get a list of all the attacks.
+
+    Returns
+    -------
+    List of JSON, where
+        every JSON has the form
+        {
+            &#34;name&#34;: attack name,
+            &#34;paper&#34;: attack research paper
+        }
+    &#34;&#34;&#34;
+    return [
+        {
+            &#34;name&#34;: attack[&#34;name&#34;],
+            &#34;paper&#34;: attack[&#34;paper&#34;]
+        } for attack in set_attacks
+    ]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="api.attacks.routes.RunAttack"><code class="flex name class">
+<span>class <span class="ident">RunAttack</span></span>
+<span>(</span><span>api=None, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Resource to run an attack.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RunAttack(Resource):
+    &#34;&#34;&#34;Resource to run an attack.
+    &#34;&#34;&#34;
+    @api.expect(parser)
+    def put(self):
+        &#34;&#34;&#34;Run an attack given classifier_id, image_data, and attack_id.
+
+        Parameters
+        ----------
+        image_data: [string]
+            Base64-encoded image.
+        attack_id:  [int]
+        classifier_id: [int]
+
+        Returns
+        -------
+        - original_image: [str]
+            Base64-encoded image after it is prepared
+            for the classifier, before applying the attack.
+        - result_image: [str]
+            Base64-encoded image after applying
+            the attack.
+        - difference_image: [str]
+            Base64-encoded image of the pixel difference
+            between result_image and original_image.
+
+        Responses
+        ---------
+        - 200:
+            The attack was run.
+        - 404:
+            One of the IDs passed was out of bounds.
+        - 422:
+            One of the parameters was wrong. This means
+            that something that was not an int was passed as
+            one of the IDs, or invalid Base64 data was passed
+            for the image.
+        &#34;&#34;&#34;
+        args = parser.parse_args()
+        im_b64 = args[&#39;image_data&#39;]
+        try:
+            im_binary = base64.b64decode(im_b64)
+
+            buf = io.BytesIO(im_binary)
+            img = Image.open(buf)
+
+            classifier_id = args[&#39;classifier_id&#39;]
+            attack_id = args[&#39;attack_id&#39;]
+
+            (original_image,
+             result_image,
+             difference_image,
+             is_adv,
+             epsilons) = run_attack(img,
+                                    classifier_id,
+                                    attack_id,
+                                    scale=4)
+
+            original_file = io.BytesIO()
+            original_image.save(original_file, format=&#34;JPEG&#34;)
+            original_bytes = original_file.getvalue()
+
+            result_file = io.BytesIO()
+            result_image.save(result_file, format=&#34;JPEG&#34;)
+            result_bytes = result_file.getvalue()
+
+            difference_file = io.BytesIO()
+            difference_image.save(difference_file, format=&#34;PNG&#34;)
+            difference_bytes = difference_file.getvalue()
+
+            return {
+                &#34;original_image&#34;:
+                    base64.b64encode(original_bytes).decode(),
+                &#34;result_image&#34;:
+                    base64.b64encode(result_bytes).decode(),
+                &#34;difference_image&#34;:
+                    base64.b64encode(difference_bytes).decode()
+            }
+        except IndexError:
+            api.abort(404)
+        except ValueError:
+            api.abort(422)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>flask_restx.resource.Resource</li>
+<li>flask.views.MethodView</li>
+<li>flask.views.View</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="api.attacks.routes.RunAttack.methods"><code class="name">var <span class="ident">methods</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="api.attacks.routes.RunAttack.put"><code class="name flex">
+<span>def <span class="ident">put</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Run an attack given classifier_id, image_data, and attack_id.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>image_data</code></strong> :&ensp;<code>[string]</code></dt>
+<dd>Base64-encoded image.</dd>
+<dt><strong><code>attack_id</code></strong> :&ensp;<code> [int]</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>classifier_id</code></strong> :&ensp;<code>[int]</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<ul>
+<li>original_image: [str]
+Base64-encoded image after it is prepared
+for the classifier, before applying the attack.</li>
+<li>result_image: [str]
+Base64-encoded image after applying
+the attack.</li>
+<li>difference_image: [str]
+Base64-encoded image of the pixel difference
+between result_image and original_image.</li>
+</ul>
+<h2 id="responses">Responses</h2>
+<ul>
+<li>200:
+The attack was run.</li>
+<li>404:
+One of the IDs passed was out of bounds.</li>
+<li>422:
+One of the parameters was wrong. This means
+that something that was not an int was passed as
+one of the IDs, or invalid Base64 data was passed
+for the image.</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@api.expect(parser)
+def put(self):
+    &#34;&#34;&#34;Run an attack given classifier_id, image_data, and attack_id.
+
+    Parameters
+    ----------
+    image_data: [string]
+        Base64-encoded image.
+    attack_id:  [int]
+    classifier_id: [int]
+
+    Returns
+    -------
+    - original_image: [str]
+        Base64-encoded image after it is prepared
+        for the classifier, before applying the attack.
+    - result_image: [str]
+        Base64-encoded image after applying
+        the attack.
+    - difference_image: [str]
+        Base64-encoded image of the pixel difference
+        between result_image and original_image.
+
+    Responses
+    ---------
+    - 200:
+        The attack was run.
+    - 404:
+        One of the IDs passed was out of bounds.
+    - 422:
+        One of the parameters was wrong. This means
+        that something that was not an int was passed as
+        one of the IDs, or invalid Base64 data was passed
+        for the image.
+    &#34;&#34;&#34;
+    args = parser.parse_args()
+    im_b64 = args[&#39;image_data&#39;]
+    try:
+        im_binary = base64.b64decode(im_b64)
+
+        buf = io.BytesIO(im_binary)
+        img = Image.open(buf)
+
+        classifier_id = args[&#39;classifier_id&#39;]
+        attack_id = args[&#39;attack_id&#39;]
+
+        (original_image,
+         result_image,
+         difference_image,
+         is_adv,
+         epsilons) = run_attack(img,
+                                classifier_id,
+                                attack_id,
+                                scale=4)
+
+        original_file = io.BytesIO()
+        original_image.save(original_file, format=&#34;JPEG&#34;)
+        original_bytes = original_file.getvalue()
+
+        result_file = io.BytesIO()
+        result_image.save(result_file, format=&#34;JPEG&#34;)
+        result_bytes = result_file.getvalue()
+
+        difference_file = io.BytesIO()
+        difference_image.save(difference_file, format=&#34;PNG&#34;)
+        difference_bytes = difference_file.getvalue()
+
+        return {
+            &#34;original_image&#34;:
+                base64.b64encode(original_bytes).decode(),
+            &#34;result_image&#34;:
+                base64.b64encode(result_bytes).decode(),
+            &#34;difference_image&#34;:
+                base64.b64encode(difference_bytes).decode()
+        }
+    except IndexError:
+        api.abort(404)
+    except ValueError:
+        api.abort(422)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="api.attacks" href="index.html">api.attacks</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="api.attacks.routes.run_attack" href="#api.attacks.routes.run_attack">run_attack</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="api.attacks.routes.Attack" href="#api.attacks.routes.Attack">Attack</a></code></h4>
+<ul class="">
+<li><code><a title="api.attacks.routes.Attack.get" href="#api.attacks.routes.Attack.get">get</a></code></li>
+<li><code><a title="api.attacks.routes.Attack.methods" href="#api.attacks.routes.Attack.methods">methods</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="api.attacks.routes.AttackList" href="#api.attacks.routes.AttackList">AttackList</a></code></h4>
+<ul class="">
+<li><code><a title="api.attacks.routes.AttackList.get" href="#api.attacks.routes.AttackList.get">get</a></code></li>
+<li><code><a title="api.attacks.routes.AttackList.methods" href="#api.attacks.routes.AttackList.methods">methods</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="api.attacks.routes.RunAttack" href="#api.attacks.routes.RunAttack">RunAttack</a></code></h4>
+<ul class="">
+<li><code><a title="api.attacks.routes.RunAttack.methods" href="#api.attacks.routes.RunAttack.methods">methods</a></code></li>
+<li><code><a title="api.attacks.routes.RunAttack.put" href="#api.attacks.routes.RunAttack.put">put</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
