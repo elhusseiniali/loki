@@ -8,6 +8,7 @@ from flask_login import login_required, current_user
 
 from loki.api.classifiers.forms import PredictForm, UploadClassifierForm
 from loki.api.classifiers.utils import save_model, remove_model
+from loki.api.classifiers.models import pretrained_classifiers
 
 from loki.utils import save_image
 
@@ -29,7 +30,8 @@ def form_predict():
 
     if form.validate_on_submit():
         index_model = int(form.model.data)
-
+        paper = pretrained_classifiers[index_model].paper
+        name = pretrained_classifiers[index_model].name
         img = Image.open(form.image.data)
         width, height = img.size
 
@@ -45,7 +47,8 @@ def form_predict():
         return render_template('predict.html',
                                title='Classify an image.',
                                image_file=image_file, form=form,
-                               label=label, index_model=index_model)
+                               label=label, index_model=index_model,
+                               paper=paper, name=name)
     return render_template('predict.html',
                            title='Classify an image.', form=form)
 
