@@ -25,8 +25,8 @@ def visualize_attack():
     """
     form = VisualizeAttackForm()
     if form.validate_on_submit():
-        index = int(form.model.data) - 1
-
+        index_model = int(form.model.data) - 1
+        index_attack = int(form.attacks.data)
         img = Image.open(form.image.data)
 
         width, height = img.size
@@ -66,6 +66,8 @@ def visualize_attack():
         return render_template('visualize_attack.html', form=form,
                                image_file=original_file,
                                result_file=result_file,
-                               index=index, preds=preds,
+                               index_model=index_model,
+                               index_attack=index_attack,
+                               preds=preds,
                                probs=probs, size=size)
     return render_template('visualize_attack.html', form=form)
