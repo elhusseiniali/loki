@@ -66,6 +66,6 @@ toml==0.10.2
 torch==1.7.1
 torchvision==0.8.2
 typing-extensions==3.7.4.3
-urllib3==1.26.2
+urllib3==1.26.3
 Werkzeug==1.0.1
 WTForms==2.3.3
