@@ -42,7 +42,7 @@ packaging==20.8
 Pillow==8.2.0
 pluggy==0.13.1
 py==1.10.0
-py-moneyed==0.8.0
+py-moneyed==2.0
 pycodestyle==2.6.0
 pycountry==20.7.3
 pycparser==2.20
